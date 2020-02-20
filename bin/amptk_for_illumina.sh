@@ -15,7 +15,7 @@ amptk illumina -i ../data/fastq -o amptk/ -f GTGARTCATCRARTYTTTG -r CCTSCSCTTANT
 # --min_len: minimum lenght of sequences = 150 bp ; -l: max lenght = 300
 # -f primer forward = gITS7ngs
 # -r reverse ITS4ngsUni
-# A metadat .txt file is generated at this point and can be completed according to the project
+# A mapping .txt file is generated at this point and can be completed with the meta data associated with the project (see below under step 5).
 
 
 # Move output files to new folder "amptk"
@@ -34,7 +34,8 @@ amptk cluster -i ../data/amptk/amptk.demux.fq.gz -o cluster --uchime_ref ITS -m 
 mkdir ../data/cluster
 mv cluster* ../data/cluster
 
-# Filter and store in folder
+
+# Filter OTUs based on index-bleed
 amptk filter -i ../data/cluster/cluster.otu_table.txt -f ../data/cluster/cluster.cluster.otus.fa -o filter -p 0.005 --min_reads_otu 10
 
 
@@ -45,14 +46,18 @@ mv filter* ../data/filter
 
 
 # Assign taxonomy to OTUs
+# At this point the meta data associated wth the project can be added using the mapping file (generated in step 2)
 
 amptk taxonomy -i ../data/filter/filter.final.txt -f ../data/filter/filter.filtered.otus.fa -o taxonomy -m ../data/amptk/amptk.mapping_file.txt -d ITS2 --tax_filter Fungi
 
 # Move output files to new folder "taxonomy"
+# The .biom file generated in then uploaded in R for further analysis
 
 mkdir ../data/taxonomy
 mv taxonomy* ../data/taxonomy
 
+
+# Additionnal step:
 # Assign functional information to OTUs with FunGuild
 
 amptk funguild -i ../data/taxonomy/taxonomy.otu_table.taxonomy.txt -o funguild
