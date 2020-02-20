@@ -1,4 +1,4 @@
-## Pipeline for analyzing Illumina MiSeq paired-end data
+## Pipeline for analyzing Illumina MiSeq paired-end data from fungal communities
 
 This repository contains the scripts for:
 
