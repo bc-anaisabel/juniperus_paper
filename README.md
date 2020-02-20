@@ -1,4 +1,4 @@
-## Pipieline for analyzing Illumina MiSeq pair-end data using amptk
+## Pipeline for analyzing Illumina MiSeq pair-end data
 
 This repository contains the scripts for:
 
