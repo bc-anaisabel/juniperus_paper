@@ -1,4 +1,4 @@
-# AMPtk pipeline
+# AMPtk pipeline for ITS2 fungal sequences
 
 The script *amptk_for_illumina.sh* runs the following comands:
 
