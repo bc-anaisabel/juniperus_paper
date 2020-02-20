@@ -13,15 +13,15 @@ Install ITS database using: `amptk install -i ITS`
 ## Step 2. 
 ### Pre-processing FASTQ files (forward and reverse): 
 
-`amptk illumina <arguments>`: 
+amptk illumina <arguments>: 
 
-`-i, --fastq Input folder of FASTQ files (Required)`
-`-o, --out Ouput folder name. Default: amptk-data`
-`-f, --fwd_primer Forward primer sequence. Default: fITS7`
-` -r, --rev_primer Reverse primer sequence. Default: ITS4`
- `-- min_len Minimum length read to keep. Default: 100`
-` --full_length Keep only full length sequences`
-` --cleanup Remove intermediate files`
+-i, --fastq Input folder of FASTQ files (Required)
+-o, --out Ouput folder name. Default: amptk-data
+-f, --fwd_primer Forward primer sequence. Default: fITS7
+-r, --rev_primer Reverse primer sequence. Default: ITS4
+--min_len Minimum length read to keep. Default: 100
+--full_length Keep only full length sequences
+--cleanup Remove intermediate files
 
 `amptk illumina -i ../data/fastq -o amptk/ -f GTGARTCATCRARTYTTTG -r CCTSCSCTTANTDATATGC -l 300 --min_len 150 --full_length --cleanup`
 
@@ -37,19 +37,20 @@ Install ITS database using: `amptk install -i ITS`
 
 ## Step 3. 
 ### Clustering at 97% using UPARSE algorithm: 
+
 * The first step is to quality trim the reads using expected-errors quality trimming. The quality trimmed reads are then pushed through each of the algorithms which output a set of OTUs. The method used for clustering here is UPARSE. This will generate a log file, an OTU table in .txt format and a reference sequence file in fasta
 
-`amptk cluster <arguments>`: 
+amptk cluster <arguments>: 
 
-`-i, --fastq Input FASTQ file (Required)`
-`-o, --out Ouput base name. Default: out`
-`-m, --minsize Minimum size to keep (singleton filter). Default: 2`
-`--uchime_ref Run Ref Chimera filtering. Default: off [ITS, LSU, COI, 16S, custom path]`
+-i, --fastq Input FASTQ file (Required)
+-o, --out Ouput base name. Default: out
+-m, --minsize Minimum number of reads per OTU (singleton filter). Default: 2
+--uchime_ref Run Ref Chimera filtering. Default: off [ITS, LSU, COI, 16S, custom path]
 
 `amptk cluster -i ../data/amptk/amptk.demux.fq.gz -o cluster --uchime_ref ITS -m 10`
 
 
-###Move output files to new folder "cluster":
+### Move output files to new folder "cluster":
 
 `mkdir ../data/cluster`
 
