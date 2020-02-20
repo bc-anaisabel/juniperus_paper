@@ -1,8 +1,11 @@
-#README
+## Pipieline for analyzing Illumina MiSeq pair-end data using amptk
 
-Contains script to process NGS amplicon data using USEARCH and VSEARCH, it can also be used to process any NGS amplicon data. It can handle Ion Torrent, MiSeq, and 454 data. Produces a taxonomy table and a biom table that can be used for downstream analysis with Phyloseq in R. 
+This repository contains the scripts for:
 
-First it's required to do a manual installation of amptk using Conda and [USEARCH v9.2.64](http://www.drive5.com/usearch/download.html) from developer.
+1) Denoising Illumina MiSeq pair-end data (amptk)
+2) Creating the OTU table and assigning taxonomy (amptk)
+3) Assigning trophic mode of OTus (FUNGuild)
+4) Analyzing alpha- and beta diversity using R
 
 
 ## Citation
