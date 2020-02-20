@@ -46,7 +46,7 @@ mv filter* ../data/filter
 
 
 # Assign taxonomy to OTUs
-# At this point the meta data associated wth the project can be added using the mapping file (generated in step 2)
+# At this point the meta data associated wth the project can be added using the mapping file generated in step 2
 
 amptk taxonomy -i ../data/filter/filter.final.txt -f ../data/filter/filter.filtered.otus.fa -o taxonomy -m ../data/amptk/amptk.mapping_file.txt -d ITS2 --tax_filter Fungi
 
