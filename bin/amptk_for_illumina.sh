@@ -6,17 +6,16 @@
 ### Load the amptk environment with `conda activate amptk`
 ### Install ITS database using `amptk install -i ITS`
 
-# The LULU post-clustering filter requires packages devtools, lulu and tidyverse in R
-
 
 
 # Pre-processing FASTQ files (forwards and reverse)
 
 amptk illumina -i ../data/fastq -o amptk/ -f GTGARTCATCRARTYTTTG -r CCTSCSCTTANTDATATGC -l 300 --min_len 150 --full_length --cleanup
 
-# minimum lenght of seqeunces = 150 bp ; max lenght = 300
-# primer forward = gITS7ngs
-# reverse ITS4ngsUni
+# --min_len: minimum lenght of sequences = 150 bp ; -l: max lenght = 300
+# -f primer forward = gITS7ngs
+# -r reverse ITS4ngsUni
+# A metadat .txt file is generated at this point and can be completed according to the project
 
 
 # Move output files to new folder "amptk"
