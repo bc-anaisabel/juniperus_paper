@@ -4,7 +4,7 @@ This repository contains the scripts for:
 
 1) Denoising Illumina MiSeq pair-end data (amptk)
 2) Creating the OTU table and assigning taxonomy (amptk)
-3) Assigning trophic mode of OTus (FUNGuild)
+3) Assigning trophic mode of OTus (FunGuild inside amptk)
 4) Analyzing alpha- and beta diversity using R
 
 
