@@ -1,5 +1,7 @@
 # AMPtk pipeline
 
+The script *amptk_for_illumina.sh* runs the following comands:
+
 
 ## Step 1. 
 
