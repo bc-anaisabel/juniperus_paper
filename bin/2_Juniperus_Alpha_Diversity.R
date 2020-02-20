@@ -62,7 +62,7 @@ c <- plot_richness(subset.texcoco.alfa, x = "Site", color = "Species", measures=
 cc <- c + geom_boxplot(data = c$data, aes(x=Site, y=value, color=Species, alpha=0.1))
 cc + facet_wrap(~Type)
 
-# 
+# Create a table that gathers diversity measures to use in statistical tests 
 texcocodiversity<-estimate_richness(subset.texcoco.alfa, measures=c("Observed", "Fisher", "Shannon"))
 
 data <- cbind(sample_data(subset.texcoco.alfa), texcocodiversity) #combine metadata with alpha diversity
@@ -97,32 +97,32 @@ summary(subset.texcoco.alfa.anova2)
 TukeyHSD(subset.texcoco.alfa.anova2)
 boxplot(Fisher~Species+Site, data = data)
 
-#Site/Species for Shannon 
+#Site/Species for Shannon (this one shows significant differences between Plant Species/ Site)
 subset.texcoco.alfa.anova2<-aov(Shannon~Species+(Species/Site), data = data)
 summary(subset.texcoco.alfa.anova2)
 TukeyHSD(subset.texcoco.alfa.anova2)
 boxplot(Shannon~Species+Site, data = data)
 
-#Site/Type of sample for observed 
+#Site/Type of sample for observed (this one shows significant differences between Site/Type of sample)
 subset.texcoco.alfa.anova <- aov(Observed ~ Site+(Type/Site), data =data)
 summary(subset.texcoco.alfa.anova)
 TukeyHSD(subset.texcoco.alfa.anova)
 boxplot(Observed~Type+Site, data = data)
 
-#Site/Type of sample for Fisher 
+#Site/Type of sample for Fisher (this one shows significant differences between Site/Type of sample)
 subset.texcoco.alfa.anova <- aov(Fisher ~ Site+(Type/Site), data =data)
 summary(subset.texcoco.alfa.anova)
 TukeyHSD(subset.texcoco.alfa.anova)
 boxplot(Fisher~Type+Site, data = data)
 
-#Site/Type of sample for Shannon 
+#Site/Type of sample for Shannon (this one shows significant differences between Types of sample and between Site/Type of sample)
 subset.texcoco.alfa.anova <- aov(Shannon ~ Site+(Type/Site), data =data)
 summary(subset.texcoco.alfa.anova)
 TukeyHSD(subset.texcoco.alfa.anova)
 boxplot(Shannon~Type+Site, data = data)
 
 
-df<- psmelt(subset.texcoco.alfa) #it might be useful to have this data frame 
+#? df<- psmelt(subset.texcoco.alfa) #it might be useful to have this data frame 
 
 
 #Izta: 
@@ -132,23 +132,25 @@ subset.izta.alfa <- subset_samples(juniperus.rel, Site%in%c("Joya", "Cueva", "Ba
 subset.izta.alfa
 sample_data(subset.izta.alfa)
 
-#species richness per type 
+# fungal species richness per type  of sample 
 plot_richness(subset.izta.alfa,x="Type", color = "Site", measures=c("Observed", "Fisher", "Shannon"))  + geom_point(size=3)
 
-#species richness per site
+#fungal species richness per site
 plot_richness(subset.izta.alfa,x="Site", color = "Type", measures=c("Observed", "Fisher", "Shannon"))  + geom_point(size=3)
 
 
 #Do it with boxplots 
 
-#species richness per type 
+# fungal species richness per type of sample
 plot_richness(subset.izta.alfa,x="Type", color = "Site", measures=c("Observed", "Fisher", "Shannon")) + geom_boxplot()
 
-#species richness per site
+# fungal species richness per site
 plot_richness(subset.izta.alfa,x="Site", color = "Type", measures=c("Observed", "Fisher", "Shannon"))  + geom_boxplot()
 
-#Show only observed: 
+# fungal species richness per site showing only "Observed":  
 plot_richness(subset.texcoco.alfa,x="Site", color = "Species", measures=("Observed"))  + geom_boxplot() +facet_wrap(~Type)
+
+# Create a table that gathers diversity measures to use in statistical tests 
 
 iztadiversity<-estimate_richness(subset.izta.alfa, measures=c("Observed", "Fisher", "Shannon"))
 
@@ -172,31 +174,32 @@ summary(subset.izta.alfa.anova)
 TukeyHSD(subset.izta.alfa.anova)
 boxplot(Shannon~Site, data = data2)
 
-#Site/Type of sample for observed 
+#Site/Type of sample for observed (this one shows significant differences between types of sample)
 subset.izta.alfa.anova <- aov(Observed ~ Site+(Type/Site), data =data2)
 summary(subset.izta.alfa.anova)
 TukeyHSD(subset.izta.alfa.anova)
 boxplot(Observed~Type+Site, data = data2)
 
-#Site/Type of sample for Fisher 
+#Site/Type of sample for Fisher (this one shows significant differences between types of sample)
 subset.izta.alfa.anova <- aov(Fisher ~ Site+(Type/Site), data =data2)
 summary(subset.izta.alfa.anova)
 TukeyHSD(subset.izta.alfa.anova)
 boxplot(Fisher~Type+Site, data = data2)
 
-#Site/Type of sample for Shannon 
+#Site/Type of sample for Shannon (this one shows significant differences between types of sample)
 subset.izta.alfa.anova <- aov(Shannon ~ Site+(Type/Site), data =data2)
 summary(subset.izta.alfa.anova)
 TukeyHSD(subset.izta.alfa.anova)
 boxplot(Shannon~Type+Site, data = data2)
 
-df2<- psmelt(subset.izta.alfa) #it might be useful to have this data frame 
+# ? df2<- psmelt(subset.izta.alfa) #it might be useful to have this data frame 
 
 
 
-################################## Exploration of most abundant groups ########################
+################################## Exploration for direct quantitative observation/comparison of abundances
 
-taxa_sums(juniperus.rel)[1:20]
+a<-taxa_sums(juniperus.rel)[1:100]
+print(a)
 sample_sums(subset.texcoco.alfa) [1:10] #Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
 taxa_sums(subset.texcoco.alfa) [1:10]
 
@@ -204,51 +207,57 @@ taxa_sums(subset.texcoco.alfa) [1:10]
 get_taxa(subset.texcoco.alfa, sample_names(subset.texcoco.alfa)[5])[1:10]
 get_sample(subset.texcoco.alfa, taxa_names(subset.texcoco.alfa)[5])[1:10]
 
-# For direct quantitative observation/comparison of abundances 
+# melt to long format (for ggploting) 
+# prune out phyla below 1% in each sample
+# selecting the taxa at the level: Phylum
 
-# Select top 50/100 OTUs
-topN = 50
-top50_taxa = sort(taxa_sums(subset.izta.alfa), TRUE)[1:topN]
-print(top50_taxa)
+mdata_phylum <- subset.texcoco.alfa %>%
+  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
+  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+  psmelt() %>%                                         # Melt to long format
+  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
 
-# Plot most common OTUs
-N <- 25
-plot_bar(sort(taxa_sums(subset.texcoco.alfa), TRUE)[1:N]/nsamples(subset.izta.alfa))
+# checking the dataframe that we now created
+head(mdata_phylum)
 
+#Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
+ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
+  #facet_grid(time~.) +
+  geom_bar(stat = "identity")  +
+  # Remove x axis title, and rotate sample lables
+  theme(axis.title.x = element_blank(),
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
+  
+  # additional stuff
+  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
+  ylab("Relative Abundance (Phyla > 1%)\n") +
+  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
+
+
+
+# Top 50 OTUs
 Top50OTUs <- names(sort(taxa_sums(subset.texcoco.alfa), TRUE)[1:50])
 ent50 <- prune_taxa(Top50OTUs, subset.texcoco.alfa)
 plot_bar(ent50, "Site", fill = "Family")
 plot_bar(ent50, "sample_Species", fill = "Family", facet_grid = "Site")
-plot_bar(subset.texcoco.alfa, "sample_Species", fill = "Phylum", facet_grid = "Site")
 
-
-
-
+# only Ascomycota, Basidiomycota and Glomeromycota
 subset.phylum <- subset_taxa(subset.texcoco.alfa, Phylum %in% c("p__Ascomycota", "p__Basidiomycota", "p__Glomeromycota"))
 plot_bar(subset.phylum, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
-plot_bar(subset.phylum, x = "Site", y = taxa_sums(subset.phylum), fill = "Phylum", facet_grid = Project ~ sample_Species)
 
-#only glomero? 
+# only Glomeromycota 
 subset.phylum.glomero <- subset_taxa(subset.texcoco.alfa, Phylum =="p__Glomeromycota")
 plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
 
-
-
-
-
 # Phylum
-plot_bar(subset.texcoco.alfa , fill = "Phylum") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1) 
+plot_bar(subset.texcoco.alfa , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
 
 # Family
 plot_bar(ent50, fill = "Family")
 plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
 plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
 
-# Genus 
-plot_bar(ent10, fill = "Rank6") + facet_wrap(~Site, scales="free_x", nrow=1)
 
-# Make a plot that divides by typ
-
-# subset most abundant for glomeraceae ? 
 
 

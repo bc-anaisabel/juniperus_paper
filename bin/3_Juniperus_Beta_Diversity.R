@@ -21,9 +21,9 @@ source("~/Documents/Ana+Camille/MiSeq2x300_Dec2019/Juniperus/R/Script/1_Juniperu
 
 ############################################# Beta diversity plots and tests 
 
-#subset:
+# Subset: It uses as a base the data set that was created out of the filtered phyloseq object (neg control, relative abundance, no OTUs or Samples with 0 abundances) that was later transformed to binary table 
 
-#By site Texcoco
+#By site: Texcoco. 
 subset.texcoco <- subset_samples(subset.1, Site%in%c("mixed", "perturbated", "native"))
 subset.texcoco
 sample_data(subset.texcoco)
