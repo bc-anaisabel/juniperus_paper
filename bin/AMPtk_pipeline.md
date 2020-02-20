@@ -49,8 +49,11 @@ amptk illumina <arguments>:
 amptk cluster <arguments>: 
 
 -i, --fastq Input FASTQ file (Required)
+
 -o, --out Ouput base name. Default: out
+
 -m, --minsize Minimum number of reads per OTU (singleton filter). Default: 2
+
 --uchime_ref Run Ref Chimera filtering. Default: off [ITS, LSU, COI, 16S, custom path]
 
 `amptk cluster -i ../data/amptk/amptk.demux.fq.gz -o cluster --uchime_ref ITS -m 10`
@@ -144,7 +147,7 @@ amptk funguild <arguments>:
 
 `mv funguild* ../data/funguild`
 
-## Step 8. 
+## Step 7. 
 ### Run analyses with R using .biom files generated from "taxonomy" folder
 
 Filtering of the OTU table (negative controls, OTUs and samples) are realized in R (see script filter_biom.r in bin).
