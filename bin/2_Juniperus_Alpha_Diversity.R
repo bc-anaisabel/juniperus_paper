@@ -15,18 +15,305 @@ library(dplyr)
 library(tibble)
 
 
-setwd("~/Documents/Ana+Camille/MiSeq2x300_Dec2019/Juniperus/data/taxonomy")
+# Set working directory to source file
 
-source("~/Documents/Ana+Camille/MiSeq2x300_Dec2019/Juniperus/R/Script/1_Juniperus_Filters.R")
+
+source("../bin/1_Filter_otu_table.R")
+
+
+
+################################## Exploration for direct quantitative observation/comparison of abundances
+
+######################## Subset: Texcoco 
+
+# Subset data for Texcoco using relative abundance 
+subset.texcoco.alfa <- subset_samples(phyloseq.rel, Site%in%c("mixed", "perturbated", "native"))
+subset.texcoco.alfa
+sample_data(subset.texcoco.alfa)
+
+sample_sums(subset.texcoco.alfa) [1:10] 
+
+# Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) 
+taxa_sums(subset.texcoco.alfa) [1:10]
+
+# In case of removing OTUs not present in samples of subset:
+
+subset.texcoco.alfa <- prune_taxa(taxa_sums(subset.texcoco.alfa) > 0, subset.texcoco.alfa)
+any(taxa_sums(subset.texcoco.alfa) == 0)
+
+taxa_sums(subset.texcoco.alfa) [1:10]
+subset.texcoco.alfa
+
+# Subset data for Texcoco using binary table 
+
+subset.texcoco.binary <- subset_samples(binary_table, Site%in%c("mixed", "perturbated", "native"))
+subset.texcoco.binary
+sample_data(subset.texcoco.binary)
+
+#Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
+taxa_sums(subset.texcoco.binary) [1:10]
+
+#In case of removing OTUs not present in samples of subset:
+
+subset.texcoco.binary<- prune_taxa(taxa_sums(subset.texcoco.binary) > 0, subset.texcoco.binary)
+
+subset.texcoco.binary
+
+taxa_sums(subset.texcoco.binary) [1:10]
+
+
+# Relative abundance of reads per species and treatments
+# Phylum
+plot_bar(subset.texcoco.alfa , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
+
+# melt to long format (for ggploting) 
+# prune out phyla below 1% in each sample
+# selecting the taxa at the level: Phylum
+
+mdata_phylum <- subset.texcoco.alfa %>%
+  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
+  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+  psmelt() %>%                                         # Melt to long format
+  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
+
+# checking the dataframe that we now created
+head(mdata_phylum)
+
+# Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
+ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
+  #facet_grid(time~.) +
+  geom_bar(stat = "identity")  +
+  # Remove x axis title, and rotate sample lables
+  theme(axis.title.x = element_blank(),
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
+  
+  # add labels
+  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
+  ylab("Relative Abundance (Phyla > 1%)\n") +
+  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
+
+
+# Relative abundance of OTUs per species and treatments (same as above but using binary table subset )
+
+mdata_phylum <- subset.texcoco.binary %>%
+  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
+  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+  psmelt() %>%                                         # Melt to long format
+  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
+
+# checking the dataframe that we now created
+head(mdata_phylum)
+
+
+### FOR REPORT!
+# Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
+ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
+  #facet_grid(time~.) +
+  geom_bar(stat = "identity")  +
+  # Remove x axis title, and rotate sample lables
+  theme(axis.title.x = element_blank(),
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
+  
+  # add labels
+  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
+  ylab("Relative Abundance Binary Table (Phyla > 1%)\n") +
+  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
+
+
+# Top 50 OTUs for relative abundance of Texcoco 
+
+Top50OTUs <- names(sort(taxa_sums(subset.texcoco.alfa), TRUE)[1:50])
+ent50 <- prune_taxa(Top50OTUs, subset.texcoco.alfa)
+plot_bar(ent50, "Site", fill = "Family")
+plot_bar(ent50, "sample_Species", fill = "Family", facet_grid = "Site")
+
+# Same as above (Family) but for each sample
+plot_bar(ent50, fill = "Family")
+plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
+plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
+
+# TOP50 within Ascomycota, Basidiomycota and Glomeromycota
+subset.phylum <- subset_taxa(subset.texcoco.alfa, Phylum %in% c("p__Ascomycota", "p__Basidiomycota", "p__Glomeromycota"))
+plot_bar(subset.phylum, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+# Top50 within only Glomeromycota 
+subset.phylum.glomero <- subset_taxa(subset.texcoco.alfa, Phylum =="p__Glomeromycota")
+plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+
+# Top 50 OTUs for Texcoco binary table 
+
+Top50OTUs <- names(sort(taxa_sums(subset.texcoco.binary), TRUE)[1:50])
+ent50 <- prune_taxa(Top50OTUs, subset.texcoco.binary)
+plot_bar(ent50, "Site", fill = "Family")
+plot_bar(ent50, "sample_Species", fill = "Family", facet_grid = "Site")
+
+# only Ascomycota, Basidiomycota and Glomeromycota
+subset.phylum <- subset_taxa(subset.texcoco.binary, Phylum %in% c("p__Ascomycota", "p__Basidiomycota", "p__Glomeromycota"))
+plot_bar(subset.phylum, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+# only Glomeromycota 
+subset.phylum.glomero <- subset_taxa(subset.texcoco.binary, Phylum =="p__Glomeromycota")
+plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+# Phylum
+plot_bar(subset.texcoco.binary , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
+
+# Family
+plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
+plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
+
+
+
+######################################## Izta 
+
+# Subset data for Izta using relative abundance 
+subset.izta.alfa <- subset_samples(phyloseq.rel, Site%in%c("Cueva", "Joya", "Base"))
+subset.izta.alfa
+sample_data(subset.izta.alfa)
+
+sample_sums(subset.izta.alfa) [1:10] 
+
+# Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) 
+taxa_sums(subset.izta.alfa) [1:10]
+
+# In case of removing OTUs not present in samples of subset:
+
+subset.izta.alfa <- prune_taxa(taxa_sums(subset.izta.alfa) > 0, subset.izta.alfa)
+any(taxa_sums(subset.izta.alfa) == 0)
+
+taxa_sums(subset.izta.alfa) [1:10]
+subset.izta.alfa
+
+# get_taxa is returning all the OTU abundances from one sample, while get_sample is returning the abundances from all samples for one OTU.
+get_taxa(subset.izta.alfa, sample_names(subset.izta.alfa)[5])[1:10]
+get_sample(subset.izta.alfa, taxa_names(subset.izta.alfa)[5])[1:10]
+
+
+# Relative abundance of reads per species and treatments
+# melt to long format (for ggploting) 
+# prune out phyla below 1% in each sample
+# selecting the taxa at the level: Phylum
+
+mdata_phylum <- subset.izta.alfa %>%
+  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
+  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+  psmelt() %>%                                         # Melt to long format
+  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
+
+# checking the dataframe that we now created
+head(mdata_phylum)
+
+# Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
+ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
+  #facet_grid(time~.) +
+  geom_bar(stat = "identity")  +
+  # Remove x axis title, and rotate sample lables
+  theme(axis.title.x = element_blank(),
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
+  
+  # add labels
+  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
+  ylab("Relative Abundance (Phyla > 1%)\n") +
+  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
+
+
+# Subset data for izta using binary table 
+
+subset.izta.binary <- subset_samples(binary_table, Site%in%c("Cueva", "Joya", "Base"))
+subset.izta.binary
+sample_data(subset.izta.binary)
+
+#Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
+taxa_sums(subset.izta.binary) [1:10]
+
+#In case of removing OTUs not present in samples of subset:
+
+subset.izta.binary<- prune_taxa(taxa_sums(subset.izta.binary) > 0, subset.izta.binary)
+
+subset.izta.binary
+
+taxa_sums(subset.izta.binary) [1:10]
+
+
+# Relative abundance of OTUs per species and treatments (same as above but using binary table subset )
+
+mdata_phylum <- subset.izta.binary %>%
+  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
+  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+  psmelt() %>%                                         # Melt to long format
+  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
+
+# checking the dataframe that we now created
+head(mdata_phylum)
+
+# Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
+ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
+  #facet_grid(time~.) +
+  geom_bar(stat = "identity")  +
+  # Remove x axis title, and rotate sample lables
+  theme(axis.title.x = element_blank(),
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
+  
+  # add labels
+  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
+  ylab("Relative Abundance Binary Table (Phyla > 1%)\n") +
+  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
+
+
+# Top 50 OTUs for relative abundance of izta 
+
+Top50OTUs <- names(sort(taxa_sums(subset.izta.alfa), TRUE)[1:50])
+ent50 <- prune_taxa(Top50OTUs, subset.izta.alfa)
+plot_bar(ent50, "Site", fill = "Family")
+plot_bar(ent50, "sample_Species", fill = "Family", facet_grid = "Site")
+
+# only Ascomycota, Basidiomycota and Glomeromycota
+subset.phylum <- subset_taxa(subset.izta.alfa, Phylum %in% c("p__Ascomycota", "p__Basidiomycota", "p__Glomeromycota"))
+plot_bar(subset.phylum, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+# only Glomeromycota 
+subset.phylum.glomero <- subset_taxa(subset.izta.alfa, Phylum =="p__Glomeromycota")
+plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+# Phylum
+plot_bar(subset.izta.alfa , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
+
+# Family
+plot_bar(ent50, fill = "Family")
+plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
+plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
+
+# Top 50 OTUs for izta binary table 
+
+Top50OTUs <- names(sort(taxa_sums(subset.izta.binary), TRUE)[1:50])
+ent50 <- prune_taxa(Top50OTUs, subset.izta.binary)
+plot_bar(ent50, "Site", fill = "Family")
+plot_bar(ent50, "sample_Species", fill = "Family", facet_grid = "Site")
+
+# only Ascomycota, Basidiomycota and Glomeromycota
+subset.phylum <- subset_taxa(subset.izta.binary, Phylum %in% c("p__Ascomycota", "p__Basidiomycota", "p__Glomeromycota"))
+plot_bar(subset.phylum, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+# only Glomeromycota 
+subset.phylum.glomero <- subset_taxa(subset.izta.binary, Phylum =="p__Glomeromycota")
+plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
+
+# Phylum
+plot_bar(subset.izta.binary , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
+
+# Family
+plot_bar(ent50, fill = "Family")
+plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
+plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
 
 ############################################ Alfa diversity 
 
-# Subset:
-
-# By site Texcoco
-subset.texcoco.alfa <- subset_samples(juniperus.rel, Site%in%c("mixed", "perturbated", "native"))
-subset.texcoco.alfa
-sample_data(subset.texcoco.alfa)
+# Texcoco 
 
 # Plotting: 
 # fungal species richness per plant species 
@@ -46,7 +333,7 @@ plot_richness(subset.texcoco.alfa,x="Site", color = "Species", shape = "Type", m
 # fungal species richness per site showing only "Observed": 
 plot_richness(subset.texcoco.alfa,x="Site", color = "Species", measures=("Observed"))  + geom_boxplot() +facet_wrap(~Type)
 
-# one plot for each diversity measure:
+# one plot for each diversity measure: FOR REPORT
 # observed:
 a <- plot_richness(subset.texcoco.alfa,x="Site", color = "Species", measures=("Observed"))  
 ab <- a + geom_boxplot(data = a$data, aes(x=Site, y=value, color=Species, alpha=0.1)) 
@@ -124,13 +411,7 @@ boxplot(Shannon~Type+Site, data = data)
 
 #? df<- psmelt(subset.texcoco.alfa) #it might be useful to have this data frame 
 
-
-#Izta: 
-
-#By site Izta 
-subset.izta.alfa <- subset_samples(juniperus.rel, Site%in%c("Joya", "Cueva", "Base"))
-subset.izta.alfa
-sample_data(subset.izta.alfa)
+############################ Izta 
 
 # fungal species richness per type  of sample 
 plot_richness(subset.izta.alfa,x="Type", color = "Site", measures=c("Observed", "Fisher", "Shannon"))  + geom_point(size=3)
@@ -148,7 +429,7 @@ plot_richness(subset.izta.alfa,x="Type", color = "Site", measures=c("Observed", 
 plot_richness(subset.izta.alfa,x="Site", color = "Type", measures=c("Observed", "Fisher", "Shannon"))  + geom_boxplot()
 
 # fungal species richness per site showing only "Observed":  
-plot_richness(subset.texcoco.alfa,x="Site", color = "Species", measures=("Observed"))  + geom_boxplot() +facet_wrap(~Type)
+plot_richness(subset.izta.alfa,x="Site", color = "Species", measures=("Observed"))  + geom_boxplot() +facet_wrap(~Type)
 
 # Create a table that gathers diversity measures to use in statistical tests 
 
@@ -193,256 +474,6 @@ TukeyHSD(subset.izta.alfa.anova)
 boxplot(Shannon~Type+Site, data = data2)
 
 # ? df2<- psmelt(subset.izta.alfa) #it might be useful to have this data frame 
-
-
-
-################################## Exploration for direct quantitative observation/comparison of abundances
-
-a<-taxa_sums(juniperus.rel)[1:100]
-print(a)
-sample_sums(subset.texcoco.alfa) [1:10] #Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
-taxa_sums(subset.texcoco.alfa) [1:10]
-
-# get_taxa is returning all the OTU abundances from one sample, while get_sample is returning the abundances from all samples for one OTU.
-get_taxa(subset.texcoco.alfa, sample_names(subset.texcoco.alfa)[5])[1:10]
-get_sample(subset.texcoco.alfa, taxa_names(subset.texcoco.alfa)[5])[1:10]
-
-# melt to long format (for ggploting) 
-# prune out phyla below 1% in each sample
-# selecting the taxa at the level: Phylum
-
-mdata_phylum <- subset.texcoco.alfa %>%
-  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
-  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
-  psmelt() %>%                                         # Melt to long format
-  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
-  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
-
-# checking the dataframe that we now created
-head(mdata_phylum)
-
-#Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
-ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
-  #facet_grid(time~.) +
-  geom_bar(stat = "identity")  +
-  # Remove x axis title, and rotate sample lables
-  theme(axis.title.x = element_blank(),
-        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
-  
-  # additional stuff
-  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
-  ylab("Relative Abundance (Phyla > 1%)\n") +
-  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
-
-
-
-# Top 50 OTUs
-Top50OTUs <- names(sort(taxa_sums(subset.texcoco.alfa), TRUE)[1:50])
-ent50 <- prune_taxa(Top50OTUs, subset.texcoco.alfa)
-plot_bar(ent50, "Site", fill = "Family")
-plot_bar(ent50, "sample_Species", fill = "Family", facet_grid = "Site")
-
-# only Ascomycota, Basidiomycota and Glomeromycota
-subset.phylum <- subset_taxa(subset.texcoco.alfa, Phylum %in% c("p__Ascomycota", "p__Basidiomycota", "p__Glomeromycota"))
-plot_bar(subset.phylum, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
-
-# only Glomeromycota 
-subset.phylum.glomero <- subset_taxa(subset.texcoco.alfa, Phylum =="p__Glomeromycota")
-plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
-
-# Phylum
-plot_bar(subset.texcoco.alfa , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
-
-# Family
-plot_bar(ent50, fill = "Family")
-plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
-plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
-
-# Izta 
-
-a<-taxa_sums(juniperus.rel)[1:100]
-print(a)
-sample_sums(subset.izta.alfa) [1:10] #Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
-taxa_sums(subset.izta.alfa) [1:10]
-
-# get_taxa is returning all the OTU abundances from one sample, while get_sample is returning the abundances from all samples for one OTU.
-get_taxa(subset.izta.alfa, sample_names(subset.izta.alfa)[5])[1:10]
-get_sample(subset.izta.alfa, taxa_names(subset.izta.alfa)[5])[1:10]
-
-# melt to long format (for ggploting) 
-# prune out phyla below 1% in each sample
-# selecting the taxa at the level: Phylum
-
-mdata_phylum <- subset.izta.alfa %>%
-  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
-  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
-  psmelt() %>%                                         # Melt to long format
-  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
-  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
-
-# checking the dataframe that we now created
-head(mdata_phylum)
-
-#Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
-ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
-  #facet_grid(time~.) +
-  geom_bar(stat = "identity")  +
-  # Remove x axis title, and rotate sample lables
-  theme(axis.title.x = element_blank(),
-        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
-  
-  # additional stuff
-  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
-  ylab("Relative Abundance (Phyla > 1%)\n") +
-  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
-
-
-
-# Top 50 OTUs
-Top50OTUs <- names(sort(taxa_sums(subset.izta.alfa), TRUE)[1:50])
-ent50 <- prune_taxa(Top50OTUs, subset.izta.alfa)
-plot_bar(ent50, "Site", fill = "Family")
-plot_bar(ent50, "sample_Species", fill = "Family", facet_grid = "Site")
-
-# only Ascomycota, Basidiomycota and Glomeromycota
-subset.phylum <- subset_taxa(subset.izta.alfa, Phylum %in% c("p__Ascomycota", "p__Basidiomycota", "p__Glomeromycota"))
-plot_bar(subset.phylum, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
-
-# only Glomeromycota 
-subset.phylum.glomero <- subset_taxa(subset.izta.alfa, Phylum =="p__Glomeromycota")
-plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
-
-# Phylum
-plot_bar(subset.izta.alfa , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
-
-# Family
-plot_bar(ent50, fill = "Family")
-plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
-plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
-
-
-
-
-# Presence/absence
-
-# By site: Texcoco. 
-subset.texcoco <- subset_samples(binary_table, Site%in%c("mixed", "perturbated", "native"))
-subset.texcoco
-sample_data(subset.texcoco)
-
-# Texcoco presence/absence 
-
-a<-taxa_sums(binary_table)[1:100]
-print(a)
-sample_sums(subset.texcoco) [1:10] #Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
-taxa_sums(subset.texcoco) [1:10]
-
-# get_taxa is returning all the OTU abundances from one sample, while get_sample is returning the abundances from all samples for one OTU.
-get_taxa(subset.texcoco, sample_names(subset.texcoco)[5])[1:10]
-get_sample(subset.texcoco, taxa_names(subset.texcoco)[5])[1:10]
-
-# melt to long format (for ggploting) 
-# prune out phyla below 1% in each sample
-# selecting the taxa at the level: Phylum
-
-mdata_phylum <- subset.texcoco %>%
-  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
-  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
-  psmelt() %>%                                         # Melt to long format
-  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
-  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
-
-# checking the dataframe that we now created
-head(mdata_phylum)
-
-#Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
-ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
-  #facet_grid(time~.) +
-  geom_bar(stat = "identity")  +
-  # Remove x axis title, and rotate sample lables
-  theme(axis.title.x = element_blank(),
-        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
-  
-  # additional stuff
-  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
-  ylab("Relative Abundance (Phyla > 1%)\n") +
-  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
-
-
-
-# Top 50 OTUs
-Top50OTUs <- names(sort(taxa_sums(subset.texcoco), TRUE)[1:50])
-ent50 <- prune_taxa(Top50OTUs, subset.texcoco)
-
-# Family
-plot_bar(ent50, fill = "Family")
-plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
-plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
-
-
-
-# Presence/absence Izta
-
-# By site Izta 
-subset.izta <- subset_samples(binary_table, Site%in%c("Joya", "Cueva", "Base"))
-subset.izta
-sample_data(subset.izta)
-
-a<-taxa_sums(binary_table)[1:100]
-print(a)
-sample_sums(subset.izta) [1:10] #Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
-taxa_sums(subset.izta) [1:10]
-
-# get_taxa is returning all the OTU abundances from one sample, while get_sample is returning the abundances from all samples for one OTU.
-get_taxa(subset.izta, sample_names(subset.izta)[5])[1:10]
-get_sample(subset.izta, taxa_names(subset.izta)[5])[1:10]
-
-# melt to long format (for ggploting) 
-# prune out phyla below 1% in each sample
-# selecting the taxa at the level: Phylum
-
-mdata_phylum <- subset.izta %>%
-  tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
-  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
-  psmelt() %>%                                         # Melt to long format
-  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
-  arrange(Phylum)                                      # Sort data frame alphabetically by phylum
-
-# checking the dataframe that we now created
-head(mdata_phylum)
-
-#Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
-ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
-  #facet_grid(time~.) +
-  geom_bar(stat = "identity")  +
-  # Remove x axis title, and rotate sample lables
-  theme(axis.title.x = element_blank(),
-        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
-  
-  # additional stuff
-  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
-  ylab("Relative Abundance (Phyla > 1%)\n") +
-  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
-
-
-
-# Top 50 OTUs
-Top50OTUs <- names(sort(taxa_sums(subset.izta), TRUE)[1:50])
-ent50 <- prune_taxa(Top50OTUs, subset.izta)
-plot_bar(ent50, "Site", fill = "Family")
-
-# only Glomeromycota 
-subset.phylum.glomero <- subset_taxa(subset.texcoco.alfa, Phylum =="p__Glomeromycota")
-plot_bar(subset.phylum.glomero, "Site", fill = "Phylum", facet_grid = Project ~ sample_Species)
-
-# Family
-plot_bar(ent50, fill = "Family")
-plot_bar(ent50, fill = "Family") + facet_wrap(~Site, scales="free_x", nrow=1)
-plot_bar(ent50, fill = "Family") + facet_wrap(~sample_Species+ Site + Type, scales="free_x", nrow=1)
-
-
-
-
 
 
 
