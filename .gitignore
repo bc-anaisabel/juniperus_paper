@@ -13,3 +13,4 @@ Icon\r
 # Logs and outputs
 .Rout
 .Rhistory
+.RData
