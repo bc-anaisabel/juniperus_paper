@@ -26,17 +26,15 @@ source("../bin/1_Filter_otu_table.R")
 
 ######################## Subset: Texcoco 
 
-# Subset data for Texcoco using relative abundance 
-subset.texcoco.alfa <- subset_samples(phyloseq.rel, Site%in%c("mixed", "perturbated", "native"))
+# Subset data for Texcoco using OTU table with relative abundance 
+subset.texcoco.alfa <- subset_samples(phyloseq.rel, Project%in%c("Texcoco"))
 subset.texcoco.alfa
-sample_data(subset.texcoco.alfa)
 
+sample_data(subset.texcoco.alfa)
 sample_sums(subset.texcoco.alfa) [1:10] 
 
-# Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) 
+# Remove OTUs that are not present in any of the samples of the subset (OTUs that are only present either in Izta or Texcoco) 
 taxa_sums(subset.texcoco.alfa) [1:10]
-
-# In case of removing OTUs not present in samples of subset:
 
 subset.texcoco.alfa <- prune_taxa(taxa_sums(subset.texcoco.alfa) > 0, subset.texcoco.alfa)
 any(taxa_sums(subset.texcoco.alfa) == 0)
@@ -44,27 +42,37 @@ any(taxa_sums(subset.texcoco.alfa) == 0)
 taxa_sums(subset.texcoco.alfa) [1:10]
 subset.texcoco.alfa
 
-# Subset data for Texcoco using binary table 
+# Subset data for Texcoco using OTU binary table 
 
-subset.texcoco.binary <- subset_samples(binary_table, Site%in%c("mixed", "perturbated", "native"))
+subset.texcoco.binary <- subset_samples(binary_table, Project%in%c("Texcoco"))
 subset.texcoco.binary
 sample_data(subset.texcoco.binary)
 
-#Should we remove OTUs that are not present in any of the samples of the subset? (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
+#Remove OTUs that are not present in any of the samples of the subset (OTUs that are only present either in Izta or Texcoco) if we do, do it in alpha diversity and beta diversity analysis? 
 taxa_sums(subset.texcoco.binary) [1:10]
-
-#In case of removing OTUs not present in samples of subset:
 
 subset.texcoco.binary<- prune_taxa(taxa_sums(subset.texcoco.binary) > 0, subset.texcoco.binary)
-
-subset.texcoco.binary
+any(taxa_sums(subset.texcoco.binary) == 0)
 
 taxa_sums(subset.texcoco.binary) [1:10]
+subset.texcoco.binary
+
 
 
 # Relative abundance of reads per species and treatments
+
 # Phylum
-plot_bar(subset.texcoco.alfa , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
+p = plot_bar(subset.texcoco.alfa , "Site", fill = "Phylum") + facet_wrap(sample_Species ~ Type) 
+
+order_site <- list("native", "mixed", "perturbated") # re-orer the sites on x axis
+p$data$Site <- factor(p$data$Site, levels = order_site)
+print(p)
+
+p + geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") + # remove the dividing lines that separate OTUs inside the bars
+  labs(y="Abundance of sequences") # change y-axis title
+
+
+# Same as above but using ggplot instead of bar_plot:
 
 # melt to long format (for ggploting) 
 # prune out phyla below 1% in each sample
@@ -80,6 +88,10 @@ mdata_phylum <- subset.texcoco.alfa %>%
 # checking the dataframe that we now created
 head(mdata_phylum)
 
+# re-order how site and species appear in the graph
+mdata_phylum$Site <- factor(mdata_phylum$Site,levels = c("native", "mixed", "perturbated"))
+mdata_phylum$sample_Species <- factor(mdata_phylum$sample_Species,levels = c("Quercus", "Juniperus"))
+
 # Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
 ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
   #facet_grid(time~.) +
@@ -88,13 +100,14 @@ ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) +
   theme(axis.title.x = element_blank(),
         axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
   
+    
   # add labels
   guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
-  ylab("Relative Abundance (Phyla > 1%)\n") +
-  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
+  ylab("Relative abundance of sequences (Phyla > 1%)\n") +
+  ggtitle("Phylum relative abundance") + facet_grid(Type ~ sample_Species)
 
 
-# Relative abundance of OTUs per species and treatments (same as above but using binary table subset )
+# Relative abundance of OTUs per species and treatments (same as above but using binary table)
 
 mdata_phylum <- subset.texcoco.binary %>%
   tax_glom(taxrank = "Phylum") %>%                     # agglomerate at phylum level
@@ -106,20 +119,52 @@ mdata_phylum <- subset.texcoco.binary %>%
 # checking the dataframe that we now created
 head(mdata_phylum)
 
+# re-order how site and species appear in the graph
+mdata_phylum$Site <- factor(mdata_phylum$Site,levels = c("native", "mixed", "perturbated"))
+mdata_phylum$sample_Species <- factor(mdata_phylum$sample_Species,levels = c("Quercus", "Juniperus"))
 
-### FOR REPORT!
 # Now plot by Relative Abundance of Phylum by Site, Type of sample and Plant species 
 ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Phylum)) + 
-  #facet_grid(time~.) +
-  geom_bar(stat = "identity")  +
-  # Remove x axis title, and rotate sample lables
-  theme(axis.title.x = element_blank(),
+  geom_bar(stat = "identity")  +   #facet_grid(time~.)
+  theme(axis.title.x = element_blank(),    # Remove x axis title, and rotate sample lables
         axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
   
   # add labels
   guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
-  ylab("Relative Abundance Binary Table (Phyla > 1%)\n") +
-  ggtitle("Phylum Relative Abundance") + facet_grid(Type ~ sample_Species)
+  ylab("Relative abundance of OTUs (Phyla > 1%)\n") +
+  ggtitle("Phylum relative abundance") + facet_grid(Type ~ sample_Species)
+
+
+
+# Same but by order of fungi:
+mdata_order <- subset.texcoco.binary %>%
+  tax_glom(taxrank = "Order") %>%                      # agglomerate at order level
+  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+  psmelt() %>%                                         # Melt to long format
+  filter(Abundance > 0.05) %>%                         # Filter out low abundance taxa
+  arrange(Order)                                       # Sort data frame alphabetically by phylum
+
+# checking the dataframe that we now created
+head(mdata_order)
+
+# re-order how site and species appear in the graph
+mdata_order$Site <- factor(mdata_order$Site,levels = c("native", "mixed", "perturbated"))
+mdata_order$sample_Species <- factor(mdata_order$sample_Species,levels = c("Quercus", "Juniperus"))
+
+# Now plot by Relative Abundance of order by Site, Type of sample and Plant species
+ggplot(mdata_order, aes(x = Site, y = Abundance, fill = Order)) + 
+  geom_bar(stat = "identity")  +   #facet_grid(time~.)
+  theme(axis.title.x = element_blank(),    # Remove x axis title, and rotate sample lables
+        axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) + 
+  
+  # add labels
+  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  # modifying the legend
+  ylab("Relative abundance of OTUs (Order > 5%)\n") +
+  ggtitle("Order relative abundance") + facet_grid(Type ~ sample_Species)
+
+
+
+
 
 
 # Top 50 OTUs for relative abundance of Texcoco 
