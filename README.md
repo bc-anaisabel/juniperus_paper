@@ -7,7 +7,7 @@ This repository contains the scripts for:
 3) Assigning the trophic mode of OTus (FunGuild inside AMPtk)
 4) Analyzing alpha- and beta-diversity using R
 
-All the data associated with this project are deposited in [OSF](https://osf.io)
+All the sequence data associated with this project are deposited in [OSF](https://osf.io) while the final OTU table is in [data](https://github.com/camillethuyentruong/amptk_pipeline/tree/master/data)
 
 
 ## Citation
