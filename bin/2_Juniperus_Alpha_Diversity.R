@@ -493,14 +493,15 @@ summary(subset.texcoco.alfa.anova)
 TukeyHSD(subset.texcoco.alfa.anova)
 boxplot(Observed~Type, data = data)
 
-
-#two-ways
-
-#Site/Species for Observed
-subset.texcoco.alfa.anova<-aov(Observed~Species*Site, data = data)
+# All together
+subset.texcoco.alfa.anova <- aov(Observed ~ Species+Site+Type, data =data)
 summary(subset.texcoco.alfa.anova)
 TukeyHSD(subset.texcoco.alfa.anova)
-boxplot(Observed~Species*Site, data = data)
+
+boxplot(Observed~Type, data = data)
+
+
+
 
 #Site/Species for Shannon (this one shows significant differences between Plant Species)
 subset.texcoco.alfa.anova<-aov(Shannon~Species*Site, data = data)
@@ -537,7 +538,7 @@ data
 subset.texcoco.alfa.anova <- aov(Observed ~ Site, data =data)
 summary(subset.texcoco.alfa.anova)
 TukeyHSD(subset.texcoco.alfa.anova)
-boxplot(Observed~Site, data = data)
+boxplot(Observed~Type, data = data, cex.lab=1.5, cex.axis=1.5)
 
 #Type for observed 
 subset.texcoco.alfa.anova <- aov(Observed ~ Type, data =data)
@@ -546,7 +547,7 @@ TukeyHSD(subset.texcoco.alfa.anova)
 boxplot(Observed~Type, data = data)
 
 #Site/Type for observed 
-subset.texcoco.alfa.anova<-aov(Observed~Site*Type, data = data)
+subset.texcoco.alfa.anova<-aov(Observed~Site+Type, data = data)
 summary(subset.texcoco.alfa.anova)
 TukeyHSD(subset.texcoco.alfa.anova)
 boxplot(Observed~Site+Type, data = data)
