@@ -5,7 +5,9 @@ The script *amptk_for_illumina.sh* runs the following comands:
 
 ## Step 1. 
 
-AMPtk needs to be previously installed [using conda](https://amptk.readthedocs.io/en/latest/index.html) 
+AMPtk needs to be previously installed [using conda](https://amptk.readthedocs.io/en/latest/index.html)
+
+The usearch9 dependency must also be manually installed from the [developer](http://www.drive5.com/usearch/download.html) and linked to the PATH.
 
 Load the amptk environment with: `conda activate amptk`
 
