@@ -17,11 +17,11 @@ library(tibble)
 theme_set(theme_bw())
 
 
-
 # Set working directory to source file
 
 
 source("../bin/1_Filter_otu_table.R")
+
 
 ############################################# Beta diversity plots and tests 
 
@@ -69,7 +69,7 @@ sample_data(subset.texcoco.binary.beta)$Site = factor(sample_data(subset.texcoco
 # NMDS Bray Texcoco
 bray_nmds = distance(subset.texcoco.binary.beta, method = "bray")
 ordination = ordinate(subset.texcoco.binary.beta, method = "NMDS", distance = bray_nmds)
-p1 <- plot_ordination(subset.texcoco.binary.beta, ordination, color="Species", shape = "Type", title = "") + theme(aspect.ratio=1)+geom_point(size=3)
+p1 <- plot_ordination(subset.texcoco.binary.beta, ordination, color="Host", shape = "Type", title = "") + theme(aspect.ratio=1)+geom_point(size=3)
 print(p1)
 p1 + facet_wrap(~Site)
 
@@ -77,7 +77,7 @@ p1 + facet_wrap(~Site)
 #NMDS Raup-Brick Texcoco
 raup_nmds = distance(subset.texcoco.binary.beta, method = "raup")
 ordination2 = ordinate(subset.texcoco.binary.beta, method = "NMDS", distance = raup_nmds)
-p2 <- plot_ordination(subset.texcoco.binary.beta, ordination2, color="Species", shape = "Type", title = "") + theme(aspect.ratio=1)+geom_point(size=3)
+p2 <- plot_ordination(subset.texcoco.binary.beta, ordination2, color="Host", shape = "Type", title = "") + theme(aspect.ratio=1)+geom_point(size=3)
 print(p2)
 p2 + facet_wrap(~Site)
 
@@ -107,18 +107,18 @@ p4 + facet_wrap(~Site)
 sampledf <- data.frame(sample_data(subset.texcoco.binary.beta))
 raup_nmds = distance(subset.texcoco.binary.beta, method = "raup")
 
-adonis2( raup_nmds ~ Species, data = sampledf)
-adonis2( raup_nmds ~ Type, data = sampledf)
-adonis2( raup_nmds ~ Site, data = sampledf)
-adonis2( raup_nmds ~ Species + Site + Type, data = sampledf)
+adonis2( raup_nmds ~ Host, data = sampledf) # significant differences
+adonis2( raup_nmds ~ Type, data = sampledf) 
+adonis2( raup_nmds ~ Site, data = sampledf) # significant differences 
+adonis2( raup_nmds ~ Host + Site + Type, data = sampledf) # significant differences between Hosts and between Sites 
 
-# subset by species
-subset.species <- subset_samples(subset.texcoco.binary.beta, Species %in% "Juniperus")
-subset.species <- prune_taxa(taxa_sums(subset.species) > 0, subset.species) ## remove OTU with 0 reads
-any(taxa_sums(subset.species) == 0)
+# subset by host plant 
+subset.host <- subset_samples(subset.texcoco.binary.beta, Host %in% "Juniperus")
+subset.host <- prune_taxa(taxa_sums(subset.host) > 0, subset.host) ## remove OTU with 0 reads
+any(taxa_sums(subset.host) == 0)
 
-raup_nmds = distance(subset.species, method = "raup")
-sampledf <- data.frame(sample_data(subset.species))
+raup_nmds = distance(subset.host, method = "raup")
+sampledf <- data.frame(sample_data(subset.host))
 
 adonis2( raup_nmds ~ Type, data = sampledf)
 adonis2( raup_nmds ~ Site, data = sampledf)
@@ -134,15 +134,15 @@ any(taxa_sums(subset.site) == 0)
 raup_nmds = distance(subset.site, method = "raup")
 sampledf <- data.frame(sample_data(subset.site))
 
-adonis2( raup_nmds ~ Species, data = sampledf)
+adonis2( raup_nmds ~ Host, data = sampledf)
 adonis2( raup_nmds ~ Type, data = sampledf)
-adonis2( raup_nmds ~ Species + Type, data = sampledf)
-adonis2( raup_nmds ~ Species * Type, data = sampledf)
+adonis2( raup_nmds ~ Host + Type, data = sampledf)
+adonis2( raup_nmds ~ Host * Type, data = sampledf)
 
 
 
-adonis2 ( bray_nmds ~ Species + (Type/Species), data = sampledf)
-adonis2 ( bray_nmds ~ Species + (Site/Species), data = sampledf) #???? not working because some species are only present in some sites??? 
+adonis2 ( bray_nmds ~ Host + (Type/Host), data = sampledf)
+adonis2 ( bray_nmds ~ Host + (Site/Host), data = sampledf) #???? not working because some species are only present in some sites??? 
 
 
 
@@ -150,13 +150,13 @@ adonis2 ( bray_nmds ~ Species + (Site/Species), data = sampledf) #???? not worki
 
 #Adonis
 sampledf2 <- data.frame(sample_data(subset.izta.binary.beta))
-adonis2 ( bray_nmds2 ~ Site, data = sampledf2)
-adonis2 ( bray_nmds2 ~ Type, data = sampledf2)
-adonis2 ( bray_nmds2 ~ Site + Type, data = sampledf2)
-adonis2 ( bray_nmds2 ~ Site + (Type/Site), data = sampledf2) #???
+adonis2 ( bray_nmds2 ~ Site, data = sampledf2) # significant differences 
+adonis2 ( bray_nmds2 ~ Type, data = sampledf2) # significant differences
+adonis2 ( bray_nmds2 ~ Site + Type, data = sampledf2) #significant differences for both 
+adonis2 ( bray_nmds2 ~ Site + (Type/Site), data = sampledf2) # significant differences for both separately but no differences when together
 
-adonis2( raup_nmds2 ~ Site, data = sampledf2)
-adonis2( raup_nmds2 ~ Type, data = sampledf2)
-adonis2( raup_nmds2 ~ Site + (Type/Site), data = sampledf2) #??? 
+adonis2( raup_nmds2 ~ Site, data = sampledf2) # significant differences 
+adonis2( raup_nmds2 ~ Type, data = sampledf2) # significant differences but 0.09 
+adonis2( raup_nmds2 ~ Site + (Type/Site), data = sampledf2) # significant differences separately for both, but not together
 
 

@@ -1,0 +1,163 @@
+Models for Mycorrhizal and No mycorrhizal
+
+mycorrhizal
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables>  0.37008135
++ Host           0.16377084
++ Site           0.11745347
++ Type           0.06598121
+<none>           0.00000000
+
+       Df    AIC      F Pr(>F)
++ Host  1 98.308 2.6075  0.004 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+Step: R2.adj= 0.1637708
+Call: raup ~ Host
+
+                R2.adjusted
+<All variables>   0.3700813
++ Site            0.2908861
++ Type            0.2367142
+<none>            0.1637708
+
+       Df    AIC      F Pr(>F)
++ Site  1 98.128 2.0595  0.018 *
+
+Step: R2.adj= 0.2908861
+Call: raup ~ Host + Site
+
+                R2.adjusted
+<All variables>   0.3700813
++ Type            0.3700813
+<none>            0.2908861
+
+       Df   AIC      F Pr(>F)
++ Type  1 98.65 1.3414  0.176
+
+> RsquareAdj (raup.db)$adj.r.squared
+[1] 0.2908861
+
+
+> anova(raup.db)
+Permutation test for capscale under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+Model     2   1.9127 2.3741  0.001 ***
+Residual 33  13.2937
+
+> anova(raup.db, by="term")
+Permutation test for capscale under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+Host      1   1.0831 2.6887  0.003 **
+Site      1   0.8296 2.0595  0.017 *
+Residual 33  13.2937
+
+> anova(raup.db, by="axis")
+Permutation test for capscale under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+CAP1      1   1.0901 2.7061  0.002 **
+CAP2      1   0.8226 2.0421  0.013 *
+Residual 33  13.2937
+
+No mycorrhizal
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables>  0.37008135
++ Host           0.16377084
++ Site           0.11745347
++ Type           0.06598121
+<none>           0.00000000
+
+       Df    AIC      F Pr(>F)
++ Host  1 98.308 2.6075  0.002 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.1637708
+Call: raup ~ Host
+
+                R2.adjusted
+<All variables>   0.3700813
++ Site            0.2908861
++ Type            0.2367142
+<none>            0.1637708
+
+       Df    AIC      F Pr(>F)
++ Site  1 98.128 2.0595  0.008 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.2908861
+Call: raup ~ Host + Site
+
+                R2.adjusted
+<All variables>   0.3700813
++ Type            0.3700813
+<none>            0.2908861
+
+       Df   AIC      F Pr(>F)
++ Type  1 98.65 1.3414  0.172
+
+
+> RsquareAdj (raup.db)$adj.r.squared
+[1] 0.2908861
+
+> anova(raup.db)
+Permutation test for capscale under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+Model     2   1.9127 2.3741  0.002 **
+Residual 33  13.2937
+
+> anova(raup.db, by="term")
+Permutation test for capscale under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+Host      1   1.0831 2.6887  0.001 ***
+Site      1   0.8296 2.0595  0.022 *
+Residual 33  13.2937
+
+> anova(raup.db, by="axis")
+Permutation test for capscale under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+CAP1      1   1.0901 2.7061  0.007 **
+CAP2      1   0.8226 2.0421  0.012 *
+Residual 33  13.2937
+            

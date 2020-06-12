@@ -1,0 +1,309 @@
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables>  3.28816280
++ Pdis           0.44282248
++ Ca             0.32775159
++ K              0.30572426
++ H              0.26277078
++ SoilM          0.25347882
++ pH             0.09131641
++ Na             0.07859349
++ Mg             0.03925915
+<none>           0.00000000
+
+       Df   AIC      F Pr(>F)
++ Pdis  1 8.788 2.6215  0.046 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+Step: R2.adj= 0.4428225
+Call: raup ~ Pdis
+
+                R2.adjusted
+<All variables>   3.2881628
++ Ca              0.8247737
++ pH              0.7170686
++ SoilM           0.6374581
++ K               0.5915934
++ Mg              0.5909332
++ H               0.5529910
++ Na              0.4448265
+<none>            0.4428225
+
+     Df   AIC      F Pr(>F)
++ Ca  1 8.216 2.1513  0.068 .
+- - - - - - - - -
+
+Model with selected variables: raup db (Pdis):
+
+> RsquareAdj (raup.db)$adj.r.squared
+[1] 0.4428225
+
+> anova(raup.db)
+Permutation test for capscale under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Pdis, data = env_table_scale)
+         Df SumOfSqs      F Pr(>F)
+Model     1  0.42621 2.6215  0.048 *
+Residual 10  1.62581
+
+> anova(raup.db, by="term")
+Permutation test for capscale under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Pdis, data = env_table_scale)
+         Df SumOfSqs      F Pr(>F)
+Pdis      1  0.42621 2.6215  0.051 .
+Residual 10  1.62581
+
+
+> anova(raup.db, by="axis")
+Permutation test for capscale under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Pdis, data = env_table_scale)
+         Df SumOfSqs      F Pr(>F)
+CAP1      1  0.42621 2.6215  0.058 .
+Residual 10  1.62581
+- - - - - - - -
+
+Same model but including host (only soil samples):
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables>  6.11188781
++ Host           0.49500729
++ Pdis           0.44282248
++ Ca             0.32775159
++ K              0.30572426
++ H              0.26277078
++ SoilM          0.25347882
++ pH             0.09131641
++ Na             0.07859349
++ Mg             0.03925915
+<none>           0.00000000
+
+       Df    AIC      F Pr(>F)
++ Host  1 8.4817 2.9478  0.022 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.4950073
+Call: raup ~ Host
+
+                R2.adjusted
+<All variables>   6.1118878
++ pH              0.8841437
++ Ca              0.8531738
++ H               0.7636870
++ Mg              0.7347279
++ SoilM           0.6530031
++ Pdis            0.6472857
++ K               0.6321048
++ Na              0.6234534
+<none>            0.4950073
+
+     Df   AIC      F Pr(>F)
++ pH  1 7.826 2.2293  0.078 .
+
+> RsquareAdj (raup.db)$adj.r.squared
+[1] 0.4950073
+
+> anova(raup.db)
+Permutation test for capscale under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host, data = data)
+         Df SumOfSqs      F Pr(>F)
+Model     1  0.46718 2.9478  0.027 *
+Residual 10  1.58484
+
+> anova(raup.db, by="term")
+Permutation test for capscale under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host, data = data)
+         Df SumOfSqs      F Pr(>F)
+Host      1  0.46718 2.9478  0.024 *
+Residual 10  1.58484
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> anova(raup.db, by="axis")
+Permutation test for capscale under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host, data = data)
+         Df SumOfSqs      F Pr(>F)
+CAP1      1  0.46718 2.9478  0.022 *
+Residual 10  1.58484
+– – – – – –
+
+Same model but including site (only soil samples):
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables> 14.41405205
++ Site           1.01341719
++ Pdis           0.44282248
++ Ca             0.32775159
++ K              0.30572426
++ H              0.26277078
++ SoilM          0.25347882
++ pH             0.09131641
++ Na             0.07859349
++ Mg             0.03925915
+<none>           0.00000000
+
+       Df    AIC      F Pr(>F)
++ Site  2 6.9304 3.3331  0.002 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 1.013417
+Call: raup ~ Site
+
+                R2.adjusted
+<All variables>   14.414052
++ H                1.272749
++ Ca               1.240652
++ pH               1.153587
++ Pdis             1.147215
++ SoilM            1.122381
++ Mg               1.106525
++ K                1.087583
++ Na               1.025707
+<none>             1.013417
+
+    Df    AIC      F Pr(>F)
++ H  1 7.1583 1.2731  0.274
+
+> RsquareAdj (raup.db)$adj.r.squared
+[1] 1.013417
+
+> anova(raup.db)
+Permutation test for capscale under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+Model     2  0.87317 3.3331  0.001 ***
+Residual  9  1.17886
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> anova(raup.db, by="term")
+Permutation test for capscale under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+Site      2  0.87317 3.3331  0.002 **
+Residual  9  1.17886
+
+> anova(raup.db, by="axis")
+Permutation test for capscale under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Site, data = data)
+         Df SumOfSqs      F Pr(>F)
+CAP1      1  0.67477 5.1515  0.002 **
+CAP2      1  0.19840 1.5147  0.207
+Residual  9  1.17886
+
+_ _ _ _ _ _ _ _ _
+
+Model with host and site
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables>   0.6526509
++ Host            0.4335483
++ Site            0.2485216
+<none>            0.0000000
+
+       Df    AIC      F Pr(>F)
++ Host  1 78.364 4.4673  0.002 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.4335483
+Call: raup ~ Host
+
+                R2.adjusted
+<All variables>   0.6526509
++ Site            0.6526509
+<none>            0.4335483
+
+       Df    AIC      F Pr(>F)
++ Site  1 77.941 2.2972  0.008 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Step: R2.adj= 0.6526509
+Call: raup ~ Host + Site
+
+> RsquareAdj (raup.db)$adj.r.squared
+[1] 0.6526509
+
+> anova(raup.db)
+Permutation test for capscale under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = env_table_scale)
+         Df SumOfSqs      F Pr(>F)
+Model     2   1.5946 3.4675  0.001 ***
+Residual 33   7.5877
+
+> anova(raup.db, by="term")
+Permutation test for capscale under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = env_table_scale)
+         Df SumOfSqs      F Pr(>F)
+Host      1   1.0664 4.6378  0.001 ***
+Site      1   0.5282 2.2972  0.010 **
+Residual 33   7.5877
+
+> anova(raup.db, by="axis")
+Permutation test for capscale under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Site, data = env_table_scale)
+         Df SumOfSqs      F Pr(>F)
+CAP1      1   1.1366 4.9431  0.001 ***
+CAP2      1   0.4580 1.9920  0.030 *
+Residual 33   7.5877                  

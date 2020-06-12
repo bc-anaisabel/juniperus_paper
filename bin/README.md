@@ -150,6 +150,6 @@ amptk funguild <arguments>:
 `mv funguild* ../data/funguild`
 
 ## Step 7. 
-### Run analyses with R using .biom files generated from "taxonomy" folder
+### Run analyses with R using .biom files generated from "taxonomy.txt" file in data folder
 
-Filtering of the OTU table (negative controls, OTUs and samples) are realized in R (see script filter_biom.r in bin).
+Filtering of the OTU table (negative controls, OTUs and samples) is done in R with script 1_Filter_otu_table.R in R folder within bin.

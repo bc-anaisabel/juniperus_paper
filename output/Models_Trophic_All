@@ -1,0 +1,108 @@
+Models trophic modes ALL HOSTS
+
+ECM
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables>  0.17627959
++ Site           0.06905844
++ Host           0.06581039
++ Type           0.02833926
+<none>           0.00000000
+
+       Df    AIC      F Pr(>F)
++ Site  1 102.47 1.4911   0.12
+
+- - - - - -
+
+AM
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables> 0.082460132
++ Site          0.050442373
++ Type          0.014349173
++ Host          0.006097547
+<none>          0.000000000
+
+       Df    AIC      F Pr(>F)
++ Site  1 106.81 1.6701   0.06 .
+
+Saprobes
+
+> raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both")
+Step: R2.adj= 0
+Call: raup ~ 1
+
+                R2.adjusted
+<All variables>   0.6951618
++ Host            0.3304700
++ Site            0.2122493
++ Type            0.1722234
+<none>            0.0000000
+
+       Df   AIC      F Pr(>F)
++ Host  1 76.34 3.7597  0.002 **
+
+Step: R2.adj= 0.33047
+Call: raup ~ Host
+
+                R2.adjusted
+<All variables>   0.6951618
++ Type            0.5179265
++ Site            0.4966539
+<none>            0.3304700
+
+       Df    AIC      F Pr(>F)
++ Type  1 76.037 2.1796  0.006 **
+
+Step: R2.adj= 0.5179265
+Call: raup ~ Host + Type
+
+                R2.adjusted
++ Site            0.6951618
+<All variables>   0.6951618
+<none>            0.5179265
+
+> RsquareAdj (raup.db)$adj.r.squared
+[1] 0.5179265
+
+> anova(raup.db)
+Permutation test for capscale under reduced model
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Type, data = data)
+         Df SumOfSqs      F Pr(>F)
+Model     2   1.3237 3.0349  0.001 ***
+Residual 33   7.1969
+
+> anova(raup.db, by="term")
+Permutation test for capscale under reduced model
+Terms added sequentially (first to last)
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Type, data = data)
+         Df SumOfSqs      F Pr(>F)
+Host      1   0.8484 3.8902  0.001 ***
+Type      1   0.4753 2.1796  0.020 *
+Residual 33   7.1969
+
+> anova(raup.db, by="axis")
+Permutation test for capscale under reduced model
+Forward tests for axes
+Permutation: free
+Number of permutations: 999
+
+Model: capscale(formula = raup ~ Host + Type, data = data)
+         Df SumOfSqs      F Pr(>F)
+CAP1      1   0.9035 4.1426  0.001 ***
+CAP2      1   0.4203 1.9271  0.030 *
+Residual 33   7.1969
