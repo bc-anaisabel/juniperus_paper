@@ -1,0 +1,811 @@
+Subset: all ANOVA
+> subset.all.anova <- aov(Observed ~ Host + Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Host         1      0       0   0.000 1.0000
+Site         2  19636    9818   0.959 0.3942
+Type         1  50033   50033   4.889 0.0345 *
+Residuals   31 317224   10233
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+
+> subset.all.anova <- aov(Observed ~ Host * Site * Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value  Pr(>F)
+Host         1      0       0   0.000 1.00000
+Site         2  19636    9818   1.289 0.29129
+Type         1  50033   50033   6.571 0.01603 *
+Host:Type    1  63368   63368   8.322 0.00745 **
+Site:Type    2  40650   20325   2.669 0.08689 .
+Residuals   28 213206    7614
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Tukey HSD
+
+Quercus:soil-Quercus:root     168.083333   48.95843 287.20824 0.0032974 **
+>
+
+> subset.glm <- glm (Observed ~ Site+Host+Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Host + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-146.61   -48.69   -19.46    13.11   219.61
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)       137.53      35.76   3.845  0.00056 ***
+Sitenative        -62.56      47.69  -1.312  0.19922
+Siteperturbated   -21.22      47.69  -0.445  0.65939
+HostQuercus        20.67      47.69   0.433  0.66774
+Typesoil           79.08      35.76   2.211  0.03453 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 10233.02)
+
+    Null deviance: 386893  on 35  degrees of freedom
+Residual deviance: 317224  on 31  degrees of freedom
+AIC: 441.18
+
+Number of Fisher Scoring iterations: 2
+
+>
+Subset: All factors using "myc"
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Host + Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value  Pr(>F)
+Host         1    0.4     0.4   0.005 0.94497
+Site         2   21.6    10.8   0.117 0.88960
+Type         1  767.0   767.0   8.357 0.00696 **
+Residuals   31 2845.2    91.8
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+
+> subset.all.anova <- aov(Observed ~ Host * Site * Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Host         1    0.4     0.4   0.006 0.9394
+Site         2   21.6    10.8   0.143 0.8675
+Type         1  767.0   767.0  10.171 0.0035 **
+Host:Type    1  572.3   572.3   7.590 0.0102 *
+Site:Type    2  161.4    80.7   1.070 0.3567
+Residuals   28 2111.5    75.4
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+> subset.glm <- glm (Observed ~ Site+Host+Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Host + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-16.639   -4.764   -2.632    3.892   24.153
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)      19.8472     3.3871   5.860 1.83e-06 ***
+Sitenative       -0.8889     4.5162  -0.197  0.84525
+Siteperturbated  -2.0000     4.5162  -0.443  0.66095
+HostQuercus      -0.3333     4.5162  -0.074  0.94164
+Typesoil          9.7917     3.3871   2.891  0.00696 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 91.78091)
+
+    Null deviance: 3634.2  on 35  degrees of freedom
+Residual deviance: 2845.2  on 31  degrees of freedom
+AIC: 271.48
+
+Number of Fisher Scoring iterations: 2
+
+
+>>>>>>>>>>>>>>>>>>>>>>>Subset: all no mycorrhizal
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Host + Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Host         1      1       1   0.001 0.9821
+Site         2   6809    3404   1.277 0.2930
+Type         1  12561   12561   4.713 0.0377 *
+Residuals   31  82623    2665
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+> subset.all.anova <- aov(Observed ~ Host * Site * Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Host         1      1       1   0.001 0.9801
+Site         2   6809    3404   1.584 0.2230
+Type         1  12561   12561   5.845 0.0224 *
+Host:Type    1  12987   12987   6.043 0.0204 *
+Site:Type    2   9458    4729   2.200 0.1296
+Residuals   28  60178    2149
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+
+
+> subset.glm <- glm (Observed ~ Site+Host+Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Host + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-75.306  -25.042  -10.181    8.181  122.917
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)       67.681     18.253   3.708 0.000817 ***
+Sitenative       -38.222     24.337  -1.571 0.126439
+Siteperturbated   -7.222     24.337  -0.297 0.768628
+HostQuercus       15.111     24.337   0.621 0.539194
+Typesoil          39.625     18.253   2.171 0.037713 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 2665.268)
+
+    Null deviance: 101995  on 35  degrees of freedom
+Residual deviance:  82623  on 31  degrees of freedom
+AIC: 392.75
+
+Number of Fisher Scoring iterations: 2
+
+
+>>>>>>>>>>>>>>>>>>>> Subset: all ECM
+
+> subset.all.anova <- aov(Observed ~ Host + Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value   Pr(>F)
+Host         1  448.0   448.0  11.261 0.002104 **
+Site         2  107.6    53.8   1.352 0.273448
+Type         1  606.7   606.7  15.249 0.000475 ***
+Residuals   31 1233.3    39.8
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+
+Tukey HSD
+
+$Host
+                      diff      lwr      upr     p adj
+Quercus-Juniperus 7.055556 2.767482 11.34363 0.0021037
+
+
+> subset.all.anova <- aov(Observed ~ Host * Site * Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value   Pr(>F)
+Host         1  448.0   448.0  10.932 0.002598 **
+Site         2  107.6    53.8   1.313 0.285093
+Type         1  606.7   606.7  14.804 0.000631 ***
+Host:Type    1   82.3    82.3   2.009 0.167366
+Site:Type    2    3.5     1.7   0.042 0.958583
+Residuals   28 1147.5    41.0
+
+
+
+> subset.glm <- glm (Observed ~ Site+Host+Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Host + Type, data = data)
+
+Deviance Residuals:
+   Min      1Q  Median      3Q     Max
+-6.542  -3.750  -1.986   1.792  17.014
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)        9.542      2.230   4.279 0.000167 ***
+Sitenative         1.778      2.973   0.598 0.554251
+Siteperturbated   -4.556      2.973  -1.532 0.135637
+HostQuercus        3.889      2.973   1.308 0.200523
+Typesoil           8.708      2.230   3.905 0.000475 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 39.7845)
+
+    Null deviance: 2395.6  on 35  degrees of freedom
+Residual deviance: 1233.3  on 31  degrees of freedom
+AIC: 241.39
+
+Number of Fisher Scoring iterations: 2
+
+
+>>>>>>>>>>>>>>>>>>>>> Subset: all AM
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Host + Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value  Pr(>F)
+Host         1  455.1   455.1  10.178 0.00325 **
+Site         2   64.9    32.4   0.726 0.49209
+Type         1    8.7     8.7   0.194 0.66256
+Residuals   31 1386.2    44.7
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+
+
+> subset.all.anova <- aov(Observed ~ Host * Site * Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value  Pr(>F)
+Host         1  455.1   455.1  11.503 0.00209 **
+Site         2   64.9    32.4   0.820 0.45072
+Type         1    8.7     8.7   0.219 0.64313
+Host:Type    1  159.0   159.0   4.019 0.05475 .
+Site:Type    2  119.4    59.7   1.508 0.23870
+Residuals   28 1107.8    39.6
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+> subset.glm <- glm (Observed ~ Site+Host+Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Host + Type, data = data)
+
+Deviance Residuals:
+     Min        1Q    Median        3Q       Max
+-13.5833   -3.3194   -0.9861    3.8889   20.4167
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)        8.986      2.364   3.801 0.000633 ***
+Sitenative        -1.333      3.152  -0.423 0.675236
+Siteperturbated    3.556      3.152   1.128 0.268006
+HostQuercus       -4.667      3.152  -1.480 0.148859
+Typesoil           1.042      2.364   0.441 0.662563
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 44.7164)
+
+    Null deviance: 1914.9  on 35  degrees of freedom
+Residual deviance: 1386.2  on 31  degrees of freedom
+AIC: 245.59
+
+Number of Fisher Scoring iterations: 2
+
+
+> subset.glm <- glm (Observed ~ Site*Host*Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site * Host * Type, data = data)
+
+Deviance Residuals:
+     Min        1Q    Median        3Q       Max
+-14.0000   -1.4167    0.0833    1.4167   20.0000
+
+Coefficients: (4 not defined because of singularities)
+                                       Estimate Std. Error t value Pr(>|t|)
+(Intercept)                           1.217e+01  2.568e+00   4.738 5.68e-05 ***
+Sitenative                           -6.239e-15  3.632e+00   0.000   1.0000
+Siteperturbated                       1.667e-01  3.632e+00   0.046   0.9637
+HostQuercus                          -1.000e+01  3.632e+00  -2.754   0.0102 *
+Typesoil                             -8.500e+00  4.448e+00  -1.911   0.0663 .
+Sitenative:HostQuercus                       NA         NA      NA       NA
+Siteperturbated:HostQuercus                  NA         NA      NA       NA
+Sitenative:Typesoil                  -4.000e+00  6.290e+00  -0.636   0.5300
+Siteperturbated:Typesoil              1.017e+01  6.290e+00   1.616   0.1172
+HostQuercus:Typesoil                  1.600e+01  6.290e+00   2.544   0.0168 *
+Sitenative:HostQuercus:Typesoil              NA         NA      NA       NA
+Siteperturbated:HostQuercus:Typesoil         NA         NA      NA       NA
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 39.56548)
+
+    Null deviance: 1914.9  on 35  degrees of freedom
+Residual deviance: 1107.8  on 28  degrees of freedom
+AIC: 243.52
+
+Number of Fisher Scoring iterations: 2
+
+>>>>>>>>>>>>>>>>>> Subset: all SAPROBES
+
+Differences only with type of samples using aov
+
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Host + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-37.056  -11.944   -6.917    6.389   55.056
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)       32.639      9.099   3.587  0.00113 **
+Sitenative       -25.333     12.133  -2.088  0.04510 *
+Siteperturbated   -4.333     12.133  -0.357  0.72339
+HostQuercus       14.222     12.133   1.172  0.25003
+Typesoil          19.417      9.099   2.134  0.04088 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 662.3996)
+
+    Null deviance: 26648  on 35  degrees of freedom
+Residual deviance: 20534  on 31  degrees of freedom
+AIC: 342.63
+
+Number of Fisher Scoring iterations: 2
+
+>>>>>>>>>>>>>>>>>>>>>>> Subset: Quercus all fungi
+
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value   Pr(>F)
+Site         1  17609   17609   2.616 0.126596
+Type         1 113008  113008  16.791 0.000951 ***
+Residuals   15 100956    6730
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> TukeyHSD(subset.all.anova)
+  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Observed ~ Site * Type, data = data)
+
+$Site
+                  diff      lwr      upr    p adj
+native-mixed -62.55556 -139.871 14.75985 0.104629
+
+$Type
+              diff      lwr      upr     p adj
+soil-root 168.0833 86.07796 250.0887 0.0006094
+
+$`Site:Type`
+                             diff        lwr       upr     p adj
+native:root-mixed:root   -16.5000 -144.82401 111.82401 0.9814699
+mixed:soil-mixed:root    237.1667   80.00250 394.33083 0.0030757
+native:soil-mixed:root    82.5000  -74.66417 239.66417 0.4492109
+mixed:soil-native:root   253.6667   96.50250 410.83083 0.0017416
+native:soil-native:root   99.0000  -58.16417 256.16417 0.3003979
+native:soil-mixed:soil  -154.6667 -336.14422  26.81088 0.1075557
+
+> subset.glm <- glm (Observed ~ Site + Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-160.06   -37.78     2.25    38.03   145.94
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   128.53      30.57   4.204 0.000767 ***
+Sitenative    -62.56      38.67  -1.618 0.126596
+Typesoil      168.08      41.02   4.098 0.000951 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 6730.413)
+
+    Null deviance: 231574  on 17  degrees of freedom
+Residual deviance: 100956  on 15  degrees of freedom
+AIC: 214.46
+
+Number of Fisher Scoring iterations: 2
+
+> subset.glm <- glm (Observed ~ Site * Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site * Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-122.67   -18.25    -1.75    20.50   192.00
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)
+(Intercept)           105.50      31.22   3.379 0.004493 **
+Sitenative            -16.50      44.15  -0.374 0.714205
+Typesoil              237.17      54.07   4.386 0.000621 ***
+Sitenative:Typesoil  -138.17      76.47  -1.807 0.092324 .
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 5847.583)
+
+    Null deviance: 231574  on 17  degrees of freedom
+Residual deviance:  81866  on 14  degrees of freedom
+AIC: 212.69
+
+Number of Fisher Scoring iterations: 2
+
+
+>>>>>>>>>>>>>>>>>>>>>> Subset: Quercus only myc fungi
+
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value  Pr(>F)
+Site         1    3.6     3.6   0.074    0.79
+Type         1 1332.2  1332.2  27.671 9.6e-05 ***
+Residuals   15  722.2    48.1
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+> subset.glm <- glm (Observed ~ Site + Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-12.056   -2.778   -1.694    2.694   16.944
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)  16.6944     2.5859   6.456 1.08e-05 ***
+Sitenative   -0.8889     3.2710  -0.272     0.79
+Typesoil     18.2500     3.4694   5.260 9.60e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 48.1463)
+
+    Null deviance: 2058.00  on 17  degrees of freedom
+Residual deviance:  722.19  on 15  degrees of freedom
+AIC: 125.54
+
+Number of Fisher Scoring iterations: 2
+
+> > subset.glm <- glm (Observed ~ Site * Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site * Type, data = data)
+
+Deviance Residuals:
+   Min      1Q  Median      3Q     Max
+-10.67   -3.25   -1.00    2.00   18.33
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)
+(Intercept)           16.000      2.897   5.524  7.5e-05 ***
+Sitenative             0.500      4.097   0.122  0.90459
+Typesoil              20.333      5.017   4.053  0.00119 **
+Sitenative:Typesoil   -4.167      7.095  -0.587  0.56640
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 50.34524)
+
+    Null deviance: 2058.00  on 17  degrees of freedom
+Residual deviance:  704.83  on 14  degrees of freedom
+AIC: 127.1
+
+Number of Fisher Scoring iterations: 2
+
+>>>>>>>>>> Subset: Quercus only no mycorrhizal fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Site         1   6574    6574   3.738 0.0723 .
+Type         1  25547   25547  14.527 0.0017 **
+Residuals   15  26379    1759
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+
+> subset.glm <- glm (Observed ~ Site + Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+   Min      1Q  Median      3Q     Max
+-79.06  -16.86    0.75   18.36   75.94
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)    69.36      15.63   4.438 0.000479 ***
+Sitenative    -38.22      19.77  -1.933 0.072277 .
+Typesoil       79.92      20.97   3.811 0.001703 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 1758.591)
+
+    Null deviance: 58500  on 17  degrees of freedom
+Residual deviance: 26379  on 15  degrees of freedom
+AIC: 190.3
+
+Number of Fisher Scoring iterations: 2
+
+> subset.glm <- glm (Observed ~ Site * Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site * Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-63.667  -11.083   -1.667   12.583   98.333
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)
+(Intercept)            58.17      16.13   3.605  0.00287 **
+Sitenative            -15.83      22.82  -0.694  0.49910
+Typesoil              113.50      27.95   4.061  0.00117 **
+Sitenative:Typesoil   -67.17      39.52  -1.699  0.11133
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 1561.964)
+
+    Null deviance: 58500  on 17  degrees of freedom
+Residual deviance: 21868  on 14  degrees of freedom
+AIC: 188.92
+
+Number of Fisher Scoring iterations: 2
+
+>>>>>>>>>>>>>>>>>> Subset: Quercus only ECM fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value   Pr(>F)
+Site         1   14.2    14.2   0.512 0.485365
+Type         1  568.0   568.0  20.439 0.000406 ***
+Residuals   15  416.9    27.8
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+> subset.glm <- glm (Observed ~ Site + Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-6.0556  -3.9931  -0.3611   2.3611  12.9444
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   12.361      1.965   6.292 1.44e-05 ***
+Sitenative     1.778      2.485   0.715 0.485365
+Typesoil      11.917      2.636   4.521 0.000406 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 27.79074)
+
+    Null deviance: 999.11  on 17  degrees of freedom
+Residual deviance: 416.86  on 15  degrees of freedom
+AIC: 115.64
+
+Number of Fisher Scoring iterations: 2
+
+
+>>>>>>>>>>>> Subset: Quercus only AM fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value   Pr(>F)
+Site         1      8    8.00   1.644 0.219262
+Type         1    121  121.00  24.863 0.000163 ***
+Residuals   15     73    4.87
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+> subset.glm <- glm (Observed ~ Site + Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+   Min      1Q  Median      3Q     Max
+-5.000  -1.500   0.500   1.417   4.000
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   2.8333     0.8221   3.446 0.003599 **
+Sitenative   -1.3333     1.0399  -1.282 0.219262
+Typesoil      5.5000     1.1030   4.986 0.000163 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 4.866667)
+
+    Null deviance: 202  on 17  degrees of freedom
+Residual deviance:  73  on 15  degrees of freedom
+AIC: 84.283
+
+Number of Fisher Scoring iterations: 2
+
+>>>>>>>>>>>>>>>>>>> Subset: Quercus only with SAPROBE fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value  Pr(>F)
+Site         1   2888    2888   5.875 0.02846 *
+Type         1   6561    6561  13.348 0.00235 **
+Residuals   15   7373     492
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+
+> subset.glm <- glm (Observed ~ Site+Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+    Min       1Q   Median       3Q      Max
+-39.000  -10.333   -0.667   10.500   41.000
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   39.833      8.262   4.821 0.000224 ***
+Sitenative   -25.333     10.451  -2.424 0.028460 *
+Typesoil      40.500     11.085   3.653 0.002353 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 491.5333)
+
+    Null deviance: 16822  on 17  degrees of freedom
+Residual deviance:  7373  on 15  degrees of freedom
+AIC: 167.36
+
+Number of Fisher Scoring iterations: 2
+
+>
+>>>>>>>>>>>>>>>>>>> Subset: Juniperus all fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Site         1   2027    2027   0.199  0.662
+Type         1    393     393   0.039  0.847
+Residuals   15 152900   10193
+>
+
+> subset.glm <- glm (Observed ~ Site + Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+   Min      1Q  Median      3Q     Max
+-87.28  -62.99  -38.58   57.53  278.94
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)      167.194     37.626   4.444 0.000474 ***
+Siteperturbated  -21.222     47.594  -0.446 0.662037
+Typesoil          -9.917     50.481  -0.196 0.846900
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 10193.3)
+
+    Null deviance: 155320  on 17  degrees of freedom
+Residual deviance: 152900  on 15  degrees of freedom
+AIC: 221.93
+
+Number of Fisher Scoring iterations: 2
+
+>>>>>>>>>>>>> Subset: Juniperus only MYCORRHIZAL fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Site         1   18.0   18.00   0.174  0.682
+Type         1    7.1    7.11   0.069  0.797
+Residuals   15 1550.7  103.38
+
+> subset.glm <- glm (Observed ~ Site + Type, data = data)
+> summary(subset.glm)
+
+Call:
+glm(formula = Observed ~ Site + Type, data = data)
+
+Deviance Residuals:
+     Min        1Q    Median        3Q       Max
+-11.0000   -6.6667   -0.6667    2.8333   21.3333
+
+Coefficients:
+                Estimate Std. Error t value Pr(>|t|)
+(Intercept)       22.667      3.789   5.982 2.51e-05 ***
+Siteperturbated   -2.000      4.793  -0.417    0.682
+Typesoil           1.333      5.084   0.262    0.797
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for gaussian family taken to be 103.3778)
+
+    Null deviance: 1575.8  on 17  degrees of freedom
+Residual deviance: 1550.7  on 15  degrees of freedom
+AIC: 139.29
+
+Number of Fisher Scoring iterations: 2
+
+> >>>>>>>>>>>>>>>> Subset: Juniperus only NOMYCORRHIZAL fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Site         1    235   234.7   0.081  0.779
+Type         1      2     1.8   0.001  0.981
+Residuals   15  43257  2883.8
+
+
+> >>>>>>>>>>>>>>> Subset: Juniperus only ECM fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Observed ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Site         1   93.4   93.39   1.908  0.187
+Type         1  121.0  121.00   2.472  0.137
+Residuals   15  734.1   48.94
+
+> # ANOVA
+> subset.all.anova <- aov(Shannon ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value  Pr(>F)
+Site         1  0.157   0.157   0.374 0.55023
+Type         1  4.130   4.130   9.822 0.00683 **
+Residuals   15  6.308   0.421
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> boxplot(Shannon ~ Site + Type, data = data)
+> 
+
+
+>>>>>>>>>>>>Subset Juniperus only AM Fungi
+
+> # ANOVA
+> subset.all.anova <- aov(Shannon ~ Site + Type, data = data)
+> summary(subset.all.anova)
+            Df Sum Sq Mean Sq F value Pr(>F)
+Site         1  0.149  0.1490   0.335  0.571
+Type         1  2.059  2.0590   4.635  0.048 *
+Residuals   15  6.663  0.4442
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

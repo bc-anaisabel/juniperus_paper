@@ -5,7 +5,9 @@ The script *amptk_for_illumina.sh* runs the following comands:
 
 ## Step 1. 
 
-AMPtk needs to be previously installed [using conda](https://amptk.readthedocs.io/en/latest/index.html) 
+AMPtk needs to be previously installed [using conda](https://amptk.readthedocs.io/en/latest/index.html)
+
+The usearch9 dependency must also be manually installed from the [developer](http://www.drive5.com/usearch/download.html) and linked to the PATH.
 
 Load the amptk environment with: `conda activate amptk`
 
@@ -68,7 +70,7 @@ amptk cluster <arguments>:
 `mv cluster* ../data/cluster`
 
 ## Step 4. 
-### Filter OTU table to combat barcode-switching or index-bleed:
+### Filter OTU table from index-bleed:
 
 * Index-bleed (reads assigned to the wrong sample) seems to happen during the sequencing process of Illumina. AMPtk uses spike-in-artificial mock communities to measure the degree of index-bleed in a sequencing run and then conservatively applies that threshold to remove read counts that are within the range of index-bleed from an OTU table. If a spike-in mock was not included in the run, this threshold can be defined manually or by default (0.005 % of reads assigned to the wrong sample)
 
