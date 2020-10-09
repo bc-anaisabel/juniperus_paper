@@ -26,7 +26,22 @@ theme_set(theme_bw())
 # Set working directory to source file
 
 # Import biom data (includes otu table, taxonomy table and sample data)
-phyloseq_tables <- import_biom("../data/taxonomy.biom")
+# phyloseq_tables <- import_biom("../data/taxonomy.biom") older biom file, delete? 
+
+phyloseq_tables <- import_biom("../data/4_new_tax.biom")
+phyloseq_tables
+
+sample_data<-read.csv("../data/amptk.mapping_file.csv",row.names=1,check.names=FALSE)
+sample_data
+metadata_matrix = (as(sample_data(sample_data), "matrix"))
+metadata_matrix
+metadata_df = as.data.frame(metadata_matrix)
+rownames(metadata_df)
+colnames(metadata_df)
+
+phyloseq_tables <- phyloseq(otu_table(phyloseq_tables, taxa_are_rows=TRUE), 
+                      sample_data(metadata_df), 
+                      tax_table(phyloseq_tables))
 phyloseq_tables
 
 
@@ -40,10 +55,10 @@ sample_data(phyloseq_tables)
 
 # View and change taxonomic ranks 
 rank_names(phyloseq_tables) 
-colnames(tax_table(phyloseq_tables)) <- c("Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species") # change names of taxonomic table
-# Not yet: first have to do funguild table : colnames(tax_table(phyloseq_tables.guild)) <- c("Guild", "Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species") # change names of taxonomic table
-
+colnames(tax_table(phyloseq_tables)) <- c("Myc","Trophic","Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species") # change names of taxonomic table
 rank_names(phyloseq_tables) # check changes
+
+
 
 ########################################## Negative control filter
 
@@ -219,6 +234,16 @@ phyloseq_tables
 #Check if any OTUs have zero reads in any sample
 any(taxa_sums(phyloseq_tables_cleaned) == 0)
 
+# Read counts before and after cleaning 
+
+taxa_sums(phyloseq_tables_cleaned)
+
+sum(taxa_sums(phyloseq_tables_cleaned)) # total number of reads: 7434468
+
+sum(taxa_sums(phyloseq_tables)) # total number of reads: 7442613
+
+sum(rowSums(PCR_allbatches_cleaned)) # total number of reads: 7434468
+
 ###################################################################################################### 
 
 # Step 2. DATA TRANSFORMATION
@@ -234,6 +259,8 @@ any(taxa_sums(phyloseq.rel) < 1)
 ntaxa(phyloseq.rel)
 
 #check distribution of how many reads/OTU, reads/sample 
+
+sum(taxa_sums(phyloseq.rel)) # total number of reads : 6304150
 
 # Step 3. check distribution of how many reads/OTU, reads/sample: Plot number of reads per OTU / samples 
 
@@ -281,7 +308,8 @@ binary_table_OTU2
 phyloseq.rel
 # phyloseq.rel_OTU2
 
-
+sample_sums(phyloseq_tables)
+sample_sums(phyloseq_tables_cleaned)
 
 
 ##### FINAL OTU TABLES OBTAINED FOR FURTHER ANALYSIS
@@ -290,5 +318,6 @@ phyloseq.rel
 # binary_table
 # phyloseq.rel_OTU2 
 # binary_table_OTU2
+
 
 
