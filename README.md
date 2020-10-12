@@ -1,6 +1,8 @@
 ## Pipeline for analyzing Illumina MiSeq paired-end data from fungal communities
 
-This repository contains the scripts for:
+I am working with Illumina MiSeq paired-end data using the ITS2 rDNA region for metabarcoding of fungal communities. 
+
+In this repository you can find scripts for: 
 
 1) Denoising Illumina MiSeq pair-end data (AMPtk)
 2) Creating the OTU table and assigning taxonomy (AMPtk)
