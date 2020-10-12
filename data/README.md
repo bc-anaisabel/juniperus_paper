@@ -6,4 +6,4 @@ is an editable version previous to converting back to .biom)
 
 **2. amptk.mapping_file.csv:** contains sample data to be used as input for initial R script (same as amptk.mapping_file.txt) 
 
-**3. metadata_soil_roots.xlsx: ** contains soil sample nutrients data 
+**3. metadata_soil_roots.xlsx:** contains soil sample nutrients data 
