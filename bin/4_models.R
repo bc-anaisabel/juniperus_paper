@@ -18,8 +18,7 @@ library("mvabund")
 library(car)
 library(lme4)
 library(PerformanceAnalytics)
-
-
+library(tables)
 
 
 # Set working directory to source file
@@ -62,13 +61,14 @@ binary_table
 meta_table <- sample_data(soil) #only sample data and only from soil samples
 meta_table
 
-env <- c("pH","Pdis","Ca","Mg","K","Na","H","SoilM") # Al removed becuase of missing data
+env <- c("pH","Pdis","Ca","Mg","K","Na","H","Al", "SoilM") # Al removed becuase of missing data
 micro <- c("Ca","Mg","K","Na","H")
 
 #Transform columns to numeric values, each column separately 
 
 env_table <- subset(meta_table, select = env)
 env_table <-data.frame(env_table) #use as data frame to be able to transform to numeric
+env_table[, 9]  <- as.numeric(env_table[, 9])
 env_table[, 8]  <- as.numeric(env_table[, 8])
 env_table[, 7]  <- as.numeric(env_table[, 7])
 env_table[, 6]  <- as.numeric(env_table[, 6])
@@ -94,6 +94,30 @@ data
 
 micro_table <- subset(meta_table, select = micro)
 micro_table
+
+
+# Create soil table with average and SD values 
+
+data=data.frame(env_table, meta_table$Site, meta_table$Host, row.names=rownames(meta_table))
+data
+colnames(data) [10] <- "Site"
+colnames(data) [11] <- "Host"
+data
+
+###summary(data)
+###by (data, data$Site, summary)
+
+# Add results of ANOVA pairwise Tukey tests in table
+lm = lm (variable ~ group, data=data)
+summary(lm)
+summary(glht(lm, linfct=mcp(group="Tukey")))
+cld(glht(lm, linfct=mcp(group="Tukey")))
+
+
+
+
+
+
 
 # Distance-based redundancy analysis (dbRDA) is an ordination method similar to Redundancy Analysis (rda),
 # but it allows non-Euclidean dissimilarity indices, such as Manhattan or Bray-Curtis, Raup-Crick distance. 
