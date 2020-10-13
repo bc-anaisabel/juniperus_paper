@@ -634,6 +634,7 @@ taxa_names(subset)
 color_vector <- c("f__ Glomeraceae", "f__ Claroideoglomeraceae", "f__ Acaulosporaceae", "f__ Diversisporaceae", "f__ Gigasporaceae", "f__ Ambisporaceae", "f__ Paraglomeraceae", "f__ Unknown")
 color<-as.matrix(tax_table(subset))
 color<-as.data.frame(color)
+color_vector
 
 #Gplot
 gplot(network_host, thresh = 0.2, displaylabels = FALSE, vertex.col = color$Trophic)
@@ -677,5 +678,6 @@ par(mfrow=c(1,2), xpd=T)
 gplot(as.one.mode(network_host),
         displaylabels = TRUE,
         label=rownames(network_host), gmode="graph",
-        label.cex=0.6, vertex.col = color$Family, vertex.cex=2)
-
+        label.cex=0.6, vertex.col = color$Family, vertex.cex=2)+
+        legend(x= color_vector, pch=21,
+       col = color$Family, pt.cex=2, cex=.8, bty="n", ncol=1)
