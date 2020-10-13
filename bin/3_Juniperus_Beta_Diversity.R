@@ -61,19 +61,21 @@ sample_data(subset.texcoco.binary.beta)$Site = factor(sample_data(subset.texcoco
 # Select data or subset 
 sample_data(subset.texcoco.binary.beta)
 
+
 # Take out samples with no fungi present for ECM and for AM 
-foram = subset_samples(subset.texcoco.binary.beta, phinchID != "F3-J5s-2-2621810")
-foram 
-
-selectedtrophic<-subset.texcoco.binary.beta
-selectedtrophic
-
+trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "F3-J5s-2-2621810")
+trophicmode 
 
 #Subset if necessary
-selectedtrophic <- subset_taxa(foram, Trophic %in% c("a__am"))
+selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__sap"))
 selectedtrophic 
-selectedtrophic <- subset_samples(selectedtrophic, Host %in% c("Juniperus"))
-selectedtrophic
+selectedtrophic <- subset_samples(selectedtrophic, Type %in% c("root"))
+selectedtrophic 
+
+
+# Table for diversity measures and sample data
+myc.diversity <-estimate_richness(selectedtrophic, measures=c("Observed"))
+
 otu_table(selectedtrophic)
 any(taxa_sums(selectedtrophic) == 0)
 selectedtrophic<- prune_taxa(taxa_sums(selectedtrophic) > 0, selectedtrophic)
@@ -97,7 +99,7 @@ names(supp.labs) <- c("native", "mixed", "perturbated")
 sample_data(subset.texcoco.binary.beta)$Site = factor(sample_data(subset.texcoco.binary.beta)$Site, levels=c("native","mixed","disturbed"))
 
 #Plot nmds 
-p1 <- plot_ordination(selectedtrophic, ordination, color="Site", shape = "Type", title = "AM fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
+p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Site", title = "All fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
 print(p1)
 p1 + facet_wrap(~Site)
 
@@ -106,7 +108,7 @@ p1 + facet_wrap(~Site)
 #PERMANOVA: Adonis
 sampledf <- data.frame(sample_data(selectedtrophic))
 
-adonis2( nmds ~ Host+Site+Type, data = sampledf) 
+adonis2( nmds ~ Host+Site, data = sampledf) 
 adonis2( nmds ~ Type, data = sampledf) 
 adonis2( nmds ~ Site, data = sampledf)
 adonis2( nmds ~ Host, data = sampledf)
