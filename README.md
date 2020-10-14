@@ -14,7 +14,7 @@ The `/bin` directory contains the bash and R scripts for:
 
 The `/data` directory contains the metadata file that gathers all sample information and the output data from the AMPtk pipeline that acts as input data for R scripts. It also contains the .md files numbered in order of use to transform the output data into input data.  
 
-
+The `/output` directory contains all figures obtained from R scripts to be used for the publication. 
 
 
 
