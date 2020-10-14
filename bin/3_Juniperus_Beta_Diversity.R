@@ -67,9 +67,7 @@ trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "F3-J5s-2-2
 trophicmode 
 
 #Subset if necessary
-selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__sap"))
-selectedtrophic 
-selectedtrophic <- subset_samples(selectedtrophic, Type %in% c("root"))
+selectedtrophic <- subset_samples(subset.texcoco.binary.beta, Type %in% c("root"))
 selectedtrophic 
 
 
@@ -81,10 +79,6 @@ any(taxa_sums(selectedtrophic) == 0)
 selectedtrophic<- prune_taxa(taxa_sums(selectedtrophic) > 0, selectedtrophic)
 selectedtrophic
 sample_data(selectedtrophic)
-
-#Create dataframe? 
-nw<-as.data.frame(otu_table(selectedtrophic))
-
 
 # NMDS Texcoco (change method for distance)
 nmds = distance(selectedtrophic, method = "raup")
