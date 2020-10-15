@@ -1,4 +1,4 @@
-## Fungal communities in *Juniperus spp* and *Quercus spp* 
+## Fungal communities in *Juniperus* spp and *Quercus* spp
 
 I am working with Illumina MiSeq paired-end data using the ITS2 rDNA region for metabarcoding of fungal communities. 
 
