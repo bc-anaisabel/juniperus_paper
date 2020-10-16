@@ -124,10 +124,40 @@ subset.myc <- prune_taxa(taxa_sums(subset.myc) > 0, subset.myc)
 subset.myc
 
 tax_table(subset.myc)
+otu_table(subset.myc)
 
-#make a dataframe of training data with OTUs as column and samples as rows
+
+#make a dataframe with OTUs as column and samples as rows
 predictors <- t(otu_table(subset.myc))
+table(predictors)
 dim(predictors)
+
+predictors <- as.table(predictors)
+
+
+predictors<- as.data.frame(predictors)
+dim(predictors)
+
+Host <- as.factor(sample_data(subset.myc)$Host)
+Site <- as.factor(sample_data(subset.myc)$Site)
+
+predictors <- data.frame(predictors,Host,Site)
+
+tax.table<-as.data.frame(tax_table(subset.myc))
+tax.table
+match.id <- match(predictors$Var2, rownames(tax.table))
+
+predictors$Family <- tax.table$Family[match.id]
+predictors$Trophic <- tax.table$Trophic[match.id]
+predictors$Genus <- tax.table$Genus[match.id] 
+
+predictors <- subset(predictors, predictors$Freq == 1)
+  
+sort(table(predictors$Var2))
+
+
+
+
 
 #make a column for the outcome/response variable
 response <- as.factor(sample_data(subset.myc)$Host)
