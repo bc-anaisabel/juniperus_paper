@@ -112,48 +112,49 @@ adonis2( nmds ~ Site+Type, data = sampledf)
 
 plot_net(selectedtrophic, color = "Host", shape = "Site") #not using 
 
-#Random forest 
+
+#### Create table frequency mycorrhizal fungi in each Host####
+
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am", "a__ecm"))
+subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
+subset.myc
+
+any(taxa_sums(subset.myc) == 0)
+subset.myc <- prune_taxa(taxa_sums(subset.myc) > 0, subset.myc)
+subset.myc
+
+tax_table(subset.myc)
 
 #make a dataframe of training data with OTUs as column and samples as rows
-predictors <- t(otu_table(selectedtrophic))
+predictors <- t(otu_table(subset.myc))
 dim(predictors)
 
 #make a column for the outcome/response variable
-response <- as.factor(sample_data(selectedtrophic)$Site)
+response <- as.factor(sample_data(subset.myc)$Host)
+
+response2 <- t(tax_table(subset.myc))
 
 #combine them into 1 data frame
-rf.data <- data.frame(response, predictors)
+rf.data <- data.frame(response, predictors, response2)
 
-set.seed(2)
-fungi.classify <- randomForest(response~., data = rf.data, ntree = 100)
-print(fungi.classify)
+#
+library(tidyr)
+?as.data.frame
 
-#what variables are stored in the output?
-names(fungi.classify)
+predictors.1 <- as.data.frame(predictors)
 
-#make a data frame with predictor names and their importance
-imp <-importance(fungi.classify)
-imp <-data.frame(predictors = rownames(imp), imp)
+predictors.1$samples <- rownames(predictors.1)
 
-#Order the predictor levels by importance
-imp.sort <- arrange(imp, desc(MeanDecreaseGini))
-imp.sort$predictors <- factor(imp.sort$predictors, levels = imp.sort$predictors)
-
-#Select the top predictors
-imp.50 <- imp.sort[1:50, ]
-
-#ggplot
-
-ggplot(imp.50, aes(x = predictors, y = MeanDecreaseGini)) +
-  geom_bar(stat = "identity", fill = "indianred") + 
-  coord_flip() +
-  ggtitle("Most important OTUS for classifying fungi samples/n into Hosts")
+predictors.1 <- gather(predictors.1)
 
 
-# What are those OTUs?
-otunames <- imp.50$predictors
-r <- rownames(tax_table(selectedtrophic)) %in% otunames
-kable(tax_table(selectedtrophic)[r, ])
+
+
+
+
+
+
+
 
 #### Networks using igraph ####
 
