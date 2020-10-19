@@ -19,6 +19,7 @@ library(car)
 library(lme4)
 library(PerformanceAnalytics)
 library(tables)
+library(Rmisc)
 
 
 # Set working directory to source file
@@ -88,8 +89,8 @@ env_table_scale<- data.frame(env_table_scale) #must be transformed to data frame
 
 data=data.frame(env_table_scale, meta_table$Site, meta_table$Host, row.names=rownames(meta_table))
 data
-colnames(data) [9] <- "Site"
-colnames(data) [10] <- "Host"
+colnames(data) [10] <- "Site"
+colnames(data) [11] <- "Host"
 data
 
 micro_table <- subset(meta_table, select = micro)
@@ -105,18 +106,27 @@ colnames(data) [11] <- "Host"
 data
 
 ###summary(data)
+
+pH <-summarySE(data, measurevar= "pH", groupvars=c("Host", "Site"), na.rm = TRUE)
+Pdis <-summarySE(data, measurevar= "Pdis", groupvars=c("Host", "Site"), na.rm = TRUE)
+Ca <-summarySE(data, measurevar= "Ca", groupvars=c("Host", "Site"), na.rm = TRUE)
+Mg <-summarySE(data, measurevar= "Mg", groupvars=c("Host", "Site"), na.rm = TRUE)
+K <-summarySE(data, measurevar= "K", groupvars=c("Host", "Site"), na.rm = TRUE)
+Na <-summarySE(data, measurevar= "Na", groupvars=c("Host", "Site"), na.rm = TRUE)
+H <-summarySE(data, measurevar= "H", groupvars=c("Host", "Site"), na.rm = TRUE)
+Al <-summarySE(data, measurevar= "Al", groupvars=c("Host", "Site"), na.rm = TRUE)
+SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Host", "Site"), na.rm = TRUE)
+
+soilvar= data.frame(pH, Pdis,Ca,Mg,K,Na,H,Al,SoilM)
+
 ###by (data, data$Site, summary)
 
 # Add results of ANOVA pairwise Tukey tests in table
-lm = lm (variable ~ group, data=data)
-summary(lm)
-summary(glht(lm, linfct=mcp(group="Tukey")))
-cld(glht(lm, linfct=mcp(group="Tukey")))
+aov= aov (Ca ~ Host, data=Ca)
+summary(aov)
 
-
-
-
-
+#summary(glht(lm, linfct=mcp(group="Tukey")))
+#cld(glht(lm, linfct=mcp(group="Tukey")))
 
 
 # Distance-based redundancy analysis (dbRDA) is an ordination method similar to Redundancy Analysis (rda),
