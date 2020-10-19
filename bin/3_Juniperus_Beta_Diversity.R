@@ -129,7 +129,6 @@ otu_table(subset.myc)
 
 #make a dataframe with OTUs as column and samples as rows
 predictors <- t(otu_table(subset.myc))
-table(predictors)
 dim(predictors)
 
 predictors <- as.table(predictors)
