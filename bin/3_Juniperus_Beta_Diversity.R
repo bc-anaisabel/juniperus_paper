@@ -67,7 +67,7 @@ trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "F3-J5s-2-2
 trophicmode 
 
 #Subset if necessary
-selectedtrophic <- subset_samples(subset.texcoco.binary.beta, Type %in% c("root"))
+selectedtrophic <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
 selectedtrophic 
 
 

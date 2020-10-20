@@ -43,9 +43,7 @@ any(taxa_sums(texcoco.binary.models) == 0)
 taxa_sums(texcoco.binary.models) [1:10]
 texcoco.binary.models
 texcoco.binary.models <- prune_taxa(taxa_sums(texcoco.binary.models) > 0, texcoco.binary.models)
-
 any(taxa_sums(texcoco.binary.models) == 0)
-taxa_sums(texcoco.binary.models) [1:10]
 texcoco.binary.models
 
 
@@ -107,26 +105,26 @@ data
 
 ###summary(data)
 
-pH <-summarySE(data, measurevar= "pH", groupvars=c("Host", "Site"), na.rm = TRUE)
-Pdis <-summarySE(data, measurevar= "Pdis", groupvars=c("Host", "Site"), na.rm = TRUE)
-Ca <-summarySE(data, measurevar= "Ca", groupvars=c("Host", "Site"), na.rm = TRUE)
-Mg <-summarySE(data, measurevar= "Mg", groupvars=c("Host", "Site"), na.rm = TRUE)
-K <-summarySE(data, measurevar= "K", groupvars=c("Host", "Site"), na.rm = TRUE)
-Na <-summarySE(data, measurevar= "Na", groupvars=c("Host", "Site"), na.rm = TRUE)
-H <-summarySE(data, measurevar= "H", groupvars=c("Host", "Site"), na.rm = TRUE)
-Al <-summarySE(data, measurevar= "Al", groupvars=c("Host", "Site"), na.rm = TRUE)
-SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Host", "Site"), na.rm = TRUE)
+pH <- summarySE(data, measurevar= "pH", groupvars=c("Site"), na.rm = TRUE)
+Pdis <-summarySE(data, measurevar= "Pdis", groupvars=c("Site"), na.rm = TRUE)
+Ca <-summarySE(data, measurevar= "Ca", groupvars=c("Site"), na.rm = TRUE)
+Mg <-summarySE(data, measurevar= "Mg", groupvars=c("Site"), na.rm = TRUE)
+K <-summarySE(data, measurevar= "K", groupvars=c("Site"), na.rm = TRUE)
+Na <-summarySE(data, measurevar= "Na", groupvars=c("Site"), na.rm = TRUE)
+H <-summarySE(data, measurevar= "H", groupvars=c("Site"), na.rm = TRUE)
+Al <-summarySE(data, measurevar= "Al", groupvars=c("Site"), na.rm = TRUE)
+SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Site"), na.rm = TRUE)
 
-soilvar= data.frame(pH, Pdis,Ca,Mg,K,Na,H,Al,SoilM)
+soilvar= (data.frame(pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM))
+write.csv.tabular(soilvar, file = "soilvar.csv")
 
 ###by (data, data$Site, summary)
 
-# Add results of ANOVA pairwise Tukey tests in table
-aov= aov (Ca ~ Host, data=Ca)
-summary(aov)
+# Add results of ANOVA and pairwise Tukey tests in table
 
-#summary(glht(lm, linfct=mcp(group="Tukey")))
-#cld(glht(lm, linfct=mcp(group="Tukey")))
+aov<-aov (SoilM ~ Site, data = data)
+summary(aov)
+TukeyHSD(aov)
 
 
 # Distance-based redundancy analysis (dbRDA) is an ordination method similar to Redundancy Analysis (rda),
@@ -236,7 +234,8 @@ model <- foram
 
 model
 
-model <- subset_taxa(model, Trophic %in% c("a__am"))
+model <- subset_taxa(model, Family %in% c("f__ Herpotrichiellaceae" Thelephoraceae GlomeraceaeNectriaceaeTricholomataceae"))
+
 any(taxa_sums(model) == 0)
 
 model
