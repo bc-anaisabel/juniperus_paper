@@ -205,8 +205,8 @@ subset <- subset_samples(select, Site %in% "perturbated")
 data = t(otu_table(subset)) ## otu table in vegan
 plot(specaccum(data), add = T, col="red")
 
-legend('bottomright', c('native','mixed','perturbated'), 
-       col=c('red','black','green'), lty=1, bty='n', inset=0.025)
+legend('bottomright', c('native','mixed','disturbed'), 
+       col=c('black','green','red'), lty=1, bty='n', inset=0.025)
 
 
 # Idem  (same graph but with y range calculated)
@@ -303,7 +303,7 @@ ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Trophic)) +
 subset.myc <- subset.texcoco.alfa
 
 # fungal species richness per site showing only "Observed" in soil and roots: 
-plot_richness(subset.myc, x="Site", color = "Type", measures=("Observed"))  + geom_boxplot() 
+plot_richness(subset.myc, x="Host", color = "Site", measures=("Observed"))  + geom_boxplot() 
 
 # Observed per sample type in both sites 
 a <- plot_richness(subset.myc, x="Site", color = "Site", measures=("Observed"))  
@@ -327,8 +327,19 @@ myc.diversity <-estimate_richness(subset.myc, measures=c("Observed"))
 data <- cbind(sample_data(subset.myc), myc.diversity) #combine metadata with alpha diversity
 data
 
+#How many OTUs per host 
+
+subset.q<-subset_samples(subset.texcoco.binary, Host %in% "Juniperus")
+subset.q
+any(taxa_sums(subset.q) ==0)
+subset.q <- prune_taxa(taxa_sums(subset.q) > 0, subset.q)
+subset.q
+otu_table(subset.q)
+otushost<-estimate_richness(subset.q)
+taxa_sums(subset.q)
+
 # ANOVA
-subset.all.anova <- aov(Observed ~ Host + Site + Type, data = data)
+subset.all.anova <- aov(Observed ~ Host, data = data)
 summary(subset.all.anova)
 TukeyHSD(subset.all.anova)
 boxplot(Observed ~ Host + Site + Type, data = data)
