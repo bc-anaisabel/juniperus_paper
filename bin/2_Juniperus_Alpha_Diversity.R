@@ -309,11 +309,11 @@ subset.q
 otu_table(subset.q)
 otushost<-estimate_richness(subset.q)
 
-### Alpha diversity tests ####
+#### Alpha diversity tests ####
 
 # Diversity boxplots: 
 
-subset.myc <- subset.texcoco.alfa
+subset.myc <- subset.texcoco.binary
 
 # fungal species richness per site showing only "Observed" in soil and roots: 
 plot_richness(subset.myc, x="Host", color = "Site", measures=("Observed"))  + geom_boxplot() 
@@ -326,7 +326,7 @@ abc
 
 # Create a table that gathers diversity indices and subset for different cathegories used 
 
-subset.myc <- subset_taxa(subset.texcoco.binary, Trophic %in% "a__am")
+subset.myc <- subset_taxa(subset.texcoco.binary, Trophic %in% "a__sap")
 
 #verify taxa missing 
 any(taxa_sums(subset.myc) == 0)
@@ -346,14 +346,14 @@ data
 # dependent variable (data) : observed richness 
 # independet variable (factor): site, host or type of sample 
 
-anova1<-aov(Observed ~ Site, data = data)
+anova1<-aov(Observed ~ Host, data = data)
 summary(anova1)
 TukeyHSD(anova1)
 boxplot(Observed ~ Site*Host, data = data)
 
 
 #two-way ANOVA
-anova2<-aov(Observed ~ Host+Type, data = data)
+anova2<-aov(Observed ~ Site*Host*Type, data = data)
 summary(anova2)
 
 #The only interaction that was significant for all fungi was host:type 
@@ -387,7 +387,7 @@ shapiro.test(residual2)
 
 #Levene test for homogeneity of variances 
 
-leveneTest(Observed ~ Type, data=data)
+leveneTest(Observed ~ Host, data=data)
 
 
 # Use glm because data is not all normal distributed (only for ECM fungi it is) 
@@ -395,9 +395,28 @@ leveneTest(Observed ~ Type, data=data)
 # Poisson Regression
 # where count is a count and
 # x1-x3 are continuous predictors
-fit <- glm(Observed ~ Host, data = data, family = "quasipoisson"())
+fit <- glm(Observed ~ Site, data = data)
 summary(fit)
 
+#Kruskal Wallis test: no parametric
+
+head(data)
+levels(data$Type)
+
+group_by(data, Type) %>%
+  summarise(
+    count = n(),
+    mean = mean(Observed, na.rm = TRUE),
+    sd = sd(Observed, na.rm = TRUE), 
+    median = median(Observed, na.rm = TRUE),
+    IQR = IQR(Observed, na.rm = TRUE)
+  )
+
+KW1<- kruskal.test(Observed ~ Type, data)
+KW1
+
+pairwise.wilcox.test(data$Observed, data$Type,
+                     p.adjust.method = "bonferroni")
 
 #### Abundance of TOP OTUs  (change for trophic mode and cathegories) ####
 
