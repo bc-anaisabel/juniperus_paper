@@ -25,6 +25,7 @@ library(ggnetwork)
 library(statnet.common)
 library(network)
 library(ggpubr)
+library(multcomp)
 
 
 # Set working directory to source file
@@ -294,7 +295,19 @@ ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Trophic)) +
   ylab("OTUs relative abundance") +
   ggtitle("Fungi trophic mode relative abundance") + facet_grid(Type ~ Host)
 
-# Plot obtained: Relative Abundance (using sequence reads) of fungi Phylum by Site, Type of sample and Host plant 
+# Plot obtained: Relative Abundance (using sequence reads) of fungi Phylum by Site, Type of sample and Host plant
+
+
+
+# How many OTUs per host 
+
+subset.q<-subset_samples(subset.texcoco.binary, Host %in% "Juniperus")
+subset.q
+any(taxa_sums(subset.q) ==0)
+subset.q <- prune_taxa(taxa_sums(subset.q) > 0, subset.q)
+subset.q
+otu_table(subset.q)
+otushost<-estimate_richness(subset.q)
 
 ### Alpha diversity tests ####
 
@@ -313,7 +326,7 @@ abc
 
 # Create a table that gathers diversity indices and subset for different cathegories used 
 
-subset.myc <-subset.texcoco.binary
+subset.myc <- subset_taxa(subset.texcoco.binary, Trophic %in% "a__am")
 
 #verify taxa missing 
 any(taxa_sums(subset.myc) == 0)
@@ -323,76 +336,68 @@ taxa_sums(subset.myc) [1:10]
 subset.myc
 
 # Table for diversity measures and sample data
-myc.diversity <-estimate_richness(subset.myc, measures=c("Observed"))
+myc.diversity <-estimate_richness(subset.myc, measures=c("Observed")) #you can add other alpha diversity measurements, e.g. Fisher 
 data <- cbind(sample_data(subset.myc), myc.diversity) #combine metadata with alpha diversity
 data
 
-#How many OTUs per host 
+# ANOVA 
 
-subset.q<-subset_samples(subset.texcoco.binary, Host %in% "Juniperus")
-subset.q
-any(taxa_sums(subset.q) ==0)
-subset.q <- prune_taxa(taxa_sums(subset.q) > 0, subset.q)
-subset.q
-otu_table(subset.q)
-otushost<-estimate_richness(subset.q)
-taxa_sums(subset.q)
+#one way ANOVA
+# dependent variable (data) : observed richness 
+# independet variable (factor): site, host or type of sample 
 
-# ANOVA
-subset.all.anova <- aov(Observed ~ Host, data = data)
-summary(subset.all.anova)
-TukeyHSD(subset.all.anova)
-boxplot(Observed ~ Host + Site + Type, data = data)
+anova1<-aov(Observed ~ Site, data = data)
+summary(anova1)
+TukeyHSD(anova1)
+boxplot(Observed ~ Site*Host, data = data)
 
-#Check normality and homogeneity of residuals 
 
-residual1<- residuals(subset.all.anova)
-plot(residual1)
-shapiro.test(residual1)
+#two-way ANOVA
+anova2<-aov(Observed ~ Host+Type, data = data)
+summary(anova2)
 
-#Levene
+#The only interaction that was significant for all fungi was host:type 
 
-#Cochran's C test (homoscedasticity, homogeneity of variance)
+TukeyHSD(anova2)
 
-#Check linearity of models with normal qq plots 
+# Check normality with visual methods  
 
-#### Test species richness using generalized linear models ####
-
-subset.texcoco.binary
-
-#Test normality 
-
-library("ggpubr")
 ggdensity(myc.diversity$Observed, 
-          main = "Density plot of diversity",
-          xlab = "Species observed")
+          main = "Density plot of species richness",
+          xlab = "Species richness")
+
+## Check linearity of models with normal qq plots 
 
 ggqqplot(myc.diversity$Observed)
 
+## Significance tests for normality 
+
 shapiro.test(myc.diversity$Observed)
 
-#Test for homogeneity of variances
+# Check residuals 
 
-subset.anova <- aov(Observed ~ Site, data = data)
+residual1<- residuals(anova1)
+plot(residual1)
+shapiro.test(residual1)
 
-plot(subset.anova, 2)
-
-hist(subset.anova$residuals) # Histogram of residuals
-
-shapiro.test(subset.anova$residuals)
-
-plot(subset.anova, 1) # using plot number 1 this time
+residual2<- residuals(anova2)
+plot(residual2)
+shapiro.test(residual2)
 
 
-leveneTest(Observed ~ Site, data=data)
+#Levene test for homogeneity of variances 
 
-# Use glm because data is nor all normal (change response variable, trophic mode subset, host subset) 
+leveneTest(Observed ~ Type, data=data)
 
-# consider previous subset 
 
-subset.glm <- glm (Observed ~ Type, data = data)
-summary(subset.glm)
-plot(subset.glm)
+# Use glm because data is not all normal distributed (only for ECM fungi it is) 
+
+# Poisson Regression
+# where count is a count and
+# x1-x3 are continuous predictors
+fit <- glm(Observed ~ Host, data = data, family = "quasipoisson"())
+summary(fit)
+
 
 #### Abundance of TOP OTUs  (change for trophic mode and cathegories) ####
 
