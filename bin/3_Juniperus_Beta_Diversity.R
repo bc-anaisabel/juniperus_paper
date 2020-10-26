@@ -185,6 +185,80 @@ predictors.1 <- gather(predictors.1)
 
 
 
+
+#### network using sna #### 
+
+#Select data
+subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
+subset<- subset_samples(subset, Type %in% "root")
+subset
+
+#Merge by category 
+nw <-merge_samples(subset, group = "Host")
+network_host <- as.data.frame(otu_table(nw))
+is.matrix(network_host)
+
+#vectors
+taxa_names(subset)
+color_vector <- c("f__ Glomeraceae", "f__ Claroideoglomeraceae", "f__ Acaulosporaceae", "f__ Gigasporaceae", "f__ Ambisporaceae", "f__ Paraglomeraceae", "f__ Unknown")
+color<-as.matrix(tax_table(subset))
+color<-as.data.frame(color)
+color<-color$Family
+
+#color_vector <- color$Family
+
+
+#Gplot
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color)
+network_host
+
+
+#Merge more than one category 
+
+sample_variables(subset)
+
+variable1 = as.character(get_variable(subset, "Host"))
+variable2 = as.character(get_variable(subset, "Site"))
+
+sample_data(subset)$NewPastedVar <- mapply(paste0, variable1, variable2, 
+                                           collapse = "_")
+nw2<- merge_samples(subset, "NewPastedVar")
+
+network_host <- as.data.frame(otu_table(nw2))
+is.matrix(network_host)
+
+
+
+#Gplot
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, label=rownames(network_host),
+      legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
+
+
+#Other format
+abc<-t(network_host)
+
+#Plot
+plotweb(network_host)
+
+#Plot
+visweb(network_host)
+
+network_host
+
+#Other type of plot 
+
+pal2 <-brewer.pal(8, "Set2")
+
+par(mfrow=c(1,2), xpd=T)
+gplot(as.one.mode(network_host),
+      displaylabels = TRUE,
+      label=rownames(network_host), 
+      gmode="graph",
+      label.cex=0.6, vertex.col = color, vertex.cex=2)
+
++legend(x=-1,y=-1, color$Family, pch=21, col = pal2, pt.cex=2, cex=.8, bty="n", ncol=1)
+
 #### Networks using igraph ####
 
 sampledata = data.frame(sample_data(selectedtrophic))
