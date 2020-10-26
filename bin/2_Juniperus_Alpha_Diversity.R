@@ -346,14 +346,14 @@ data
 # dependent variable (data) : observed richness 
 # independet variable (factor): site, host or type of sample 
 
-anova1<-aov(Observed ~ Host, data = data)
+anova1<-aov(Observed ~ Site, data = data)
 summary(anova1)
 TukeyHSD(anova1)
-boxplot(Observed ~ Site*Host, data = data)
+boxplot(Observed ~ Host, data = data)
 
 
 #two-way ANOVA
-anova2<-aov(Observed ~ Site*Host*Type, data = data)
+anova2<-aov(Observed ~ Host*Site, data = data)
 summary(anova2)
 
 #The only interaction that was significant for all fungi was host:type 
@@ -387,7 +387,7 @@ shapiro.test(residual2)
 
 #Levene test for homogeneity of variances 
 
-leveneTest(Observed ~ Host, data=data)
+leveneTest(Observed ~ Site, data=data)
 
 
 # Use glm because data is not all normal distributed (only for ECM fungi it is) 
@@ -395,15 +395,15 @@ leveneTest(Observed ~ Host, data=data)
 # Poisson Regression
 # where count is a count and
 # x1-x3 are continuous predictors
-fit <- glm(Observed ~ Site, data = data)
+fit <- glm(Observed ~ Site, data = data, family = Gamma())
 summary(fit)
 
 #Kruskal Wallis test: no parametric
 
 head(data)
-levels(data$Type)
+levels(data$Site)
 
-group_by(data, Type) %>%
+group_by(data, Site) %>%
   summarise(
     count = n(),
     mean = mean(Observed, na.rm = TRUE),
@@ -412,10 +412,10 @@ group_by(data, Type) %>%
     IQR = IQR(Observed, na.rm = TRUE)
   )
 
-KW1<- kruskal.test(Observed ~ Type, data)
+KW1<- kruskal.test(Observed ~ Site, data)
 KW1
 
-pairwise.wilcox.test(data$Observed, data$Type,
+pairwise.wilcox.test(data$Observed, data$Site,
                      p.adjust.method = "bonferroni")
 
 #### Abundance of TOP OTUs  (change for trophic mode and cathegories) ####
@@ -521,15 +521,6 @@ any(taxa_sums(subset.fam) == 0)
 taxa_sums(subset.fam) [1:10]
 subset.fam
 
-Top50OTUs <- names(sort(taxa_sums(subset.fam), TRUE)[1:50])
-ent50 <- prune_taxa(Top50OTUs, subset.fam)
-ent50
-taxa_names(ent50)
-ntaxa(ent50)
-taxa_sums(ent50)
-tax_table(ent50)
-
-
 #In case you need to get top 50 (for ecm it comes out to only 31 families, for am only 14, so is not needed)
 Top <- names(sort(taxa_sums(subset.fam), TRUE)[1:50])
 ent <- prune_taxa(Top, subset.fam)
@@ -584,17 +575,19 @@ spprich<-subset %>%
 
 subset<- subset_taxa(subset.texcoco.binary, Trophic %in% "a__sap") 
 subset
-subset<- subset_taxa(subset, Family %in% c("f__ Herpotrichiellaceae", "f__ Orbiliaceae", "f__ Aspergillaceae", "f__ Clavariaceae", "f__ Hypocreaceae"))
+subset<- subset_taxa(subset, Family %in% c("f__ Herpotrichiellaceae"))
 subset
 tax_table(subset)
-ent <- subset 
-ent
+
 
 #### mvabund and glm for most abundant OTUs #### 
 
-subset<- subset_taxa(subset.texcoco.binary, Trophic %in% "a__ecm") 
-Top50OTUs <- names(sort(taxa_sums(subset), TRUE)[1:50])
-ent50 <- prune_taxa(Top50OTUs, subset)
+##### subset
+
+ent <- subset.texcoco.binary
+
+Top50OTUs <- names(sort(taxa_sums(ent), TRUE)[1:50])
+ent50 <- prune_taxa(Top50OTUs, ent)
 ent50
 taxa_names(ent50)
 ntaxa(ent50)
@@ -602,11 +595,11 @@ taxa_sums(ent50)
 
 
 #What data? 
-ent
-tax_table(ent)
-sample_data(ent)
+ent50
+tax_table(ent50)
+sample_data(ent50)
 
-abun_table <- otu_table(ent) 
+abun_table <- otu_table(ent50) 
 abun_table
 
 #transform to binary table in case using agglomeration (e.g. at family level using tax_glom)
@@ -615,18 +608,20 @@ abun_table = transform_sample_counts(abun_table, function(x, minthreshold=0){
   return(x)})
 head(otu_table(abun_table))
 
+#if not, procede:
+
 abun_table = t (abun_table)
 
-meta_table <- sample_data(ent) 
+meta_table <- sample_data(ent50) 
 meta_table
 
 abun_sample_table <- data.frame(abun_table, meta_table)
 abun_sample_table
 
-mvabund_table <- mvabund(abun_sample_table [,1:90]) #format table 
+mvabund_table <- mvabund(abun_sample_table [,1:65]) #format table 
 mvabund_table
 
-mod2 <- manyglm(mvabund_table ~ abun_sample_table$Site*abun_sample_table$Host, family="binomial")
+mod2 <- manyglm(mvabund_table ~ abun_sample_table$Host , family="binomial")
 plot(mod2)
 
 #manyglm <- manyglm(mvabund ~ pH * factor(Elevation), family="binomial")

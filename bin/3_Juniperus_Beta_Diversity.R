@@ -67,7 +67,7 @@ trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "F3-J5s-2-2
 trophicmode 
 
 #Subset if necessary
-selectedtrophic <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
+selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__ecm"))
 selectedtrophic 
 
 
@@ -115,7 +115,7 @@ plot_net(selectedtrophic, color = "Host", shape = "Site") #not using
 
 #### Create table frequency mycorrhizal fungi in each Host####
 
-subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am", "a__ecm"))
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
 subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
 subset.myc
 
@@ -154,9 +154,9 @@ predictors <- subset(predictors, predictors$Freq == 1)
   
 sort(table(predictors$Var2))
 
+sharedotusam<-write.csv(predictors, file = "sharedotusacm.csv")
 
-
-
+###
 
 #make a column for the outcome/response variable
 response <- as.factor(sample_data(subset.myc)$Host)
