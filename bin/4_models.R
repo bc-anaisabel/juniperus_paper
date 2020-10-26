@@ -21,6 +21,7 @@ library(PerformanceAnalytics)
 library(tables)
 library(Rmisc)
 
+R.version
 
 # Set working directory to source file
 
@@ -41,11 +42,9 @@ sample_data(texcoco.binary.models)
 # Remove OTUs that are not present in any of the samples of the subset (OTUs that are only present either in Izta or Texcoco) 
 any(taxa_sums(texcoco.binary.models) == 0)
 taxa_sums(texcoco.binary.models) [1:10]
-texcoco.binary.models
 texcoco.binary.models <- prune_taxa(taxa_sums(texcoco.binary.models) > 0, texcoco.binary.models)
 any(taxa_sums(texcoco.binary.models) == 0)
 texcoco.binary.models
-
 
 
 #### Models using metadata: Texcoco only soil samples ####
@@ -60,8 +59,7 @@ binary_table
 meta_table <- sample_data(soil) #only sample data and only from soil samples
 meta_table
 
-env <- c("pH","Pdis","Ca","Mg","K","Na","H","Al", "SoilM") # Al removed becuase of missing data
-micro <- c("Ca","Mg","K","Na","H")
+env <- c("pH","Pdis","Ca","Mg","K","Na","H","Al", "SoilM") 
 
 #Transform columns to numeric values, each column separately 
 
@@ -91,8 +89,6 @@ colnames(data) [10] <- "Site"
 colnames(data) [11] <- "Host"
 data
 
-micro_table <- subset(meta_table, select = micro)
-micro_table
 
 
 # Create soil table with average and SD values 
@@ -102,6 +98,7 @@ data
 colnames(data) [10] <- "Site"
 colnames(data) [11] <- "Host"
 data
+write.csv(data, "soilvariables.csv")
 
 ###summary(data)
 
@@ -118,11 +115,10 @@ SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Site"), na.rm = TRUE)
 soilvar= (data.frame(pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM))
 write.csv.tabular(soilvar, file = "soilvar.csv")
 
-###by (data, data$Site, summary)
 
 # Add results of ANOVA and pairwise Tukey tests in table
 
-aov<-aov (SoilM ~ Site, data = data)
+aov<-aov (pH ~ Site, data = data)
 summary(aov)
 TukeyHSD(aov)
 
