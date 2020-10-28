@@ -67,7 +67,7 @@ trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "F3-J5s-2-2
 trophicmode 
 
 #Subset if necessary
-selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__ecm"))
+selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__am"))
 selectedtrophic 
 
 
@@ -93,7 +93,7 @@ names(supp.labs) <- c("native", "mixed", "perturbated")
 sample_data(subset.texcoco.binary.beta)$Site = factor(sample_data(subset.texcoco.binary.beta)$Site, levels=c("native","mixed","disturbed"))
 
 #Plot nmds 
-p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Site", title = "All fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
+p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Type", title = "All fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
 print(p1)
 p1 + facet_wrap(~Site)
 
