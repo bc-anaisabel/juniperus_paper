@@ -525,7 +525,6 @@ subset.fam
 Top <- names(sort(taxa_sums(subset.fam), TRUE)[1:50])
 ent <- prune_taxa(Top, subset.fam)
 
-ent <- subset.fam
 taxa_sums(ent)
 taxa_names(ent)
 tax_table(ent)
@@ -563,7 +562,6 @@ ggplot(mdata_top, aes(x = Site, y = Abundance, fill = Family)) +
 
 #### #Finding most species-rich families  ####
 
-subset<- subset_taxa(subset.texcoco.binary, Trophic %in% "a__sap")
 subset
 tax_table(subset)
 
@@ -573,9 +571,7 @@ spprich<-subset %>%
   summarize(OTUn = (unique(OTU) %>% length)) %>% 
   arrange(desc(OTUn))
 
-subset<- subset_taxa(subset.texcoco.binary, Trophic %in% "a__sap") 
-subset
-subset<- subset_taxa(subset, Family %in% c("f__ Herpotrichiellaceae"))
+subset<- subset_taxa(subset, Family %in% c(""))
 subset
 tax_table(subset)
 
@@ -584,10 +580,6 @@ tax_table(subset)
 
 ##### subset
 
-ent <- subset.texcoco.binary
-
-Top50OTUs <- names(sort(taxa_sums(ent), TRUE)[1:50])
-ent50 <- prune_taxa(Top50OTUs, ent)
 ent50
 taxa_names(ent50)
 ntaxa(ent50)
@@ -618,10 +610,10 @@ meta_table
 abun_sample_table <- data.frame(abun_table, meta_table)
 abun_sample_table
 
-mvabund_table <- mvabund(abun_sample_table [,1:65]) #format table 
+mvabund_table <- mvabund(abun_sample_table [,1:4]) #format table 
 mvabund_table
 
-mod2 <- manyglm(mvabund_table ~ abun_sample_table$Host , family="binomial")
+mod2 <- manyglm(mvabund_table ~ abun_sample_table$Type , family="binomial")
 plot(mod2)
 
 #manyglm <- manyglm(mvabund ~ pH * factor(Elevation), family="binomial")
