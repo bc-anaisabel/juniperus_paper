@@ -59,12 +59,14 @@ binary_table
 meta_table <- sample_data(soil) #only sample data and only from soil samples
 meta_table
 
-env <- c("pH","Pdis","Ca","Mg","K","Na","H","Al", "SoilM") 
+env <- c("pH","Pdis","Ca","Mg","K","Na","H","Al", "SoilM","C","N") 
 
 #Transform columns to numeric values, each column separately 
 
 env_table <- subset(meta_table, select = env)
 env_table <-data.frame(env_table) #use as data frame to be able to transform to numeric
+env_table[, 11]  <- as.numeric(env_table[, 11])
+env_table[, 10]  <- as.numeric(env_table[, 10])
 env_table[, 9]  <- as.numeric(env_table[, 9])
 env_table[, 8]  <- as.numeric(env_table[, 8])
 env_table[, 7]  <- as.numeric(env_table[, 7])
@@ -85,8 +87,8 @@ env_table_scale<- data.frame(env_table_scale) #must be transformed to data frame
 
 data=data.frame(env_table_scale, meta_table$Site, meta_table$Host, row.names=rownames(meta_table))
 data
-colnames(data) [10] <- "Site"
-colnames(data) [11] <- "Host"
+colnames(data) [12] <- "Site"
+colnames(data) [13] <- "Host"
 data
 
 
@@ -95,8 +97,8 @@ data
 
 data=data.frame(env_table, meta_table$Site, meta_table$Host, row.names=rownames(meta_table))
 data
-colnames(data) [10] <- "Site"
-colnames(data) [11] <- "Host"
+colnames(data) [12] <- "Site"
+colnames(data) [13] <- "Host"
 data
 write.csv(data, "soilvariables.csv")
 
@@ -111,14 +113,16 @@ Na <-summarySE(data, measurevar= "Na", groupvars=c("Site"), na.rm = TRUE)
 H <-summarySE(data, measurevar= "H", groupvars=c("Site"), na.rm = TRUE)
 Al <-summarySE(data, measurevar= "Al", groupvars=c("Site"), na.rm = TRUE)
 SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Site"), na.rm = TRUE)
+C <-summarySE(data, measurevar= "C", groupvars=c("Site"), na.rm = TRUE)
+N <-summarySE(data, measurevar= "N", groupvars=c("Site"), na.rm = TRUE)
 
-soilvar= (data.frame(pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM))
+soilvar= (data.frame(pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM,C,N))
 write.csv.tabular(soilvar, file = "soilvar.csv")
 
 
 # Add results of ANOVA and pairwise Tukey tests in table
 
-aov<-aov (pH ~ Site, data = data)
+aov<-aov (N ~ Site, data = data)
 summary(aov)
 TukeyHSD(aov)
 
