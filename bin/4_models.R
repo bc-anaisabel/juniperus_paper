@@ -127,6 +127,22 @@ summary(aov)
 TukeyHSD(aov)
 
 
+# Trying to make the previous step shorter
+
+x <- colnames(data[,1:11])
+
+# loop that calculates summary statistics for each variable
+# changes the third column name to "mean" instead of variable name
+# and adds additional column titled 'Variable' with variable name
+
+for (i in x){
+  a <- summarySE(data, measurevar= i, groupvars=c("Site"), na.rm = T)
+  names(a)[names(a) == i] <- "mean"
+  a$Variable <- i
+  assign(i,a)}
+
+Bind_soilvar<-rbind(pH, Pdis, Ca, Mg, K, Na, H, Al, SoilM, C, N)
+
 # Distance-based redundancy analysis (dbRDA) is an ordination method similar to Redundancy Analysis (rda),
 # but it allows non-Euclidean dissimilarity indices, such as Manhattan or Bray-Curtis, Raup-Crick distance. 
 # Despite this non-Euclidean feature, the analysis is strictly linear and metric. 

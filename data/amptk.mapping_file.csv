@@ -1,4 +1,4 @@
-﻿#SampleID,BarcodeSequence,LinkerPrimerSequence,RevBarcodeSequence,ReversePrimer,phinchID,DemuxReads,Project,Site,Type,Host,PCRbatch,Control,pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM,C,N
+﻿#SampleID,BarcodeSequence,LinkerPrimerSequence,RevBarcodeSequence,ReversePrimer,phinchID,DemuxReads,Project,Site,Type,Host,PCRbatch,Control,pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM,C,Nit
 A1-JM2s-2-2621739,S1,GTGARTCATCRARTYTTTG,no_data,CCTSCSCTTANTDATATGC,A1-JM2s-2-2621739,159356,Texcoco,mixed,soil,Juniperus,PCR3,N.A.,5.5,2.93,5.52,3.27,0.78,0.07,0.55,0.15,21.5,2.85,0.12
 A2-Joya3s-2-2621747,S2,GTGARTCATCRARTYTTTG,no_data,CCTSCSCTTANTDATATGC,A2-Joya3s-2-2621747,128901,Izta,Joya,soil,Juniperus,PCR4,N.A.,4.45,7,6.57,0.6,0.31,0.07,1.35,0.62,5.49,,
 A3-J6r-2-2621805,S3,GTGARTCATCRARTYTTTG,no_data,CCTSCSCTTANTDATATGC,A3-J6r-2-2621805,49410,Texcoco,perturbated,root,Juniperus,PCR2,N.A.,,,,,,,,,,,
