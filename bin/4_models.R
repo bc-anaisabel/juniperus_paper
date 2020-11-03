@@ -104,17 +104,17 @@ write.csv(data, "soilvariables.csv")
 
 ###summary(data)
 
-pH <- summarySE(data, measurevar= "pH", groupvars=c("Site"), na.rm = TRUE)
-Pdis <-summarySE(data, measurevar= "Pdis", groupvars=c("Site"), na.rm = TRUE)
-Ca <-summarySE(data, measurevar= "Ca", groupvars=c("Site"), na.rm = TRUE)
-Mg <-summarySE(data, measurevar= "Mg", groupvars=c("Site"), na.rm = TRUE)
-K <-summarySE(data, measurevar= "K", groupvars=c("Site"), na.rm = TRUE)
-Na <-summarySE(data, measurevar= "Na", groupvars=c("Site"), na.rm = TRUE)
-H <-summarySE(data, measurevar= "H", groupvars=c("Site"), na.rm = TRUE)
-Al <-summarySE(data, measurevar= "Al", groupvars=c("Site"), na.rm = TRUE)
-SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Site"), na.rm = TRUE)
-C <-summarySE(data, measurevar= "C", groupvars=c("Site"), na.rm = TRUE)
-N <-summarySE(data, measurevar= "N", groupvars=c("Site"), na.rm = TRUE)
+pH <- summarySE(data, measurevar= "pH", groupvars=c("Site", "Host"), na.rm = TRUE)
+Pdis <-summarySE(data, measurevar= "Pdis", groupvars=c("Site", "Host"), na.rm = TRUE)
+Ca <-summarySE(data, measurevar= "Ca", groupvars=c("Site", "Host"), na.rm = TRUE)
+Mg <-summarySE(data, measurevar= "Mg", groupvars=c("Site", "Host"), na.rm = TRUE)
+K <-summarySE(data, measurevar= "K", groupvars=c("Site", "Host"), na.rm = TRUE)
+Na <-summarySE(data, measurevar= "Na", groupvars=c("Site", "Host"), na.rm = TRUE)
+H <-summarySE(data, measurevar= "H", groupvars=c("Site", "Host"), na.rm = TRUE)
+Al <-summarySE(data, measurevar= "Al", groupvars=c("Site", "Host"), na.rm = TRUE)
+SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Site", "Host"), na.rm = TRUE)
+C <-summarySE(data, measurevar= "C", groupvars=c("Site", "Host"), na.rm = TRUE)
+N <-summarySE(data, measurevar= "N", groupvars=c("Site", "Host"), na.rm = TRUE)
 
 soilvar= (data.frame(pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM,C,N))
 write.csv.tabular(soilvar, file = "soilvar.csv")
@@ -122,7 +122,7 @@ write.csv.tabular(soilvar, file = "soilvar.csv")
 
 # Add results of ANOVA and pairwise Tukey tests in table
 
-aov<-aov (N ~ Site, data = data)
+aov<-aov (N ~ Site*Host, data = data)
 summary(aov)
 TukeyHSD(aov)
 
@@ -234,7 +234,6 @@ model <- foram
 
 model
 
-model <- subset_taxa(model, Family %in% c("f__ Herpotrichiellaceae" Thelephoraceae GlomeraceaeNectriaceaeTricholomataceae"))
 
 any(taxa_sums(model) == 0)
 
