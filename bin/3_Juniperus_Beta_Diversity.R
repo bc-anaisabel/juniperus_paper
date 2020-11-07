@@ -63,11 +63,11 @@ sample_data(subset.texcoco.binary.beta)
 
 
 # Take out samples with no fungi present for ECM and for AM 
-trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "F3-J5s-2-2621810")
+trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "H8-J1r-2-2621902")
 trophicmode 
 
 #Subset if necessary
-selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__am"))
+selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__ecm"))
 selectedtrophic 
 
 
@@ -108,14 +108,11 @@ adonis2( nmds ~ Site, data = sampledf)
 adonis2( nmds ~ Host, data = sampledf)
 adonis2( nmds ~ Site+Type, data = sampledf)
 
-#Network 
-
-plot_net(selectedtrophic, color = "Host", shape = "Site") #not using 
 
 
 #### Create table frequency mycorrhizal fungi in each Host####
 
-subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__"))
 subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
 subset.myc
 
@@ -193,6 +190,14 @@ subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
 subset<- subset_samples(subset, Type %in% "root")
 subset
 
+any(taxa_sums(subset) == 0)
+subset <- prune_taxa(taxa_sums(subset) > 0, subset)
+subset
+
+tax_table(subset)
+otu_table(subset)
+
+
 #Merge by category 
 nw <-merge_samples(subset, group = "Host")
 network_host <- as.data.frame(otu_table(nw))
@@ -200,16 +205,14 @@ is.matrix(network_host)
 
 #vectors
 taxa_names(subset)
-color_vector <- c("f__ Glomeraceae", "f__ Claroideoglomeraceae", "f__ Acaulosporaceae", "f__ Gigasporaceae", "f__ Ambisporaceae", "f__ Paraglomeraceae", "f__ Unknown")
+#color_vector <- c()
 color<-as.matrix(tax_table(subset))
 color<-as.data.frame(color)
-color<-color$Family
-
-#color_vector <- color$Family
+color<- color$Family
 
 
 #Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color)
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color$Family)
 network_host
 
 
@@ -230,9 +233,9 @@ is.matrix(network_host)
 
 
 #Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, label=rownames(network_host),
+gplot(network_host, thresh = 0.2, displaylabels = TRUE,
       legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
-             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color$Family)
 
 
 #Other format
@@ -248,16 +251,22 @@ network_host
 
 #Other type of plot 
 
-pal2 <-brewer.pal(8, "Set2")
+pal2 <-polychrome(27)
 
 par(mfrow=c(1,2), xpd=T)
+
 gplot(as.one.mode(network_host),
       displaylabels = TRUE,
-      label=rownames(network_host), 
       gmode="graph",
-      label.cex=0.6, vertex.col = color, vertex.cex=2)
+      label.cex=1, vertex.col = color$Class, vertex.cex=1)
 
-+legend(x=-1,y=-1, color$Family, pch=21, col = pal2, pt.cex=2, cex=.8, bty="n", ncol=1)
+palette(polychrome(n=27))
+gplot(network_host, gmode="graph", jitter=FALSE,
+      displaylabels=TRUE, 
+      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
+      vertex.col=color)
+  
+
 
 #### Networks using igraph ####
 

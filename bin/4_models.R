@@ -59,23 +59,22 @@ binary_table
 meta_table <- sample_data(soil) #only sample data and only from soil samples
 meta_table
 
-env <- c("pH","Pdis","Ca","Mg","K","Na","H","Al", "SoilM","C","N") 
+env <- c("pH","Pdis","Ca","Mg","K","Na","H","Al","SoilM","CN") 
 
 #Transform columns to numeric values, each column separately 
 
 env_table <- subset(meta_table, select = env)
 env_table <-data.frame(env_table) #use as data frame to be able to transform to numeric
-env_table[, 11]  <- as.numeric(env_table[, 11])
-env_table[, 10]  <- as.numeric(env_table[, 10])
-env_table[, 9]  <- as.numeric(env_table[, 9])
-env_table[, 8]  <- as.numeric(env_table[, 8])
-env_table[, 7]  <- as.numeric(env_table[, 7])
-env_table[, 6]  <- as.numeric(env_table[, 6])
-env_table[, 5]  <- as.numeric(env_table[, 5])
-env_table[, 4]  <- as.numeric(env_table[, 4])
-env_table[, 3]  <- as.numeric(env_table[, 3])
-env_table[, 2]  <- as.numeric(env_table[, 2])
-env_table[, 1]  <- as.numeric(env_table[, 1])
+env_table[, 10] <- as.numeric(as.character(env_table[, 10]))
+env_table[, 9]  <- as.numeric(as.character(env_table[, 9]))
+env_table[, 8]  <- as.numeric(as.character(env_table[, 8]))
+env_table[, 7]  <- as.numeric(as.character(env_table[, 7]))
+env_table[, 6]  <- as.numeric(as.character(env_table[, 6]))
+env_table[, 5]  <- as.numeric(as.character(env_table[, 5]))
+env_table[, 4]  <- as.numeric(as.character(env_table[, 4]))
+env_table[, 3]  <- as.numeric(as.character(env_table[, 3]))
+env_table[, 2]  <- as.numeric(as.character(env_table[, 2]))
+env_table[, 1]  <- as.numeric(as.character(env_table[, 1]))
 
 ### env_table[, 1:8]  <- as.numeric(env_table[, 1:8])
 
@@ -91,45 +90,19 @@ colnames(data) [12] <- "Site"
 colnames(data) [13] <- "Host"
 data
 
-
-
 # Create soil table with average and SD values 
 
 data=data.frame(env_table, meta_table$Site, meta_table$Host, row.names=rownames(meta_table))
 data
-colnames(data) [12] <- "Site"
-colnames(data) [13] <- "Host"
+colnames(data) [11] <- "Site"
+colnames(data) [12] <- "Host"
 data
-write.csv(data, "soilvariables.csv")
 
 ###summary(data)
+# using exported soilvariables data 
+data <-read.csv("soilvariables.csv", row.names = 1)
 
-pH <- summarySE(data, measurevar= "pH", groupvars=c("Site", "Host"), na.rm = TRUE)
-Pdis <-summarySE(data, measurevar= "Pdis", groupvars=c("Site", "Host"), na.rm = TRUE)
-Ca <-summarySE(data, measurevar= "Ca", groupvars=c("Site", "Host"), na.rm = TRUE)
-Mg <-summarySE(data, measurevar= "Mg", groupvars=c("Site", "Host"), na.rm = TRUE)
-K <-summarySE(data, measurevar= "K", groupvars=c("Site", "Host"), na.rm = TRUE)
-Na <-summarySE(data, measurevar= "Na", groupvars=c("Site", "Host"), na.rm = TRUE)
-H <-summarySE(data, measurevar= "H", groupvars=c("Site", "Host"), na.rm = TRUE)
-Al <-summarySE(data, measurevar= "Al", groupvars=c("Site", "Host"), na.rm = TRUE)
-SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Site", "Host"), na.rm = TRUE)
-C <-summarySE(data, measurevar= "C", groupvars=c("Site", "Host"), na.rm = TRUE)
-N <-summarySE(data, measurevar= "N", groupvars=c("Site", "Host"), na.rm = TRUE)
-
-soilvar= (data.frame(pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM,C,N))
-write.csv.tabular(soilvar, file = "soilvar.csv")
-
-
-# Add results of ANOVA and pairwise Tukey tests in table
-
-aov<-aov (N ~ Site*Host, data = data)
-summary(aov)
-TukeyHSD(aov)
-
-
-# Trying to make the previous step shorter
-
-x <- colnames(data[,1:11])
+x <- colnames(data[,1:10])
 
 # loop that calculates summary statistics for each variable
 # changes the third column name to "mean" instead of variable name
@@ -141,51 +114,31 @@ for (i in x){
   a$Variable <- i
   assign(i,a)}
 
-Bind_soilvar<-rbind(pH, Pdis, Ca, Mg, K, Na, H, Al, SoilM, C, N)
+Bind_soilvar<-rbind(pH, Pdis, Ca, Mg, K, Na, H, Al, SoilM, CN)
+write.csv(Bind_soilvar, col.names=TRUE, file = "bind_soilvar.csv")
 
-# Distance-based redundancy analysis (dbRDA) is an ordination method similar to Redundancy Analysis (rda),
-# but it allows non-Euclidean dissimilarity indices, such as Manhattan or Bray-Curtis, Raup-Crick distance. 
-# Despite this non-Euclidean feature, the analysis is strictly linear and metric. 
+# Add results of ANOVA and pairwise Tukey tests in table
 
-binary_table = t (binary_table)
-colnames(binary_table)
-raup <- vegdist(binary_table,method="raup")
-head(raup)
-
-# null model
-raup.min<-capscale (raup ~ 1, data)
-plot(raup.min)
+aov<-aov (data$CN ~ Site, data = data)
+summary(aov)
+TukeyHSD(aov)
 
 
-# model including all env variables - dbrda(raup ~ ., data) is the same!
-raup.all <-dbrda (raup ~ pH + Pdis + Ca + Mg + K + Na + H + SoilM, data)
-plot(raup.all)
+#### the longer option #### 
 
-# hypothesis model
-raup.test<-dbrda(raup ~ Pdis * Host * Site, data)
+pH <- summarySE(data, measurevar= "pH", groupvars=c("Site", "Host"), na.rm = TRUE)
+Pdis <-summarySE(data, measurevar= "Pdis", groupvars=c("Site", "Host"), na.rm = TRUE)
+Ca <-summarySE(data, measurevar= "Ca", groupvars=c("Site", "Host"), na.rm = TRUE)
+Mg <-summarySE(data, measurevar= "Mg", groupvars=c("Site", "Host"), na.rm = TRUE)
+K <-summarySE(data, measurevar= "K", groupvars=c("Site", "Host"), na.rm = TRUE)
+Na <-summarySE(data, measurevar= "Na", groupvars=c("Site", "Host"), na.rm = TRUE)
+H <-summarySE(data, measurevar= "H", groupvars=c("Site", "Host"), na.rm = TRUE)
+Al <-summarySE(data, measurevar= "Al", groupvars=c("Site", "Host"), na.rm = TRUE)
+SoilM <-summarySE(data, measurevar= "SoilM", groupvars=c("Site", "Host"), na.rm = TRUE)
+CN <-summarySE(data, measurevar= "CN", groupvars=c("Site", "Host"), na.rm = TRUE)
 
-# which is the best model?
-# if both are significant, you choose the simplest model (raup.test)
-anova (raup.all, raup.test)
-
-
-# OrdiR2step: To select the significant explanatory variables
-# The criteria for including a variable in the model is based on adjusted variation (R2adj) and Pvalues
-# explained by the selected variables and their comparison with R2adj explained by the global model (with all variables);
-# if the new variable is not significant or the R2adj of the model including this new variable would exceed the R2adj of the global model,
-# the selection will be stopped.
-
-raup.db<-ordiR2step(raup.min, scope = formula (raup.all), direction =  "both") # Pdis (0.064 Pvalue) and then Ca (0.068 Pvalue)
-RsquareAdj (raup.min)$adj.r.squared # adjusted R2 explained by all variables
-
-
-raup.db # new model with selected variables based on on adjusted variation: 
-plot(raup.db)
-summary(raup.db)
-RsquareAdj (raup.db)$adj.r.squared
-anova(raup.db)
-anova(raup.db, by="term") 
-anova(raup.db, by="axis")
+soilvar= (data.frame(pH,Pdis,Ca,Mg,K,Na,H,Al,SoilM,CN))
+write.csv.tabular(soilvar, file = "soilvar.csv")
 
 
 

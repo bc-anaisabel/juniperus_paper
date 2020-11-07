@@ -297,11 +297,9 @@ ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Trophic)) +
 
 # Plot obtained: Relative Abundance (using sequence reads) of fungi Phylum by Site, Type of sample and Host plant
 
+# How many OTUs 
 
-
-# How many OTUs per host 
-
-subset.q<-subset_samples(subset.texcoco.binary, Host %in% "Juniperus")
+subset.q<-subset_samples(subset.texcoco.binary, Site %in% "perturbated")
 subset.q
 any(taxa_sums(subset.q) ==0)
 subset.q <- prune_taxa(taxa_sums(subset.q) > 0, subset.q)
@@ -326,7 +324,7 @@ abc
 
 # Create a table that gathers diversity indices and subset for different cathegories used 
 
-subset.myc <- subset_taxa(subset.texcoco.binary, Trophic %in% "a__sap")
+subset.myc <- subset_taxa(subset.texcoco.binary, Trophic %in% "a__ecm")
 
 #verify taxa missing 
 any(taxa_sums(subset.myc) == 0)
@@ -390,20 +388,12 @@ shapiro.test(residual2)
 leveneTest(Observed ~ Site, data=data)
 
 
-# Use glm because data is not all normal distributed (only for ECM fungi it is) 
-
-# Poisson Regression
-# where count is a count and
-# x1-x3 are continuous predictors
-fit <- glm(Observed ~ Site, data = data, family = Gamma())
-summary(fit)
-
 #Kruskal Wallis test: no parametric
 
 head(data)
 levels(data$Site)
 
-group_by(data, Site) %>%
+group_by(data, Host) %>%
   summarise(
     count = n(),
     mean = mean(Observed, na.rm = TRUE),
@@ -412,10 +402,10 @@ group_by(data, Site) %>%
     IQR = IQR(Observed, na.rm = TRUE)
   )
 
-KW1<- kruskal.test(Observed ~ Site, data)
+KW1<- kruskal.test(Observed ~ Host, data)
 KW1
 
-pairwise.wilcox.test(data$Observed, data$Site,
+pairwise.wilcox.test(data$Observed, data$Host,
                      p.adjust.method = "bonferroni")
 
 #### Abundance of TOP OTUs  (change for trophic mode and cathegories) ####
