@@ -23,6 +23,7 @@ library(igraph)
 library(ggnetwork)
 library(statnet.common)
 library(network)
+library(pals)
 
 theme_set(theme_bw())
 
@@ -93,7 +94,7 @@ names(supp.labs) <- c("native", "mixed", "perturbated")
 sample_data(subset.texcoco.binary.beta)$Site = factor(sample_data(subset.texcoco.binary.beta)$Site, levels=c("native","mixed","disturbed"))
 
 #Plot nmds 
-p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Type", title = "All fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
+p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Type", title = "ECM fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
 print(p1)
 p1 + facet_wrap(~Site)
 
@@ -112,7 +113,7 @@ adonis2( nmds ~ Site+Type, data = sampledf)
 
 #### Create table frequency mycorrhizal fungi in each Host####
 
-subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__"))
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
 subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
 subset.myc
 
@@ -203,18 +204,17 @@ nw <-merge_samples(subset, group = "Host")
 network_host <- as.data.frame(otu_table(nw))
 is.matrix(network_host)
 
-#vectors
+# vectors
 taxa_names(subset)
-#color_vector <- c()
+# color_vector <- c()
 color<-as.matrix(tax_table(subset))
 color<-as.data.frame(color)
 color<- color$Family
 
 
 #Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color$Family)
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color)
 network_host
-
 
 #Merge more than one category 
 
@@ -233,9 +233,15 @@ is.matrix(network_host)
 
 
 #Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE,
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
       legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
              pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color$Family)
+
+
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, label = color$Family, usearrows=FALSE, 
+      legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color$Family)
+
 
 
 #Other format
@@ -258,33 +264,17 @@ par(mfrow=c(1,2), xpd=T)
 gplot(as.one.mode(network_host),
       displaylabels = TRUE,
       gmode="graph",
-      label.cex=1, vertex.col = color$Class, vertex.cex=1)
+      label.cex=1, vertex.col = color, vertex.cex=1)
 
 palette(polychrome(n=27))
 gplot(network_host, gmode="graph", jitter=FALSE,
       displaylabels=TRUE, 
       boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
-      vertex.col=color)
+      vertex.col= as.numeric(color$Family))
   
 
 
 #### Networks using igraph ####
 
-sampledata = data.frame(sample_data(selectedtrophic))
-d1 = as.matrix(phyloseq::distance(nw, method="raup"))
-gr = graph.adjacency(d1, mode = "directed", weighted = TRUE)
-
-net = igraph::mst(gr)
-V(net)$id = sampledata[names(V(net)), "phinchID"]
-V(net)$label[V(net)$type==F] <- nodes$media[V(net)$type==F]
-
-
-gnet=ggnetwork(net)
-
-ggplot(gnet, aes(x = x, y = y, xend = xend, yend = yend))+
-  geom_edges(color = "darkgray") +
-  geom_nodes(aes(color = )) +
-  theme_blank()+
-  theme(legend.position="bottom")
 
 
