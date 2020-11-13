@@ -13,6 +13,7 @@ library("DT"); packageVersion("DT")
 library(ggplot2)
 library(dplyr)
 library(tibble)
+library(mvabund)
 library(randomForest)
 library(knitr)
 library(gplots)
@@ -109,11 +110,116 @@ adonis2( nmds ~ Site, data = sampledf)
 adonis2( nmds ~ Host, data = sampledf)
 adonis2( nmds ~ Site+Type, data = sampledf)
 
+#MVABUND : multivariate and univariate tests 
+
+# Agglomerating OTUs at Family level
+
+subset.fam<- subset_taxa(subset.texcoco.binary.beta, Trophic %in% "a__sap") 
+subset.fam
+tax_table(subset.fam)
+
+subset.fam <- tax_glom(subset.fam, taxrank = "Family")
+subset.fam
+tax_table(subset.fam)
+
+taxa_sums(subset.fam) [1:10]
+any(taxa_sums(subset.fam) == 0)
+subset.fam <- prune_taxa(taxa_sums(subset.fam) > 0, subset.fam)
+any(taxa_sums(subset.fam) == 0)
+subset.fam
+
+#In case you need to get top 50 (for ecm it comes out to only 31 families, for am only 14, so is not needed)
+Top <- names(sort(taxa_sums(subset.fam), TRUE)[1:50])
+ent <- prune_taxa(Top, subset.fam)
+
+taxa_sums(ent)
+taxa_names(ent)
+tax_table(ent)
+ent
+
+
+# For selecting most species-rich families
+
+
+subset
+tax_table(subset)
+
+spprich<-subset %>% 
+  psmelt %>%
+  group_by(Family) %>% 
+  summarize(OTUn = (unique(OTU) %>% length)) %>% 
+  arrange(desc(OTUn))
+
+subset<- subset_taxa(subset, Family %in% c("f__ Herpotrichiellaceae"))
+subset
+tax_table(subset)
+
+# For top 50 OTUs
+
+subset <- subset.texcoco.binary.beta
+subset
+
+taxa_sums(subset) [1:10]
+any(taxa_sums(subset) == 0)
+ent <- prune_taxa(taxa_sums(subset) > 0, subset)
+any(taxa_sums(ent) == 0)
+ent
+
+Top <- names(sort(taxa_sums(ent), TRUE)[1:50])
+ent50 <- prune_taxa(Top, ent)
+ent50
+
+taxa_names(ent50)
+tax_table(ent50)
+ntaxa(ent50)
+taxa_sums(ent50)
+
+
+#mvabund
+
+# check data
+ent50
+tax_table(ent50)
+sample_data(ent50)
+
+abun_table <- otu_table(ent50) 
+abun_table
+
+#transform to binary table in case using agglomeration (e.g. at family level using tax_glom)
+abun_table = transform_sample_counts(abun_table, function(x, minthreshold=0){
+  x[x > minthreshold] <- 1
+  return(x)})
+head(otu_table(abun_table))
+
+#if not, procede:
+
+abun_table = t (abun_table)
+
+meta_table <- sample_data(ent50) 
+meta_table
+
+abun_sample_table <- data.frame(abun_table, meta_table)
+abun_sample_table
+
+mvabund_table <- mvabund(abun_sample_table [,1:73]) #format table 
+mvabund_table
+
+mod2 <- manyglm(mvabund_table ~ abun_sample_table$Site , family="negative_binomial")
+plot(mod2)
+
+#manyglm <- manyglm(mvabund ~ pH * factor(Elevation), family="binomial")
+
+anova(mod2)
+anova(mod2, p.uni="adjusted")
+
+
+
+
 
 
 #### Create table frequency mycorrhizal fungi in each Host####
 
-subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
 subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
 subset.myc
 
@@ -156,25 +262,48 @@ sharedotusam<-write.csv(predictors, file = "sharedotusacm.csv")
 
 ###
 
-#make a column for the outcome/response variable
-response <- as.factor(sample_data(subset.myc)$Host)
+#Random forest 
 
-response2 <- t(tax_table(subset.myc))
+#make a dataframe of training data with OTUs as column and samples as rows
+predictors <- t(otu_table(selectedtrophic))
+dim(predictors)
+
+#make a column for the outcome/response variable
+response <- as.factor(sample_data(selectedtrophic)$Site)
 
 #combine them into 1 data frame
-rf.data <- data.frame(response, predictors, response2)
+rf.data <- data.frame(response, predictors)
 
-#
-library(tidyr)
-?as.data.frame
+set.seed(2)
+fungi.classify <- randomForest(response~., data = rf.data, ntree = 1000)
+print(fungi.classify)
 
-predictors.1 <- as.data.frame(predictors)
+#what variables are stored in the output?
+names(fungi.classify)
 
-predictors.1$samples <- rownames(predictors.1)
+#make a data frame with predictor names and their importance
+imp <-importance(fungi.classify)
+imp <-data.frame(predictors = rownames(imp), imp)
 
-predictors.1 <- gather(predictors.1)
+#Order the predictor levels by importance
+imp.sort <- arrange(imp, desc(MeanDecreaseGini))
+imp.sort$predictors <- factor(imp.sort$predictors, levels = imp.sort$predictors)
+
+#Select the top predictors
+imp.50 <- imp.sort[1:20, ]
+
+#ggplot
+
+ggplot(imp.50, aes(x = predictors, y = MeanDecreaseGini)) +
+  geom_bar(stat = "identity", fill = "indianred") + 
+  coord_flip() +
+  ggtitle("Most important ECM OTUS for classifying fungi samples/n into Sites")
 
 
+# What are those OTUs?
+otunames <- imp.50$predictors
+r <- rownames(tax_table(selectedtrophic)) %in% otunames
+kable(tax_table(selectedtrophic)[r, ])
 
 
 

@@ -547,9 +547,6 @@ ggplot(mdata_top, aes(x = Site, y = Abundance, fill = Family)) +
   ggtitle("TOP OTUs by Family - relative abundance") + facet_wrap("Host")
 
 
-
-
-
 #### #Finding most species-rich families  ####
 
 subset
@@ -566,49 +563,5 @@ subset
 tax_table(subset)
 
 
-#### mvabund and glm for most abundant OTUs #### 
-
-##### subset
-
-ent50
-taxa_names(ent50)
-ntaxa(ent50)
-taxa_sums(ent50)
-
-
-#What data? 
-ent50
-tax_table(ent50)
-sample_data(ent50)
-
-abun_table <- otu_table(ent50) 
-abun_table
-
-#transform to binary table in case using agglomeration (e.g. at family level using tax_glom)
-abun_table = transform_sample_counts(abun_table, function(x, minthreshold=0){
-  x[x > minthreshold] <- 1
-  return(x)})
-head(otu_table(abun_table))
-
-#if not, procede:
-
-abun_table = t (abun_table)
-
-meta_table <- sample_data(ent50) 
-meta_table
-
-abun_sample_table <- data.frame(abun_table, meta_table)
-abun_sample_table
-
-mvabund_table <- mvabund(abun_sample_table [,1:4]) #format table 
-mvabund_table
-
-mod2 <- manyglm(mvabund_table ~ abun_sample_table$Type , family="binomial")
-plot(mod2)
-
-#manyglm <- manyglm(mvabund ~ pH * factor(Elevation), family="binomial")
-
-anova(mod2)
-anova(mod2, p.uni="adjusted")
 
 
