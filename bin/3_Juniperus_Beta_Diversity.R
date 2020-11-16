@@ -219,7 +219,7 @@ anova(mod2, p.uni="adjusted")
 
 #### Create table frequency mycorrhizal fungi in each Host####
 
-subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
 subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
 subset.myc
 
@@ -265,17 +265,17 @@ sharedotusam<-write.csv(predictors, file = "sharedotusacm.csv")
 #Random forest 
 
 #make a dataframe of training data with OTUs as column and samples as rows
-predictors <- t(otu_table(selectedtrophic))
+predictors <- t(otu_table(subset.myc))
 dim(predictors)
 
 #make a column for the outcome/response variable
-response <- as.factor(sample_data(selectedtrophic)$Site)
+response <- as.factor(sample_data(subset.myc)$Site)
 
 #combine them into 1 data frame
 rf.data <- data.frame(response, predictors)
 
 set.seed(2)
-fungi.classify <- randomForest(response~., data = rf.data, ntree = 1000)
+fungi.classify <- randomForest(response~., data = rf.data, ntree = 400)
 print(fungi.classify)
 
 #what variables are stored in the output?
@@ -297,7 +297,7 @@ imp.50 <- imp.sort[1:20, ]
 ggplot(imp.50, aes(x = predictors, y = MeanDecreaseGini)) +
   geom_bar(stat = "identity", fill = "indianred") + 
   coord_flip() +
-  ggtitle("Most important ECM OTUS for classifying fungi samples/n into Sites")
+  ggtitle("Most important AM OTUS (roots) for classifying samples/n into Sites")
 
 
 # What are those OTUs?
