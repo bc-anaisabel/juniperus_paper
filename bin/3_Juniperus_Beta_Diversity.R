@@ -65,11 +65,11 @@ sample_data(subset.texcoco.binary.beta)
 
 
 # Take out samples with no fungi present for ECM and for AM 
-trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "H8-J1r-2-2621902")
+trophicmode = subset_samples(subset.texcoco.binary.beta, phinchID != "")
 trophicmode 
 
 #Subset if necessary
-selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c("a__ecm"))
+selectedtrophic <- subset_taxa(trophicmode, Trophic %in% c(""))
 selectedtrophic 
 
 
@@ -95,7 +95,7 @@ names(supp.labs) <- c("native", "mixed", "perturbated")
 sample_data(subset.texcoco.binary.beta)$Site = factor(sample_data(subset.texcoco.binary.beta)$Site, levels=c("native","mixed","disturbed"))
 
 #Plot nmds 
-p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Type", title = "ECM fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
+p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Type", title = "All fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
 print(p1)
 p1 + facet_wrap(~Site)
 
@@ -219,7 +219,7 @@ anova(mod2, p.uni="adjusted")
 
 #### Create table frequency mycorrhizal fungi in each Host####
 
-subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
 subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
 subset.myc
 
@@ -229,7 +229,7 @@ subset.myc
 
 tax_table(subset.myc)
 otu_table(subset.myc)
-
+sample_data(subset.myc)
 
 #make a dataframe with OTUs as column and samples as rows
 predictors <- t(otu_table(subset.myc))
@@ -245,6 +245,10 @@ Host <- as.factor(sample_data(subset.myc)$Host)
 Site <- as.factor(sample_data(subset.myc)$Site)
 
 predictors <- data.frame(predictors,Host,Site)
+
+head(predictors)
+
+predictors$HS <- paste0(predictors$Host, predictors$Site)
 
 tax.table<-as.data.frame(tax_table(subset.myc))
 tax.table
@@ -268,14 +272,27 @@ sharedotusam<-write.csv(predictors, file = "sharedotusacm.csv")
 predictors <- t(otu_table(subset.myc))
 dim(predictors)
 
+#predictors <- as.table(predictors)
+#predictors<- as.data.frame(predictors)
+#dim(predictors)
+
+#Host <- as.factor(sample_data(subset.myc)$Host)
+#Site <- as.factor(sample_data(subset.myc)$Site)
+
+#predictors <- data.frame(predictors,Host,Site)
+#head(predictors)
+
+#predictors$HS <- paste0(predictors$Host, predictors$Site)
+#head(predictors)
+
 #make a column for the outcome/response variable
-response <- as.factor(sample_data(subset.myc)$Site)
+response <- as.factor(sample_data(subset.myc)$Host)
 
 #combine them into 1 data frame
 rf.data <- data.frame(response, predictors)
 
 set.seed(2)
-fungi.classify <- randomForest(response~., data = rf.data, ntree = 400)
+fungi.classify <- randomForest(response ~., data = rf.data, ntree = 500)
 print(fungi.classify)
 
 #what variables are stored in the output?
@@ -297,7 +314,7 @@ imp.50 <- imp.sort[1:20, ]
 ggplot(imp.50, aes(x = predictors, y = MeanDecreaseGini)) +
   geom_bar(stat = "identity", fill = "indianred") + 
   coord_flip() +
-  ggtitle("Most important AM OTUS (roots) for classifying samples/n into Sites")
+  ggtitle("Most important AM OTUS (roots) for classifying samples/n into Host/Sites")
 
 
 # What are those OTUs?
@@ -306,7 +323,34 @@ r <- rownames(tax_table(selectedtrophic)) %in% otunames
 kable(tax_table(selectedtrophic)[r, ])
 
 
+# Trying random forest with four levels for host/site category
 
+#make a dataframe of training data with OTUs as column and samples as rows
+predictors <- t(otu_table(subset.myc))
+dim(predictors)
+
+predictors <- as.table(predictors)
+predictors<- as.data.frame(predictors)
+dim(predictors)
+
+Host <- as.factor(sample_data(subset.myc)$Host)
+Site <- as.factor(sample_data(subset.myc)$Site)
+
+predictors <- data.frame(predictors,Host,Site)
+head(predictors)
+
+predictors$HS <- paste0(predictors$Host, predictors$Site)
+head(predictors)
+
+#make a column for the outcome/response variable
+response <- as.factor(sample_data(predictors)$HS)
+
+#combine them into 1 data frame
+rf.data <- data.frame(response, predictors)
+
+set.seed(2)
+fungi.classify <- randomForest(response ~., data = rf.data, ntree = 500)
+print(fungi.classify)
 
 
 
