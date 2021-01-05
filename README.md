@@ -8,7 +8,7 @@ Because oak and juniper are plants with different mycorrhizal types, oak being k
 
 The samples I used for sequencing were root and soil samples. Samples were taken from 3 different sites: i) disturbed site with a population of *J. deppeana*, ii) mixed site where *J. deppeana* and *Q. rugosa* grow side by side (regeneration zone), and iii) a native site in forest dominated by *Q. rugosa*. Root samples come from collecting the root system of 6 seedlings in each site of *J. deppeana* (sites i and ii) and *Q. rugosa* (sites ii and iii), for a total of 24 root samples. For soil samples, we collected 3 soil cores for each plant species in each site, for a total of 12 soil samples. 
 
-## Repository guide ## 
+### Repository guide ### 
 
 In this repository you can find scripts, data, metadata and results to identify fungal communities using Illumina MiSeq paired-end data and to analyse fungal diversity and fungal community composition. 
 
@@ -18,13 +18,13 @@ The `/data` directory contains the metadata file containing samples information 
 
 The `/output` directory contains all figures obtained from R scripts to be used for the publication. 
 
-## Raw data ## 
+### Raw data ### 
 
 
 All the sequence data associated with this project are deposited in [OSF](https://osf.io) while the final OTU table (.biom) is in [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data)
 
 
-## Citation
+### Citation
 Palmer JM, Jusino MA, Banik MT, Lindner DL. 2018. Non-biological synthetic spike-in controls
         and the AMPtk software pipeline improve mycobiome data. PeerJ 6:e4925;
         DOI 10.7717/peerj.4925. https://peerj.com/articles/4925/
