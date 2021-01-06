@@ -4,7 +4,7 @@ Here you can find the scripts for pre-processing Illumina MiSeq data with AMPtk,
 
 The steps to follow are listed in order by letters and within step *B) R scripts* you can find the order of use of the R scripts in the numbered names of the scripts.  
 
-A) Preprocessing:
+## A) Preprocessing:
 
 *amptk_for_illumina.sh*: This is a bash script to denoise Illumina MiSeq pair-end data, create an OTU table, and assign taxonomy and fungal trophic modes within AMPtk
 
@@ -15,7 +15,7 @@ A) Preprocessing:
 
 *Convert_txt_to_biom.md*: instructions for manually converting *2_taxonomy.txt* into **.biom** format to use in R with the *phyloseq* package
 
-B) R scripts 1-4 can be used by number order to run alpha- and beta- diversity analyses as follows:
+## B) R scripts 1-4 can be used by number order to run alpha- and beta- diversity analyses as follows:
   * 1_Filter_otu_table.R : filtering otu table
   * 2_Juniperus_Alpha_Diversity.R: performing alpha diversity analysis
   * 3_Juniperus_Beta_Diversity.R: performing beta diversity analysis
