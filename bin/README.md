@@ -15,7 +15,8 @@ The steps to follow are listed in order by letters and within step *B) R scripts
 
 *Convert_txt_to_biom.md*: instructions for manually converting *2_taxonomy.txt* into **.biom** format to use in R with the *phyloseq* package
 
-## B) R scripts 1-4 can be used by number order to run alpha- and beta- diversity analyses as follows:
+## B) R scripts 
+Use in number order to run alpha- and beta- diversity analyses as follows:
   * 1_Filter_otu_table.R : filtering otu table
   * 2_Juniperus_Alpha_Diversity.R: performing alpha diversity analysis
   * 3_Juniperus_Beta_Diversity.R: performing beta diversity analysis
