@@ -14,32 +14,33 @@ The samples I used for sequencing were root and soil samples. Samples were taken
 
 In this repository you can find scripts, data, metadata and results to identify fungal communities using Illumina MiSeq paired-end data and to analyse fungal diversity and fungal community composition. 
 
-**bin**
+### `/bin`
 
-The `/bin` directory contains the bash, manual steps and R scripts to denoise Illumina MiSeq pair-end data, create the OTU table, assign taxonomy and trophic mode of the OTUs, filter the OTU table in R, and analyze alpha- and beta-diversity. 
+The [bin](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin) directory contains the bash, manual steps and R scripts to denoise Illumina MiSeq pair-end data, create the OTU table, assign taxonomy and trophic mode of the OTUs, filter the OTU table in R, and analyze alpha- and beta-diversity. 
 
-### Scripts and manual steps  
+#### Scripts and manual steps  
 
 You can find the script for pre-processing Illumina MiSeq data with AMPtk, the manual steps for assigning OTU taxonomy and trophic mode, and converting metadata from *.txt* to *.biom* to import into R, as well as the numbered (in order of use) R scripts for filtering the OTU table and performing alpha- and beta- diversity analyses. 
 
 The steps to follow are listed in order by letters and within step: **C) R scripts** you can find the R scripts named by numbers in order of use.  
 
-#### A) Preprocessing, assigning taxonomy and trophic mode:
+**A) Preprocessing, assigning taxonomy and trophic mode:**
 
-**Preprocessing and taxonomy and trophic mode assignment within amptk**
+*Preprocessing and taxonomy and trophic mode assignment within amptk*
 
-*amptk_for_illumina.sh*: This is a bash script to denoise Illumina MiSeq pair-end data, create an OTU table, and assign taxonomy and fungal trophic modes within AMPtk. *AMPtk_pipeline.md*: file that describes what the *amptk_for_illumina.sh* script does. 
+amptk_for_illumina.sh: This is a bash script to denoise Illumina MiSeq pair-end data, create an OTU table, and assign taxonomy and fungal trophic modes within AMPtk. AMPtk_pipeline.md is a file that describes what the amptk_for_illumina.sh script does. 
 
-**Manually assigning taxonomy and trophic mode after amptk** 
+*Manually assigning taxonomy and trophic mode after amptk*
 
-*Assign_trophic_mode.md*: instructions for manually assigning taxonomy and trophic mode to OTUs that could not be identified beyond Order 
+Assign_trophic_mode.md: instructions for manually assigning taxonomy and trophic mode to OTUs that could not be identified beyond Order 
   (or higher up in taxonomy rank) using UNITE database.
   
-#### B) Converting text files to biom files 
+**B) Converting text files to biom files**
 
-*Convert_txt_to_biom.md*: instructions for manually converting **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax_biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**  format to use in R. 
+Convert_txt_to_biom.md: instructions for manually converting **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax_biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**  format to use in R. 
 
-#### C) R scripts 
+**C) R scripts** 
+
 Use in number order to run alpha- and beta- diversity analyses as follows:
   * 1_Filter_otu_table.R : filtering otu table
   * 2_Juniperus_Alpha_Diversity.R: performing alpha diversity analysis
@@ -47,13 +48,37 @@ Use in number order to run alpha- and beta- diversity analyses as follows:
   * 4_Models.R: modelling diversity data 
   
  
-**data**
+### `/data`
 
-The `/data` directory contains the metadata file containing samples information and the output data from the AMPtk pipeline that acts as input data for R scripts. It also contains the .md files numbered in order of use to transform the output data into input data (from *.biom* to *.txt* and back to *.biom*).  
+The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the metadata file containing samples information and the output data from the AMPtk pipeline that acts as input data for R scripts. These data files were created and used by the numbered order. 
 
-**output**
+#### Data files
 
-The `/output` directory contains all figures obtained from R scripts to be used for the publication. 
+
+1_taxonomy.biom : otu and taxonomy tables obtained from AMPtk pipeline before adding new taxonomy and fungal trophic mode information
+
+2_taxonomy.txt : otu and taxonomy table in .txt format obtained from AMPtk pipeline that has been edited to add categories of 
+   taxonomy and trophic mode of all OTUs 
+
+3_new_tax_biom : this is a residual file, this is not to be used and should be disregarded. I will delete this file once I update the numbers in my scripts. 
+
+4_new_tax_biom : otu and taxonomy tables that have been edited to contain new taxonomy and fungal trophic information and converted back to **.biom**. This is the file to call initially in the first R script: [1_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_Filter_otu_table.R)
+   
+   
+
+#### Metadata 
+
+amptk.mapping_file.csv: contains all sample data to be used as input for initial R script 
+
+ampt.mapping_file.txt: contains all sample data to be edited as input for initial R script 
+
+metadata_soil_roots.xlsx: contains soil characterization for soil samples and mycorrhizal colonization information for all samples 
+
+
+### `/output`
+
+The [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/output) directory contains all figures obtained from R scripts to be used for the publication. 
+
 
 ### Raw data ### 
 
