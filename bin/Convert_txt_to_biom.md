@@ -1,25 +1,33 @@
-# Converting .txt files back to .biom format for phyloseq tables
+# Converting .txt files to .biom format in order to use them in R with *phyloseq* tables
 
-The stable version of biom format requires Python 3: 
+In case you need to edit your metadata after AMPtk pipeline you will want to go from .txt to .biom so they work with the *phyloseq* package in R. The instructions to do this are here. 
 
+## Steps
 
-## 1. Install Python 3 on MacOS:
+### Prerequisites 
 
-Install Homebrew:
+Install Python 3 if you have other version. The stable version of .biom format requires Python 3:
+
+On macOS
+
+1. Install Homebrew:
 
 > ``ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)``
 
-Check Homebrew installed correctly using:
+2. Check Homebrew installed correctly using:
 
 `brew doctor`
 
-Now install latest version of Python 3:
+3. Now install latest version of Python 3:
 
 `brew install python 3`
 
-Since Python 2.7 is already installed when using **pip** refer to **pip3** instead so it can call the command for Python 3.7 and not the older version
+In my case since Python 2.7 is already installed when using **pip** refer to **pip3** instead so it can call the command for Python 3.7 and not the older version
 
-## 2. Install biom-format package 
+
+### Install biom-format package 
+
+1. You need numpy in order to install biom, so run: 
 
 `pip install numpy`
 
@@ -37,7 +45,7 @@ If needed: to enable Bash tab completion of biom commands, add the following lin
 
 `eval "$(_BIOM_COMPLETE=source biom)"`
 
-Once file has been edited in Excel, to convert from .txt to .biom:
+2. Once you have edited what you wanted in your .txt file, convert it back to .biom using:
 
 `biom convert -i taxonomy.txt -o new_taxonomy.biom --to-hdf5 --table-type="OTU table" --process-obs-metadata taxonomy`
 
