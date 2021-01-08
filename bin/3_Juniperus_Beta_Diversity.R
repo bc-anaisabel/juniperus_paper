@@ -403,30 +403,20 @@ nw2<- merge_samples(subset, "NewPastedVar")
 network_host <- as.data.frame(otu_table(nw2))
 is.matrix(network_host)
 
+#write the sample out of R for issue example
 
+network_df<-write.csv(network_host, file = "network_df.csv")
 
 #Gplot
 gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
       legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
-             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color$Family)
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
 
 
 gplot(network_host, thresh = 0.2, displaylabels = TRUE, label = color$Family, usearrows=FALSE, 
       legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
-             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color$Family)
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
 
-
-
-#Other format
-abc<-t(network_host)
-
-#Plot
-plotweb(network_host)
-
-#Plot
-visweb(network_host)
-
-network_host
 
 #Other type of plot 
 
@@ -444,10 +434,45 @@ gplot(network_host, gmode="graph", jitter=FALSE,
       displaylabels=TRUE, 
       boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
       vertex.col= as.numeric(color$Family))
-  
+
+#Try ggnet 
+
+library(network)
+library(sna)
+library(ggplot2)
+
+install.packages("GGally")
+library(GGally)
+library(RColorBrewer)
+install.packages("intergraph")
+library(intergraph)
+
+# random graph
+network_host<-t(network_host)
+network_host<-as.data.frame(network_host, stringsAsFactors = F)
+network_host<-
+net = network(network_host, directed = FALSE)
+ggnet2(network_host, node.size = 3, node.color = "black", edge.size = 1, edge.color = "grey")
+
+network_host
+
+network_host<-as.data.frame(network_host, stringsAsFactors = F)
+
+
+
+
 
 
 #### Networks using igraph ####
 
+#Other format
+abc<-t(network_host)
 
+#Plot
+plotweb(network_host)
+
+#Plot
+visweb(network_host)
+
+network_host
 
