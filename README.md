@@ -30,7 +30,7 @@ The steps to follow are listed in order by letters and within step: **C) R scrip
 
 amptk_for_illumina.sh: This is a bash script to denoise Illumina MiSeq pair-end data, create an OTU table, and assign taxonomy and fungal trophic modes within AMPtk. AMPtk_pipeline.md is a file that describes what the amptk_for_illumina.sh script does. 
 
-*Manually assigning taxonomy and trophic mode after amptk*
+*Manually assigning taxonomy and trophic mode after AMPtk*
 
 Assign_trophic_mode.md: instructions for manually assigning taxonomy and trophic mode to OTUs that could not be identified beyond Order 
   (or higher up in taxonomy rank) using UNITE database.
