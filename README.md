@@ -42,10 +42,10 @@ If you need to edit your file to add the new taxonomic and trophic assigments, y
 **C) R scripts** 
 
 Use in number order to run alpha- and beta- diversity analyses as follows:
-  * 1_Filter_otu_table.R : filtering otu table
-  * 2_Juniperus_Alpha_Diversity.R: performing alpha diversity analysis
-  * 3_Juniperus_Beta_Diversity.R: performing beta diversity analysis
-  * 4_Models.R: modelling diversity data 
+  * [1_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_Filter_otu_table.R) : filtering otu table
+  * [2_Juniperus_Alpha_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/2_Juniperus_Alpha_Diversity.R): performing alpha diversity analysis
+  * [3_Juniperus_Beta_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Juniperus_Beta_Diversity.R): performing beta diversity analysis
+  * [4_Models.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/4_Models.R): modelling diversity data 
   
 
 ### `/data`
