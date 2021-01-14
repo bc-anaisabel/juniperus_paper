@@ -114,7 +114,7 @@ adonis2( nmds ~ Site+Type, data = sampledf)
 
 # Agglomerating OTUs at Family level
 
-subset.fam<- subset_taxa(subset.texcoco.binary.beta, Trophic %in% "a__sap") 
+subset.fam<- subset_taxa(subset.texcoco.binary.beta, Trophic %in% "a__ecm") 
 subset.fam
 tax_table(subset.fam)
 
@@ -131,15 +131,12 @@ subset.fam
 #In case you need to get top 50 (for ecm it comes out to only 31 families, for am only 14, so is not needed)
 Top <- names(sort(taxa_sums(subset.fam), TRUE)[1:50])
 ent <- prune_taxa(Top, subset.fam)
-
 taxa_sums(ent)
 taxa_names(ent)
 tax_table(ent)
 ent
 
-
 # For selecting most species-rich families
-
 
 subset
 tax_table(subset)
@@ -201,7 +198,7 @@ meta_table
 abun_sample_table <- data.frame(abun_table, meta_table)
 abun_sample_table
 
-mvabund_table <- mvabund(abun_sample_table [,1:73]) #format table 
+mvabund_table <- mvabund(abun_sample_table [,1:28]) #format table 
 mvabund_table
 
 mod2 <- manyglm(mvabund_table ~ abun_sample_table$Site , family="negative_binomial")
@@ -219,7 +216,7 @@ anova(mod2, p.uni="adjusted")
 
 #### Create table frequency mycorrhizal fungi in each Host####
 
-subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
 subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
 subset.myc
 
@@ -264,100 +261,8 @@ sort(table(predictors$Var2))
 
 sharedotusam<-write.csv(predictors, file = "sharedotusacm.csv")
 
-###
 
-#Random forest 
-
-#make a dataframe of training data with OTUs as column and samples as rows
-predictors <- t(otu_table(subset.myc))
-dim(predictors)
-
-#predictors <- as.table(predictors)
-#predictors<- as.data.frame(predictors)
-#dim(predictors)
-
-#Host <- as.factor(sample_data(subset.myc)$Host)
-#Site <- as.factor(sample_data(subset.myc)$Site)
-
-#predictors <- data.frame(predictors,Host,Site)
-#head(predictors)
-
-#predictors$HS <- paste0(predictors$Host, predictors$Site)
-#head(predictors)
-
-#make a column for the outcome/response variable
-response <- as.factor(sample_data(subset.myc)$Host)
-
-#combine them into 1 data frame
-rf.data <- data.frame(response, predictors)
-
-set.seed(2)
-fungi.classify <- randomForest(response ~., data = rf.data, ntree = 500)
-print(fungi.classify)
-
-#what variables are stored in the output?
-names(fungi.classify)
-
-#make a data frame with predictor names and their importance
-imp <-importance(fungi.classify)
-imp <-data.frame(predictors = rownames(imp), imp)
-
-#Order the predictor levels by importance
-imp.sort <- arrange(imp, desc(MeanDecreaseGini))
-imp.sort$predictors <- factor(imp.sort$predictors, levels = imp.sort$predictors)
-
-#Select the top predictors
-imp.50 <- imp.sort[1:20, ]
-
-#ggplot
-
-ggplot(imp.50, aes(x = predictors, y = MeanDecreaseGini)) +
-  geom_bar(stat = "identity", fill = "indianred") + 
-  coord_flip() +
-  ggtitle("Most important AM OTUS (roots) for classifying samples/n into Host/Sites")
-
-
-# What are those OTUs?
-otunames <- imp.50$predictors
-r <- rownames(tax_table(selectedtrophic)) %in% otunames
-kable(tax_table(selectedtrophic)[r, ])
-
-
-# Trying random forest with four levels for host/site category
-
-#make a dataframe of training data with OTUs as column and samples as rows
-predictors <- t(otu_table(subset.myc))
-dim(predictors)
-
-predictors <- as.table(predictors)
-predictors<- as.data.frame(predictors)
-dim(predictors)
-
-Host <- as.factor(sample_data(subset.myc)$Host)
-Site <- as.factor(sample_data(subset.myc)$Site)
-
-predictors <- data.frame(predictors,Host,Site)
-head(predictors)
-
-predictors$HS <- paste0(predictors$Host, predictors$Site)
-head(predictors)
-
-#make a column for the outcome/response variable
-response <- as.factor(sample_data(predictors)$HS)
-
-#combine them into 1 data frame
-rf.data <- data.frame(response, predictors)
-
-set.seed(2)
-fungi.classify <- randomForest(response ~., data = rf.data, ntree = 500)
-print(fungi.classify)
-
-
-
-
-
-
-#### network using sna #### 
+#### Network using sna #### 
 
 #Select data
 subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
@@ -378,16 +283,20 @@ network_host <- as.data.frame(otu_table(nw))
 is.matrix(network_host)
 
 # vectors
-taxa_names(subset)
-# color_vector <- c()
+taxa_names(tax_table(subset))
+
+color_vector <- c("f__", "f__ Acaulosporaceae", "f__ Ambisporaceae", "f__ Claroideoglomeraceae", "f__ Gigasporaceae", "f__ Glomeraceae", "f__ Paraglomeraceae")
 color<-as.matrix(tax_table(subset))
 color<-as.data.frame(color)
 color<- color$Family
 
+network_host_2<-cbind(network_host,color)
+network_host_2
 
 #Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color)
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = network_host)
 network_host
+
 
 #Merge more than one category 
 
@@ -406,15 +315,17 @@ is.matrix(network_host)
 #write the sample out of R for issue example
 
 network_df<-write.csv(network_host, file = "network_df.csv")
+#network_host_t<-as.matrix(network_host)
+#network_host_tt<-as.network(network_host_t)
 
 #Gplot
 gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
-      legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
+      legend(x=1,y=-1, color, pch=21, col = "#777777", 
              pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
 
 
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, label = color$Family, usearrows=FALSE, 
-      legend(x=1,y=-1, color_vector, pch=21, col = "#777777", 
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, label = color, usearrows=FALSE, 
+      legend(x=1,y=-1, color, pch=21, col = "#777777", 
              pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
 
 
@@ -431,9 +342,9 @@ gplot(as.one.mode(network_host),
 
 palette(polychrome(n=27))
 gplot(network_host, gmode="graph", jitter=FALSE,
-      displaylabels=TRUE, 
+      label = color, 
       boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
-      vertex.col= as.numeric(color$Family))
+      vertex.col= as.numeric(color))
 
 #Try ggnet 
 
@@ -450,17 +361,29 @@ library(intergraph)
 # random graph
 network_host<-t(network_host)
 network_host<-as.data.frame(network_host, stringsAsFactors = F)
-network_host<-
+network_host[, 2] <- as.character(network_host[, 2])
 net = network(network_host, directed = FALSE)
-ggnet2(network_host, node.size = 3, node.color = "black", edge.size = 1, edge.color = "grey")
-
-network_host
-
-network_host<-as.data.frame(network_host, stringsAsFactors = F)
+ggnet2(net, node.size = 3, color = "color",  edge.size = 1, edge.color = "grey", label = TRUE)
 
 
+color<-as.character(color)
+familias<-levels(color)
+color_vector
+
+# random graph
+net = rgraph(10, mode = "graph", tprob = 0.5)
+net = network(net, directed = FALSE)
+
+# vertex names
+network.vertex.names(net) = letters[1:10]
+ggnet2(net)
 
 
+
+
+
+
+#"f__ Glomeraceae", "f__ Paraglomeraceae", "f__ Claroideoglomeraceae", "f__", "f__ Acaulosporaceae","f__ Ambisporaceae", "f__ Gigasporaceae"
 
 
 #### Networks using igraph ####
