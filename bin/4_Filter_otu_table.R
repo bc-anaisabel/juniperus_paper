@@ -1,5 +1,5 @@
-# Script for Illumina MiSeq2x300 
-# Part 1. Filtering steps (negative control, relative abundance, 0 presence OTUs, presence/absence)
+# Part 4. Script for Illumina MiSeq2x300 
+# In R, this is part 1. Filtering steps (negative control, relative abundance, 0 presence OTUs, presence/absence)
 # February, 2020 
 
 

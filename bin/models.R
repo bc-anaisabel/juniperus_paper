@@ -1,5 +1,5 @@
 # Script for Illumina MiSeq2x300 Juniperus projects: Texcoco and Izta
-# Part.4 Models
+# Models
 # May, 2020 
 
 #### Set-up ####
@@ -26,7 +26,7 @@ R.version
 # Set working directory to source file
 
 
-source("../bin/1_Filter_otu_table.R")
+source("../bin/4_Filter_otu_table.R")
 
 juniperus.rel <- phyloseq.rel  #change name of sequence abundance table for this script 
 

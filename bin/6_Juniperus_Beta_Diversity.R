@@ -1,5 +1,5 @@
-# Script for Illumina MiSeq2x300 Juniperus projects: Texcoco and Izta
-# Part. 3. Beta diversity 
+# Part 6. Script for Illumina MiSeq2x300 Juniperus projects: Texcoco and Izta
+# In R this is step 3. Beta diversity 
 # February, 2020 
 
 library("plyr"); packageVersion("plyr")
@@ -32,7 +32,7 @@ theme_set(theme_bw())
 # Set working directory to source file
 
 
-source("../bin/1_Filter_otu_table.R")
+source("../bin/4_Filter_otu_table.R")
 
 
 # Beta diversity plots and tests 
@@ -261,141 +261,4 @@ sort(table(predictors$Var2))
 
 sharedotusam<-write.csv(predictors, file = "sharedotusacm.csv")
 
-
-#### Network using sna #### 
-
-#Select data
-subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
-subset<- subset_samples(subset, Type %in% "root")
-subset
-
-any(taxa_sums(subset) == 0)
-subset <- prune_taxa(taxa_sums(subset) > 0, subset)
-subset
-
-tax_table(subset)
-otu_table(subset)
-
-
-#Merge by category 
-nw <-merge_samples(subset, group = "Host")
-network_host <- as.data.frame(otu_table(nw))
-is.matrix(network_host)
-
-# vectors
-taxa_names(tax_table(subset))
-
-color_vector <- c("f__", "f__ Acaulosporaceae", "f__ Ambisporaceae", "f__ Claroideoglomeraceae", "f__ Gigasporaceae", "f__ Glomeraceae", "f__ Paraglomeraceae")
-color<-as.matrix(tax_table(subset))
-color<-as.data.frame(color)
-color<- color$Family
-
-network_host_2<-cbind(network_host,color)
-network_host_2
-
-#Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = network_host)
-network_host
-
-
-#Merge more than one category 
-
-sample_variables(subset)
-
-variable1 = as.character(get_variable(subset, "Host"))
-variable2 = as.character(get_variable(subset, "Site"))
-
-sample_data(subset)$NewPastedVar <- mapply(paste0, variable1, variable2, 
-                                           collapse = "_")
-nw2<- merge_samples(subset, "NewPastedVar")
-
-network_host <- as.data.frame(otu_table(nw2))
-is.matrix(network_host)
-
-#write the sample out of R for issue example
-
-network_df<-write.csv(network_host, file = "network_df.csv")
-#network_host_t<-as.matrix(network_host)
-#network_host_tt<-as.network(network_host_t)
-
-#Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
-      legend(x=1,y=-1, color, pch=21, col = "#777777", 
-             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
-
-
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, label = color, usearrows=FALSE, 
-      legend(x=1,y=-1, color, pch=21, col = "#777777", 
-             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color)
-
-
-#Other type of plot 
-
-pal2 <-polychrome(27)
-
-par(mfrow=c(1,2), xpd=T)
-
-gplot(as.one.mode(network_host),
-      displaylabels = TRUE,
-      gmode="graph",
-      label.cex=1, vertex.col = color, vertex.cex=1)
-
-palette(polychrome(n=27))
-gplot(network_host, gmode="graph", jitter=FALSE,
-      label = color, 
-      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
-      vertex.col= as.numeric(color))
-
-#Try ggnet 
-
-library(network)
-library(sna)
-library(ggplot2)
-
-install.packages("GGally")
-library(GGally)
-library(RColorBrewer)
-install.packages("intergraph")
-library(intergraph)
-
-# random graph
-network_host<-t(network_host)
-network_host<-as.data.frame(network_host, stringsAsFactors = F)
-network_host[, 2] <- as.character(network_host[, 2])
-net = network(network_host, directed = FALSE)
-ggnet2(net, node.size = 3, color = "color",  edge.size = 1, edge.color = "grey", label = TRUE)
-
-
-color<-as.character(color)
-familias<-levels(color)
-color_vector
-
-# random graph
-net = rgraph(10, mode = "graph", tprob = 0.5)
-net = network(net, directed = FALSE)
-
-# vertex names
-network.vertex.names(net) = letters[1:10]
-ggnet2(net)
-
-
-
-
-
-
-#"f__ Glomeraceae", "f__ Paraglomeraceae", "f__ Claroideoglomeraceae", "f__", "f__ Acaulosporaceae","f__ Ambisporaceae", "f__ Gigasporaceae"
-
-
-#### Networks using igraph ####
-
-#Other format
-abc<-t(network_host)
-
-#Plot
-plotweb(network_host)
-
-#Plot
-visweb(network_host)
-
-network_host
 

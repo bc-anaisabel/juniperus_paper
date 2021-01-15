@@ -1,5 +1,5 @@
-# Script for Illumina MiSeq2x300 Juniperus projects: Texcoco and Izta
-# Part.2 Alpha diversity and direct quantitative observation/comparison of abundances
+# Part 5. Script for Illumina MiSeq2x300 Juniperus projects: Texcoco and Izta
+# In R this is step.2 Alpha diversity and direct quantitative observation/comparison of abundances
 # February, 2020 
 
 library("plyr"); packageVersion("plyr")
@@ -32,7 +32,7 @@ library(multcomp)
 
 
 # Call script 
-source("../bin/1_Filter_otu_table.R")
+source("../bin/4_Filter_otu_table.R")
 
 
 #### Abundance counts #### 
