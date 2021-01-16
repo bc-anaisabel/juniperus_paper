@@ -37,6 +37,7 @@ library(ggnetwork)
 library(statnet.common)
 library(network)
 library(pals)
+library(GGally)
 
 theme_set(theme_bw())
 
@@ -68,7 +69,7 @@ subset.texcoco.binary.beta
 #### Network using sna #### 
 
 #Select data
-subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
+subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
 subset<- subset_samples(subset, Type %in% "root")
 subset
 
@@ -78,7 +79,6 @@ subset
 
 tax_table(subset)
 otu_table(subset)
-
 
 #Merge by category 
 nw <-merge_samples(subset, group = "Host")
@@ -90,15 +90,11 @@ taxa_names(tax_table(subset))
 
 color<-as.matrix(tax_table(subset))
 color<-as.data.frame(color)
-color<- color$Family
-
-#network_host_2<-cbind(network_host,color)
-#network_host_2
+#color<- color$Family
 
 #Gplot
 gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color)
 network_host
-
 
 #Merge more than one category 
 
@@ -113,23 +109,31 @@ nw2<- merge_samples(subset, "NewPastedVar")
 
 network_host <- as.data.frame(otu_table(nw2))
 is.matrix(network_host)
+network_host<-t(network_host)
 
-#write the sample out of R for issue example
+#network_df<-write.csv(network_host, file = "network_df.csv")
+nuevoedge<-write.csv(color, file = "nuevoedge_df.csv")
 
-network_df<-write.csv(network_host, file = "network_df.csv")
-color<-as.data.frame(color)
-#network_host_t<-as.matrix(network_host)
-#network_host_tt<-as.network(network_host_t)
+#nuevonet<-read.csv("network_df.csv")
+nuevoedge<-read.csv("nuevoedge_df.csv")
+
+#######FIX PART OF NUEVO NET TO FIT FOR BOTH DATASETS NOT ONLY AM FUNGI
+net2 <- graph_from_incidence_matrix(nuevonet)
+table(V(net2)$type)
+net2.bp <- bipartite.projection(net2)
+plot(net2.bp$proj1, vertex.label.color="black", vertex.label.dist=1,
+     vertex.size=7, vertex.label=nuevoedge$id)
+
 
 #Gplot
 gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
       legend(x=1,y=-1, pch=21, col = "#777777", 
-             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color$Family)
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = nuevoedge$Family)
 
 
 gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
       legend(x=1,y=-1, color, pch=21,  
-             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = color$Family)
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = nuevoedge$Family)
 
 
 #Other type of plot 
@@ -145,20 +149,25 @@ gplot(as.one.mode(network_host),
 
 palette(polychrome(n=27))
 gplot(network_host, gmode="graph", jitter=FALSE,
-      label = color$Family, 
+      displaylabels = TRUE,
       boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
-      vertex.col= as.numeric(color$Family))
+      vertex.col= nuevoedge$Family)
+
+par(mfrow=c(1,2), xpd=T)
+
+gplot(network_host, gmode="graph", jitter=FALSE,
+      displaylabels = FALSE,
+      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
+      vertex.col= nuevoedge$Family)
+
+par(mfrow=c(1,2), xpd=T)
+
+gplot(network_host, gmode="graph", jitter=FALSE,
+      label = nuevoedge$Family,
+      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
+      vertex.col= nuevoedge$Family)
 
 #Try ggnet 
-
-library(network)
-library(sna)
-library(ggplot2)
-library(GGally)
-library(RColorBrewer)
-library(intergraph)
-
-
 
 net = network(otu_table(subset), directed = FALSE)
 ggnet2(net, node.size = 3, edge.size = 1, node.color = 'mode', edge.color = "grey", label = TRUE)
@@ -170,26 +179,6 @@ network_host<-as.data.frame(network_host, stringsAsFactors = F)
 network_host[, 2] <- as.character(network_host[, 2])
 net = network(network_host, directed = FALSE)
 ggnet2(net, node.size = 3, edge.size = 1, node.color = "mode", edge.color = "grey", label = TRUE)
-read.csv("network_df.csv")
-nuevonet<-read.csv("network_df.csv")
-library(tidyverse)
-nuevonet %>% remove_rownames %>% column_to_rownames(var="Family")
-
-
-
-
-color<-as.character(color)
-familias<-levels(color)
-color_vector
-
-
-
-
-
-
-
-#"f__ Glomeraceae", "f__ Paraglomeraceae", "f__ Claroideoglomeraceae", "f__", "f__ Acaulosporaceae","f__ Ambisporaceae", "f__ Gigasporaceae"
-
 
 #### Networks using igraph ####
 
@@ -206,95 +195,11 @@ network_host
 
 ######################
 
-
-
-
-
-
-
 head(tax_table(subset))
 otu.c <- t(otu_table(subset)@.Data) #extract the otu table from phyloseq object
 tax.c <- as.data.frame(tax_table(subset)@.Data)#extract the taxonomy information
 
-head(tax.c)
-
-am.net <- as.network(otu.c)
-
-network::set.edge.attribute(am.net, "color", ifelse(am.net %e% "weight" > 0, "steelblue", "orange"))
-
-colnames(tax_table(subset))
-
-net.c <- spiec.easi(otu.c, method='mb', icov.select.params=list(rep.num=50)) # reps have to increases for real data
-
-class(net.c)
-
-n.c <- symBeta(getOptBeta(net.c))
-
-colnames(n.c) <- rownames(n.c) <- colnames(otu.c)
-
-vsize <- log2(apply(otu.c, 2, mean)) # add log abundance as properties of vertex/nodes.
-
-am.ig <- graph.adjacency(n.c, mode='undirected', add.rownames = TRUE, weighted = TRUE)
-am.ig # we can see all the attributes and weights
-
-plot(am.ig)
-?layout_with_fr
-coords.fdr = layout_with_fr(am.ig)
-E(am.ig)[weight > 0]$color<-"steelblue" #now color the edges based on their values positive is steelblue
-E(am.ig)[weight < 0]$color<-"orange"  #now color the edges based on their values
-
-plot(am.ig, layout=coords.fdr, vertex.size = 2, vertex.label.cex = 0.5)
-
-
-am.net <- asNetwork(am.ig)
-network::set.edge.attribute(am.net, "color", ifelse(am.net %e% "weight" > 0, "steelblue", "orange"))
-colnames(tax_table(subset))
-phyla <- map_levels(colnames(otu.c), from = "Species", to = "Myc", tax_table(subset))
-am.net %v% "Phylum" <- phyla
-am.net %v% "nodesize" <- vsize
-
-
-phyla <- map_levels(colnames(otu.c), from = "Species", to = "Myc", tax_table(subset))
-am.net %v% "Phylum" <- phyla
-am.net %v% "nodesize" <- vsize
-
-mycolors <- scale_color_manual(values = c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99","#b15928"))
-p <- ggnet2(am.net, node.color = "Phylum", 
-            label = TRUE, node.size = "nodesize", 
-            label.size = 2, edge.color = "color") + guides(color=guide_legend(title="Phylum"), size = FALSE) + mycolors
-
-se_mb <- spiec.easi(subset, method='mb', 
-                    lambda.min.ratio=1e-2, nlambda=20, 
-                    pulsar.params=list(rep.num=50, ncores=3))
-
-
-e_net <- adj2igraph(getRefit(se_mb), 
-                    rmEmptyNodes = TRUE, diag = FALSE, 
-                    vertex.attr = list(name = taxa_names(subset))) # Usamos el ID de las taxas para nombrar los vértices o nodos de la red
-plot_network(e_net, subset, type = "taxa", color = "Family", shape = "Phylum", label = NULL)
-
-net_class <- as_adjacency_matrix(e_net, type = "both")
-net_class <- network(as.matrix(net_class), 
-                     vertex.attrnames = sample.names(subset), 
-                     matrix.type = "adjacency", directed = F)
-ggnet2(net_class)
-net <- e_net
-nodes <- V(net) # Nodos
-edges <- E(net) # Bordes
-node.names <- V(net)$name # Nombre de nodos
-num.nodes <- vcount(net) # Número total de nodos
-num.edges <- ecount(net) # Número total de bordes
-# V() es por vértices o nodos
-# E() es por edges
 
 
 
-ggnet2(net)
 
-
-imc<-cluster_infomap(network_host)
-membership(imc)
-
-plot(g, edge.arrow.size=.2,vertex.label=NA, 
-     layout=layout_with_fr,
-     vertex.color=imc$membership)
