@@ -111,27 +111,20 @@ nw2<- merge_samples(subset, "NewPastedVar")
 # Create dataframe with presence/absence data for each OTU in each category  
 network_host <- as.data.frame(otu_table(nw2))
 
-# Turn it and then take it out to excel for modification
+# Turn it because we need hosts (nodes) as columns 
 network_host<-t(network_host)
-network_df<-write.csv(network_host, file = "network_df.csv")
 
 # Take out to excel the taxonomy information that we are goint to use later on for plotting 
 nuevoedge<-write.csv(color, file = "nuevoedge_df.csv")
 
-# Read files again
-nuevonet<-read.csv("network_df.csv")
+# Read file 
 nuevoedge<-read.csv("nuevoedge_df.csv")
 
-# Check what is there 
-nuevonet # we need the id as a column, i.e. OTUname as the first column followed by the hosts
-nuevoedge # we need the id as a column, i.e. OTUname as the first column followed by the taxonomy 
+head(nuevoedge)
+head(network_host)
 
-# Create a net object to plot 
-net2 <- graph_from_incidence_matrix(nuevonet)
-table(V(net2)$type)
-net2.bp <- bipartite.projection(net2)
-plot(net2.bp$proj1, vertex.label.color="black", vertex.label.dist=1,
-     vertex.size=7, vertex.label=nuevoedge$id)
+# Check what is there 
+nuevoedge # we need the id as a column, i.e. OTUname as the first column followed by the taxonomy 
 
 
 #Now using Gplot instead, color by Family 
