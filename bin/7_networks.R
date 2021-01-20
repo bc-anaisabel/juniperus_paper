@@ -68,35 +68,36 @@ subset.texcoco.binary.beta
 
 #### Network using sna #### 
 
-#Select data
+# Select data
 subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
 subset<- subset_samples(subset, Type %in% "root")
 subset
 
+# Remove taxa not present in subset
 any(taxa_sums(subset) == 0)
 subset <- prune_taxa(taxa_sums(subset) > 0, subset)
 subset
 
+# Verify what is there
 tax_table(subset)
 otu_table(subset)
 
-#Merge by category 
+## Obtain dataframe with presence/absence data for each OTU in each plant host ## 
+
+# Merge by category 
 nw <-merge_samples(subset, group = "Host")
 network_host <- as.data.frame(otu_table(nw))
-is.matrix(network_host)
 
 # vectors
 taxa_names(tax_table(subset))
-
 color<-as.matrix(tax_table(subset))
 color<-as.data.frame(color)
-#color<- color$Family
 
-#Gplot
-gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color)
+# Check how it looks with gplot
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, vertex.col = color$Family)
 network_host
 
-#Merge more than one category 
+# Merge more than one category
 
 sample_variables(subset)
 
@@ -107,17 +108,25 @@ sample_data(subset)$NewPastedVar <- mapply(paste0, variable1, variable2,
                                            collapse = "_")
 nw2<- merge_samples(subset, "NewPastedVar")
 
+# Create dataframe with presence/absence data for each OTU in each category  
 network_host <- as.data.frame(otu_table(nw2))
-is.matrix(network_host)
-network_host<-t(network_host)
 
-#network_df<-write.csv(network_host, file = "network_df.csv")
+# Turn it and then take it out to excel for modification
+network_host<-t(network_host)
+network_df<-write.csv(network_host, file = "network_df.csv")
+
+# Take out to excel the taxonomy information that we are goint to use later on for plotting 
 nuevoedge<-write.csv(color, file = "nuevoedge_df.csv")
 
-#nuevonet<-read.csv("network_df.csv")
+# Read files again
+nuevonet<-read.csv("network_df.csv")
 nuevoedge<-read.csv("nuevoedge_df.csv")
 
-#######FIX PART OF NUEVO NET TO FIT FOR BOTH DATASETS NOT ONLY AM FUNGI
+# Check what is there 
+nuevonet # we need the id as a column, i.e. OTUname as the first column followed by the hosts
+nuevoedge # we need the id as a column, i.e. OTUname as the first column followed by the taxonomy 
+
+# Create a net object to plot 
 net2 <- graph_from_incidence_matrix(nuevonet)
 table(V(net2)$type)
 net2.bp <- bipartite.projection(net2)
@@ -125,7 +134,7 @@ plot(net2.bp$proj1, vertex.label.color="black", vertex.label.dist=1,
      vertex.size=7, vertex.label=nuevoedge$id)
 
 
-#Gplot
+#Now using Gplot instead, color by Family 
 gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
       legend(x=1,y=-1, pch=21, col = "#777777", 
              pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = nuevoedge$Family)
@@ -135,17 +144,20 @@ gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE,
       legend(x=1,y=-1, color, pch=21,  
              pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = nuevoedge$Family)
 
+# Make another plot with nicer colors and nodes 
 
-#Other type of plot 
-
+# call color palette
 pal2 <-polychrome(27)
 
+# so it does not plot on the same page 
 par(mfrow=c(1,2), xpd=T)
 
 gplot(as.one.mode(network_host),
       displaylabels = TRUE,
       gmode="graph",
-      label.cex=1, vertex.col = color$Family, vertex.cex=1)
+      label.cex=1, vertex.col = nuevoedge$Family, vertex.cex=1)
+
+par(mfrow=c(1,2), xpd=T)
 
 palette(polychrome(n=27))
 gplot(network_host, gmode="graph", jitter=FALSE,
@@ -155,6 +167,7 @@ gplot(network_host, gmode="graph", jitter=FALSE,
 
 par(mfrow=c(1,2), xpd=T)
 
+# Plot with no labels 
 gplot(network_host, gmode="graph", jitter=FALSE,
       displaylabels = FALSE,
       boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
@@ -167,7 +180,7 @@ gplot(network_host, gmode="graph", jitter=FALSE,
       boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
       vertex.col= nuevoedge$Family)
 
-#Try ggnet 
+# Another option is to use ggnet, plot looks nicer but not sure how to add color  
 
 net = network(otu_table(subset), directed = FALSE)
 ggnet2(net, node.size = 3, edge.size = 1, node.color = 'mode', edge.color = "grey", label = TRUE)
@@ -182,6 +195,8 @@ ggnet2(net, node.size = 3, edge.size = 1, node.color = "mode", edge.color = "gre
 
 #### Networks using igraph ####
 
+# Unfinished 
+
 #Other format
 abc<-t(network_host)
 
@@ -193,9 +208,8 @@ visweb(network_host)
 
 network_host
 
-######################
-
 head(tax_table(subset))
+
 otu.c <- t(otu_table(subset)@.Data) #extract the otu table from phyloseq object
 tax.c <- as.data.frame(tax_table(subset)@.Data)#extract the taxonomy information
 
