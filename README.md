@@ -2,7 +2,7 @@
 
 ## Background and sample information ### 
 
-I am working with Illumina MiSeq paired-end data using the ITS2 rDNA region for metabarcoding of fungal communities. In this project I am using metabarcoding to identify the fungal communities present in the soil and in the seedling roots of isolated and mixed oak (*Quercus rugosa*) and juniper (*Juniperus deppeana*) populations. The goal is to study plant-soil feedbacks along a disturbance gradient in central Mexico. 
+I am working with Illumina MiSeq paired-end data with the ITS2 rDNA region using metabarcoding to identify fungal communities present in the soil and in the seedling roots of isolated and mixed oak (*Quercus rugosa*) and juniper (*Juniperus deppeana*) populations. To do so, I used the fungal specific primers ITS4ngsUNI and gITS7ngs, which were designed to act on a broad spectrum of fungi (Leho Tedersoo & Lindahl, 2016). The goal is to study plant-soil feedbacks along a disturbance gradient in central Mexico. 
 
 Because oak and juniper are plants with different mycorrhizal types, oak being known as an ectomycorrhizal plant and juniperus as an arbuscular-mycorrhizal plant, I expect the presence of one influences the other through these plant-soil feedbacks causing changes, which could be positive, neutral, or negative, to the plant growth and overall health and of course, to the fungal communities abundance and diversity. 
 
@@ -20,7 +20,7 @@ The [bin](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin) direc
 
 #### Scripts and manual steps   
 
-Here you can find the scripts for pre-processing Illumina MiSeq data with AMPtk, the manual steps for assigning OTU taxonomy and trophic mode, and converting metadata from *.txt* to *.biom* to import into R, as well as the numbered (in order of use) R scripts for filtering the OTU table and performing alpha- and beta- diversity analyses. 
+Here you can find the scripts for pre-processing Illumina MiSeq data with AMPtk (Palmer, J. et al. 2018), the manual steps for assigning OTU taxonomy and trophic mode, and converting metadata from *.txt* to *.biom* to import into R, as well as the numbered (in order of use) R scripts for filtering the OTU table and performing alpha- and beta- diversity analyses. 
 
 The steps to follow are listed in order by letters and within step: **C) R scripts** you can find the R scripts named by numbers in order of use.  
 
@@ -47,10 +47,17 @@ Use in number order to run alpha- and beta- diversity analyses as follows:
   * [3_Juniperus_Beta_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Juniperus_Beta_Diversity.R): performing beta diversity analysis
   * [4_Models.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/4_Models.R): modelling diversity data 
   
+  
+### Raw data ### 
+
+
+All the sequence data associated with this project are deposited in [OSF](https://osf.io) while the final OTU table (.biom) is in [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data)
+  
 
 ### `/data`
 
 The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the metadata file containing samples information and the output data from the AMPtk pipeline that acts as input data for R scripts. These data files were created and used by the numbered order. 
+
 
 #### Data files
 
@@ -79,13 +86,11 @@ metadata_soil_roots.xlsx: contains soil characterization for soil samples and my
 The [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/output) directory contains all figures obtained from R scripts to be used for the publication. 
 
 
-### Raw data ### 
-
-
-All the sequence data associated with this project are deposited in [OSF](https://osf.io) while the final OTU table (.biom) is in [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data)
-
-
-### Citation
+### References 
 Palmer JM, Jusino MA, Banik MT, Lindner DL. 2018. Non-biological synthetic spike-in controls
         and the AMPtk software pipeline improve mycobiome data. PeerJ 6:e4925;
         DOI 10.7717/peerj.4925. https://peerj.com/articles/4925/
+        
+Tedersoo, Leho, & Lindahl, B. (2016). Fungal identification biases in microbiome projects. 
+        Environmental Microbiology Reports, 8(5), 774–779. 
+        https://doi.org/10.1111/1758-2229.12438
