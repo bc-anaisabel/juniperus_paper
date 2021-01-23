@@ -74,11 +74,12 @@ The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) dir
 
 #### Metadata 
 
-amptk.mapping_file.csv: contains all sample data to be used as input for initial R script 
+[amptk.mapping_file.csv](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv): contains all sample data to be used as input for initial R script. The first 13 columns are all different identifiers of each sample. The following 12 columns contain all the information obtained from soil measurements: pH; Available phosphorus: Pdis (Using Olsen method); exchangeable cations were Calcium: Ca (Ca++), Magnesium: Mg and Potassium (K) measured by absortion in 0.5 M NH4Cl solution; Sodium (Na); Hydrogen: H; Aluminium: All; Soil moisture (SoilM); Carbon: C; Nitrogen: Nit; and the Carbon to Nitrogen ratio: CN, these last were measured using an elemental analyzer CNHS/O Perkin Elmer 2400 series II. 
 
-ampt.mapping_file.txt: contains all sample data to be edited as input for initial R script 
 
-metadata_soil_roots.xlsx: contains soil characterization for soil samples and mycorrhizal colonization information for all samples 
+[ampt.mapping_file.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.txt): contains all sample data to be edited as input for initial R script. This is the same as the amptk.mappin_file.csv file but in .txt format for editing 
+
+[metadata_soil_roots.xlsx](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/metadata_soil_roots.xlsx): contains soil characterization for soil samples and mycorrhizal colonization information for all samples 
 
 
 ### `/output`
