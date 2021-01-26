@@ -9,13 +9,11 @@ After AMPtk pipeline assignined taxonomy (using *UNITE* database) and fungal gui
 
 1. Install biom [biom.format.org] (http://biom-format.org/) 
 
-2. If needed, update metadata in .biom table obtained in xxxxxxxx 
-
-3. Convert .biom (insert here name of biom file) to a .txt file ( *taxonomy.txt* )
+2. If needed, you can add information to the metadata of OTUs and taxonomy in the [biom table](https://github.com/bc-anaisabel/juniperus_paper/blob/master/data/1_taxonomy.biom) obtained in [Script 1](https://github.com/bc-anaisabel/juniperus_paper/blob/master/bin/1_amptk_for_illumina.sh) by using a .txt file like this [one](https://github.com/bc-anaisabel/juniperus_paper/blob/master/data/2_taxonomy.txt). That you can use for the following assignations: 
 
 ### Assigning taxonomy 
 
-1. Using the FunGuild table generated with the AMPtk pipeline for ITS2 fungal sequences (**Step 6**) sort OTUs by most abundant sequence reads and the most frequent (presence/absence across all samples). 
+1. Using the FunGuild table generated with the AMPtk pipeline for ITS2 fungal sequences sort OTUs by most abundant sequence reads and the most frequent (presence/absence across all samples). 
 
 2. For the top 100 OTUs that were not identified beyond Order (including those that were not identified taxonomically at Phylum or Class level), search FASTA sequences in UNITE database doing a blast search for each OTU sequence individually: 
  
