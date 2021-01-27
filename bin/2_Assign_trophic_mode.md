@@ -43,8 +43,14 @@ For all OTUs, when FunGuild did not assign a trophic mode or if taxonomy was upd
 
 1. Update .txt file in Excel with the new taxonomic and fungal guild information obtained. You can choose whatever format you need to do this, for example I added one column with the mycorrhizal/no mycorrhizal cathegory and one with the trophic mode. 
 
-2. As the next step is converting to .biom format, and this format requires all taxonomy information in one line, you need to use *concatenate* function in Excel to place all taxonomic ranks and cathegories for each OTU within one cell. 
+2. As the next step is converting to .biom format, and this format requires all taxonomy information in one line, you need to use *concatenate* function in Excel to place all taxonomic ranks and cathegories for each OTU within one cell:
 
+To go from this:
+![](../archive/excel_concatenate_2.png)
+
+to this:
+
+![](../archive/excel_concatenate.png)
 
 
 3. Convert back the file, from *.txt* to *.biom* using:
