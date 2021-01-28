@@ -1,0 +1,296 @@
+---
+title: "Results_TallerBioinfo"
+author: "Ana Bermudez"
+date: "1/27/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. 
+
+Here you can find the main results for this project so far.
+
+First, this is something that can be done with 5_Juniperus_Alpha_Diversity.R script:
+how does relative abundance looks like in Juniperus and Quercus:
+
+
+```{r, include=FALSE}
+source("../bin/4_Filter_otu_table.R")
+```
+
+```{r relative abundance, echo=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#### Relative abundance (reads and OTUs)
+
+
+#Libraries
+library("plyr"); packageVersion("plyr")
+library("phyloseq"); packageVersion("phyloseq")
+library("ggplot2"); packageVersion("ggplot2")
+library("vegan"); packageVersion("vegan")
+library("RColorBrewer"); packageVersion("RColorBrewer")
+library("plotly"); packageVersion("plotly")
+library("htmltools"); packageVersion("htmltools")
+library("DT"); packageVersion("DT")
+library(ggplot2)
+library(dplyr)
+library(ggpubr)
+library(car)
+
+
+# Subset project 
+
+# Subset data for Texcoco using OTU table with relative abundance 
+subset.texcoco.alfa <- subset_samples(phyloseq.rel, Project %in% "Texcoco")
+subset.texcoco.alfa
+sample_data(subset.texcoco.alfa)
+sample_sums(subset.texcoco.alfa) [1:10] 
+
+# Remove OTUs that are not present in any of the samples of the subset
+taxa_sums(subset.texcoco.alfa) [1:10]
+subset.texcoco.alfa <- prune_taxa(taxa_sums(subset.texcoco.alfa) > 0, subset.texcoco.alfa)
+any(taxa_sums(subset.texcoco.alfa) == 0)
+taxa_sums(subset.texcoco.alfa) [1:10]
+subset.texcoco.alfa
+
+# Subset data for Texcoco using OTU binary table 
+subset.texcoco.binary <- subset_samples(binary_table, Project %in% "Texcoco")
+subset.texcoco.binary
+sample_data(subset.texcoco.binary)
+
+#Remove OTUs that are not present in any of the samples of the subset
+taxa_sums(subset.texcoco.binary) [1:10]
+subset.texcoco.binary<- prune_taxa(taxa_sums(subset.texcoco.binary) > 0, subset.texcoco.binary)
+any(taxa_sums(subset.texcoco.binary) == 0)
+taxa_sums(subset.texcoco.binary) [1:10]
+subset.texcoco.binary
+```
+
+```{r, plot relative abundance, echo=TRUE, include=TRUE}
+# Relative abundance of reads by plant host and treatments
+# melt to long format (for ggploting) 
+# prune out phyla below 1% in each sample
+# selecting the taxa at the wanted level 
+
+# Obtain main relative abundance plot (used for Poster) 
+# where fungal trophic categories are: "a__sap" = Saprophytic; "a__par" = Parasitic; "a__ecm" = Ectomycorrhizal; "a__am" = Arbuscular mycorrhizal
+
+subset.poster<- subset_taxa(subset.texcoco.binary, Trophic %in% c("a__sap", "a__par", "a__ecm", "a__am"))
+
+mdata_phylum <- subset.poster %>%
+  tax_glom(taxrank = "Trophic") %>%                     # agglomerate at phylum level
+  transform_sample_counts(function(x) {x/sum(x)} ) %>% # Transform to rel. abundance
+  psmelt() %>%                                         # Melt to long format
+  filter(Abundance > 0.01) %>%                         # Filter out low abundance taxa
+  arrange(Trophic)                                      # Sort data frame alphabetically by phylum
+
+# checking the dataframe that we now created
+head(mdata_phylum)
+
+# re-order how site and species appear in the graph
+mdata_phylum$Site <- factor(mdata_phylum$Site,levels = c("native", "mixed", "perturbated"))
+mdata_phylum$Host <- factor(mdata_phylum$Host,levels = c("Quercus", "Juniperus"))
+
+# Now plot: 
+ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Trophic)) + 
+  #facet_grid(time~.) +
+  geom_bar(stat = "identity")  +
+  # Remove x axis title, and rotate sample lables
+  theme(axis.title.x = element_blank(), 
+      axis.text.x=element_text(angle=90,hjust=1,vjust=0.5, size = 10),
+      legend.title = element_text(size = 10), 
+      legend.text = element_text(size = 10)) + 
+  
+    
+  # add labels
+  guides(fill = guide_legend(reverse = TRUE, keywidth = 1, keyheight = 1)) +  
+  scale_fill_discrete(name = "Trophic mode", labels = c("a__am" = "am", "a__sap" = "sap", "a__par" = "par", "a__ecm" = "ecm")) +
+  scale_x_discrete(labels=c("native" = "native", "mixed" = "mixed",
+                            "perturbated" = "disturbed")) +
+  ylab("OTUs relative abundance") +
+  ggtitle("Fungi trophic mode relative abundance") + facet_grid(Type ~ Host)
+
+```
+
+Then using 6_Juniperus_Beta_Diversity.R :
+how does the fungal community composition looks like, using nmds and Raupcrick distance:
+
+```{r community composition, echo=FALSE, include=FALSE}
+
+library("plyr"); packageVersion("plyr")
+library("phyloseq"); packageVersion("phyloseq")
+library("ggplot2"); packageVersion("ggplot2")
+library("vegan"); packageVersion("vegan")
+library("RColorBrewer"); packageVersion("RColorBrewer")
+library("plotly"); packageVersion("plotly")
+library("htmltools"); packageVersion("htmltools")
+library("DT"); packageVersion("DT")
+library(ggplot2)
+library(dplyr)
+library(tibble)
+library(mvabund)
+
+#### Subset by project ####
+
+# Use binary table where OTUs present in only one sample were removed
+
+subset.texcoco.binary.beta <- subset_samples(binary_table_OTU2, Project %in% "Texcoco")
+subset.texcoco.binary.beta
+sample_data(subset.texcoco.binary.beta)
+
+# Remove OTUs that are not present in any of the samples of the subset
+any(taxa_sums(subset.texcoco.binary.beta) == 0)
+taxa_sums(subset.texcoco.binary.beta) [1:10]
+subset.texcoco.binary.beta <- prune_taxa(taxa_sums(subset.texcoco.binary.beta) > 0, subset.texcoco.binary.beta)
+any(taxa_sums(subset.texcoco.binary.beta) == 0)
+taxa_sums(subset.texcoco.binary.beta) [1:10]
+subset.texcoco.binary.beta
+
+selectedtrophic<-subset.texcoco.binary.beta
+```
+
+```{r, echo=TRUE, include=TRUE}
+# NMDS Analysis (you can change the method for distance calculation)
+nmds = distance(selectedtrophic, method = "raup")
+nmds
+ordination = ordinate(selectedtrophic, method = "NMDS", distance = nmds)
+ordination
+scores(ordination)
+
+# New facet label names for supp variable
+supp.labs <- c("native", "mixed", "disturbed")
+names(supp.labs) <- c("native", "mixed", "perturbated")
+sample_data(subset.texcoco.binary.beta)$Site = factor(sample_data(subset.texcoco.binary.beta)$Site, levels=c("native","mixed","disturbed"))
+
+#Plot nmds 
+p1 <- plot_ordination(selectedtrophic, ordination, color="Host", shape = "Type", title = "All fungi") + theme(aspect.ratio=1)+geom_point(size=3) 
+print(p1)
+p1 + facet_wrap(~Site)
+
+```
+
+Then using 7_networks.R we can have a look at how each fungal OTU or fungal family is distributed (presence/absence) in each plant host root:
+
+```{r fungal presence/absence representation, echo=FALSE, include=FALSE}
+
+library("phyloseq"); packageVersion("phyloseq")
+library("ggplot2"); packageVersion("ggplot2")
+library("vegan"); packageVersion("vegan")
+library("RColorBrewer"); packageVersion("RColorBrewer")
+library("plotly"); packageVersion("plotly")
+library("htmltools"); packageVersion("htmltools")
+library("DT"); packageVersion("DT")
+library(gplots)
+library(network)
+library(sna)
+library(pals)
+library(GGally)
+library(igraph)
+library(bipartite)
+
+theme_set(theme_bw())
+
+#### Subset by project 
+
+# Use binary table where OTUs present in only one sample were removed
+
+subset.texcoco.binary.beta <- subset_samples(binary_table_OTU2, Project %in% "Texcoco")
+subset.texcoco.binary.beta
+sample_data(subset.texcoco.binary.beta)
+
+# Remove OTUs that are not present in any of the samples of the subset
+any(taxa_sums(subset.texcoco.binary.beta) == 0)
+taxa_sums(subset.texcoco.binary.beta) [1:10]
+
+subset.texcoco.binary.beta <- prune_taxa(taxa_sums(subset.texcoco.binary.beta) > 0, subset.texcoco.binary.beta)
+
+any(taxa_sums(subset.texcoco.binary.beta) == 0)
+taxa_sums(subset.texcoco.binary.beta) [1:10]
+subset.texcoco.binary.beta
+
+# Select data
+subset <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__ecm"))
+subset<- subset_samples(subset, Type %in% "root")
+subset
+
+# Remove taxa not present in subset
+any(taxa_sums(subset) == 0)
+subset <- prune_taxa(taxa_sums(subset) > 0, subset)
+subset
+
+# Verify what is there
+tax_table(subset)
+otu_table(subset)
+
+## Obtain dataframe with presence/absence data for each OTU in each plant host ## 
+
+# Merge more than one category
+
+sample_variables(subset)
+
+variable1 = as.character(get_variable(subset, "Host"))
+variable2 = as.character(get_variable(subset, "Site"))
+
+sample_data(subset)$NewPastedVar <- mapply(paste0, variable1, variable2, 
+                                           collapse = "_")
+nw2<- merge_samples(subset, "NewPastedVar")
+
+# Create dataframe with presence/absence data for each OTU in each category  
+network_host <- as.data.frame(otu_table(nw2))
+
+# Turn it because we need hosts (nodes) as columns 
+network_host<-t(network_host)
+
+# Read file 
+nuevoedge<-read.csv("nuevoedge_df.csv")
+
+head(nuevoedge)
+head(network_host)
+
+# Check what is there 
+nuevoedge # we need the id as a column, i.e. OTUname as the first column followed by the taxonomy
+
+```
+
+```{r, echo=TRUE, include=TRUE}
+
+#Now using Gplot instead, color by Family 
+gplot(network_host, thresh = 0.2, displaylabels = TRUE, usearrows=FALSE, 
+      legend(x=1,y=-1, pch=21, col = "#777777", 
+             pt.cex=2, cex=.8, bty="n", ncol=1), vertex.col = nuevoedge$Family)
+
+# call color palette
+pal2 <-polychrome(27)
+
+# so it does not plot on the same page 
+par(mfrow=c(1,2), xpd=T)
+
+gplot(as.one.mode(network_host),
+      displaylabels = TRUE,
+      gmode="graph",
+      label.cex=1, vertex.col = nuevoedge$Family, vertex.cex=1)
+
+par(mfrow=c(1,2), xpd=T)
+
+# Plot with no labels 
+gplot(network_host, gmode="graph", jitter=FALSE,
+      displaylabels = FALSE,
+      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
+      vertex.col= nuevoedge$Family)
+
+par(mfrow=c(1,2), xpd=T)
+
+# Another option is to use ggnet
+
+network_host<-t(network_host)
+network_host<-as.data.frame(network_host, stringsAsFactors = F)
+network_host[, 2] <- as.character(network_host[, 2])
+net = network(network_host, directed = FALSE)
+ggnet2(net, node.size = 3, edge.size = 1, node.color = "mode", edge.color = "grey", label = TRUE)
+```
+
+
