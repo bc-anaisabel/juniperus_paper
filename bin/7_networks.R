@@ -2,19 +2,6 @@
 # In R this is step 4. Network presence-absence  
 # January, 2021
 
-library(devtools)
-library(SpiecEasi)
-library(microbiome) # data analysis and visualisation
-library(phyloseq) # also the basis of data object. Data analysis and visualisation
-library(RColorBrewer) # nice color options
-library(ggpubr) # publication quality figures, based on ggplot2
-library(dplyr) # data handling
-library(SpiecEasi) # Network analysis for sparse compositional data  
-library(network)
-library(intergraph)
-library(ggnet)
-library(igraph)
-library("plyr"); packageVersion("plyr")
 library("phyloseq"); packageVersion("phyloseq")
 library("ggplot2"); packageVersion("ggplot2")
 library("vegan"); packageVersion("vegan")
@@ -22,22 +9,13 @@ library("RColorBrewer"); packageVersion("RColorBrewer")
 library("plotly"); packageVersion("plotly")
 library("htmltools"); packageVersion("htmltools")
 library("DT"); packageVersion("DT")
-library(ggplot2)
-library(dplyr)
-library(tibble)
-library(mvabund)
-library(randomForest)
-library(knitr)
 library(gplots)
-library(VennDiagram)
-library(bipartite)
-library(sna)
-library(igraph)
-library(ggnetwork)
-library(statnet.common)
 library(network)
+library(sna)
 library(pals)
 library(GGally)
+library(igraph)
+library(bipartite)
 
 theme_set(theme_bw())
 
@@ -188,7 +166,22 @@ ggnet2(net, node.size = 3, edge.size = 1, node.color = "mode", edge.color = "gre
 
 #### Networks using igraph ####
 
-# Unfinished 
+# Unfinished part
+
+# Merge more than one category
+
+sample_variables(subset)
+
+variable1 = as.character(get_variable(subset, "Host"))
+variable2 = as.character(get_variable(subset, "Site"))
+
+sample_data(subset)$NewPastedVar <- mapply(paste0, variable1, variable2, 
+                                           collapse = "_")
+nw2<- merge_samples(subset, "NewPastedVar")
+
+# Create dataframe with presence/absence data for each OTU in each category  
+network_host <- as.data.frame(otu_table(nw2))
+
 
 #Other format
 abc<-t(network_host)
@@ -210,3 +203,50 @@ tax.c <- as.data.frame(tax_table(subset)@.Data)#extract the taxonomy information
 
 
 
+
+#### Frequence in each plant host table ####
+
+# In order to further analyze presence/absence of otus in each plant host, 
+# you can create a frequency table for the fungal category you wish: 
+
+#Make the subset
+subset.myc <- subset_taxa(subset.texcoco.binary.beta, Trophic %in% c("a__am"))
+subset.myc <- subset_samples(subset.myc, Type %in% c("root"))
+subset.myc
+
+any(taxa_sums(subset.myc) == 0)
+subset.myc <- prune_taxa(taxa_sums(subset.myc) > 0, subset.myc)
+subset.myc
+
+tax_table(subset.myc)
+otu_table(subset.myc)
+sample_data(subset.myc)
+
+# Make a dataframe with OTUs as column and samples as rows
+predictors <- t(otu_table(subset.myc))
+dim(predictors)
+predictors <- as.table(predictors)
+predictors<- as.data.frame(predictors)
+dim(predictors)
+
+Host <- as.factor(sample_data(subset.myc)$Host) # variables
+Site <- as.factor(sample_data(subset.myc)$Site) # variable
+
+predictors <- data.frame(predictors,Host,Site) #this is the dataframe 
+head(predictors)
+
+predictors$HS <- paste0(predictors$Host, predictors$Site) # now add the variables 
+
+tax.table<-as.data.frame(tax_table(subset.myc))
+tax.table
+match.id <- match(predictors$Var2, rownames(tax.table)) # now add the taxonomy 
+
+predictors$Family <- tax.table$Family[match.id] # add the taxonomic levels you wish 
+predictors$Trophic <- tax.table$Trophic[match.id]
+predictors$Genus <- tax.table$Genus[match.id] 
+
+predictors <- subset(predictors, predictors$Freq == 1) # now get the frequence 
+
+sort(table(predictors$Var2))
+
+sharedotusam<-write.csv(predictors, file = "sharedotusacm.csv") # you can take it to excel for further observations
