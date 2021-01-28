@@ -12,20 +12,8 @@ library("htmltools"); packageVersion("htmltools")
 library("DT"); packageVersion("DT")
 library(ggplot2)
 library(dplyr)
-library(tibble)
-library(scales)
-library(reshape2)
-library(car)
-library(lme4)
-library(mvabund)
-library(sna)
-library(bipartite)
-library(igraph)
-library(ggnetwork)
-library(statnet.common)
-library(network)
 library(ggpubr)
-library(multcomp)
+library(car)
 
 
 # Set working directory to source file
@@ -62,6 +50,7 @@ taxa_sums(pre.filtered.texcoco.alfa) [1:10]
 pre.filtered.texcoco.alfa
 
 sum(taxa_sums(pre.filtered.texcoco.alfa))
+
 # Subset data for Texcoco using OTU binary table 
 
 # create its own binary table, just in case counts change 
@@ -86,7 +75,7 @@ taxa_sums(pre.filtered.texcoco.binary) [1:10]
 pre.filtered.texcoco.binary
 
 
-# Read and OTU counts for am, ecm, sap and unknown 
+# Read and OTU counts for cathegories: AM, ECM, Saprophytic and Unknown fungi
 
 sum(taxa_sums(pre.filtered.texcoco.alfa)) 
 
@@ -184,14 +173,14 @@ sum(taxa_sums(subset.texcoco.binary))
 
 #### Accumulation curve #### 
 
-# all sites
+# Get the accumulation curve counting for all sites
 select = subset.texcoco.alfa ## select data
 data = t(otu_table(select)) ## otu table in vegan
 data  
-
+#Plot
 plot(specaccum(data))
 
-# per site 
+# Get the accumulation curve counting per site 
 
 # Calculate specaccum for each site
 subset <- subset_samples(select, Site %in% "native")
@@ -258,7 +247,8 @@ legend('bottomright', c('Quercus','Juniperus'),
 # prune out phyla below 1% in each sample
 # selecting the taxa at the wanted level 
 
-#Poster plot 
+# Obtain main relative abundance plot (used for Poster) 
+# where fungal trophic categories are: "a__sap" = Saprophytic; "a__par" = Parasitic; "a__ecm" = Ectomycorrhizal; "a__am" = Arbuscular mycorrhizal
 
 subset.poster<- subset_taxa(subset.texcoco.binary, Trophic %in% c("a__sap", "a__par", "a__ecm", "a__am"))
 
@@ -297,15 +287,6 @@ ggplot(mdata_phylum, aes(x = Site, y = Abundance, fill = Trophic)) +
 
 # Plot obtained: Relative Abundance (using sequence reads) of fungi Phylum by Site, Type of sample and Host plant
 
-# How many OTUs 
-
-subset.q<-subset_samples(subset.texcoco.binary, Site %in% "perturbated")
-subset.q
-any(taxa_sums(subset.q) ==0)
-subset.q <- prune_taxa(taxa_sums(subset.q) > 0, subset.q)
-subset.q
-otu_table(subset.q)
-otushost<-estimate_richness(subset.q)
 
 #### Alpha diversity tests ####
 
@@ -340,7 +321,7 @@ data
 
 # ANOVA 
 
-#one way ANOVA
+# one way ANOVA
 # dependent variable (data) : observed richness 
 # independet variable (factor): site, host or type of sample 
 
@@ -387,12 +368,14 @@ shapiro.test(residual2)
 
 leveneTest(Observed ~ Site, data=data)
 
+# If data are not normal, go for non-parametric tests instead: 
 
-#Kruskal Wallis test: no parametric
+# Kruskal Wallis test: no parametric
 
 head(data)
 levels(data$Site)
 
+# Obtain diagnostic measurements 
 group_by(data, Host) %>%
   summarise(
     count = n(),
@@ -402,25 +385,26 @@ group_by(data, Host) %>%
     IQR = IQR(Observed, na.rm = TRUE)
   )
 
+# Kruskal wallis test 
 KW1<- kruskal.test(Observed ~ Host, data)
 KW1
 
 pairwise.wilcox.test(data$Observed, data$Host,
                      p.adjust.method = "bonferroni")
 
-#### Abundance of TOP OTUs  (change for trophic mode and cathegories) ####
+#### Abundance/frequency of TOP OTUs  (change for trophic mode and cathegories) ####
 
-#Obtain 50 most abundant OTUs
+# Obtain 50 most frequent OTUs
 Top50OTUs <- names(sort(taxa_sums(subset.texcoco.binary), TRUE)[1:50])
 ent50 <- prune_taxa(Top50OTUs, subset.texcoco.binary)
-ent50
-taxa_names(ent50)
-ntaxa(ent50)
-taxa_sums(ent50)
-tax_table(ent50)
+ent50 # 50 most frequent
+taxa_names(ent50) #which OTUs 
+ntaxa(ent50) # count the number is correct
+taxa_sums(ent50) # how many times does each otu appear across all samples
+tax_table(ent50) # what is the taxonomy for those frequent OTUs 
 
-options(max.print=2000)
-print(otu_table(ent50))
+options(max.print=2000) # to see all of them 
+print(otu_table(ent50)) # check table 
 
 
 # Plot most abundant OTUs by site
@@ -558,7 +542,9 @@ spprich<-subset %>%
   summarize(OTUn = (unique(OTU) %>% length)) %>% 
   arrange(desc(OTUn))
 
-subset<- subset_taxa(subset, Family %in% c(""))
+# Now that you have the families ordered by most species-rich to least, you can select to analyse only some of those families
+
+subset<- subset_taxa(subset, Family %in% c(""))  # subset of targeted families 
 subset
 tax_table(subset)
 

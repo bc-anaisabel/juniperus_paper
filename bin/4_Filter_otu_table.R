@@ -2,7 +2,7 @@
 # In R, this is part 1. Filtering steps (negative control, relative abundance, 0 presence OTUs, presence/absence)
 # February, 2020 
 
-
+# Load libraries
 library("plyr"); packageVersion("plyr")
 library("phyloseq"); packageVersion("phyloseq")
 library("ggplot2"); packageVersion("ggplot2")
@@ -26,7 +26,6 @@ theme_set(theme_bw())
 # Set working directory to source file
 
 # Import biom data (includes otu table, taxonomy table and sample data)
-# phyloseq_tables <- import_biom("../data/taxonomy.biom") older biom file, delete? 
 
 phyloseq_tables <- import_biom("../data/4_new_tax.biom")
 phyloseq_tables
@@ -248,8 +247,12 @@ sum(rowSums(PCR_allbatches_cleaned)) # total number of reads: 7434468
 
 # Step 2. DATA TRANSFORMATION
 
-# Transform read counts into  % relative abundances: multiply by 1000 and transform to next integer so it looks like read count
-phyloseq.rel = transform_sample_counts(phyloseq_tables_cleaned, function(x) 100000 * x/sum(x))
+# Transform read counts into  % relative abundances: because of concerns about rarefying NGS data
+# we will use the observed number of sequences normalized into relative abundance per sample. 
+# The relative abundance is then multiplied by 1000 and rounded to the nearest integer to be used as count data. 
+
+# Multiply by 1000 and transform to next integer so it looks like read count:
+phyloseq.rel = transform_sample_counts(phyloseq_tables_cleaned, function(x) 1000 * x/sum(x))
 otu_table(phyloseq.rel) = ceiling(otu_table(phyloseq.rel, "matrix")) # transform to next integer so it looks like read count
 otu_table(phyloseq.rel) # check otu table
 phyloseq.rel # check project
@@ -260,7 +263,7 @@ ntaxa(phyloseq.rel)
 
 #check distribution of how many reads/OTU, reads/sample 
 
-sum(taxa_sums(phyloseq.rel)) # total number of reads : 6304150
+sum(taxa_sums(phyloseq.rel)) # total number of reads 
 
 # Step 3. check distribution of how many reads/OTU, reads/sample: Plot number of reads per OTU / samples 
 
@@ -299,7 +302,7 @@ binary_table_OTU2 <- prune_taxa(taxa_sums(binary_table) > 1, binary_table)
 binary_table
 binary_table_OTU2
 
-# TO FIX! Right now caluclate read sum and not taxa sum
+# TO FIX! Right now calculate read sum and not taxa sum
 # Remove OTUs that appear only in 1 sample (using presence/absence)
 # any(taxa_sums(phyloseq.rel) == 1)
 # otu_table(prune_taxa(taxa_sums(phyloseq.rel) <= 1, phyloseq.rel))
@@ -310,7 +313,7 @@ phyloseq.rel
 
 sample_sums(phyloseq_tables)
 sample_sums(phyloseq_tables_cleaned)
-
+sample_sums(phyloseq.rel)
 
 ##### FINAL OTU TABLES OBTAINED FOR FURTHER ANALYSIS
 
