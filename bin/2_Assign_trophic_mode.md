@@ -36,7 +36,7 @@ The steps to follow to manually add greater taxonomic resolution for your OTUs a
 
 For all OTUs, when FunGuild did not assign a trophic mode or if taxonomy was updated to a finer level with a new SH: 
 
-1. Check SH (Species Hypothesis) at 97% and assign trophic mode using UNITE Search Page (Ecology tab). If there is no SH associated use the INSD accession number. If UNITE does not provide a trophic mode or status as either mycorrhizal or not mycorrhizal, leave as **unknown**. 
+1. Check SH (Species Hypothesis) at 97% and assign trophic mode using [UNITE Search Page (Ecology tab)](https://unite.ut.ee/). If there is no SH associated use the INSD accession number. If UNITE does not provide a trophic mode or status as either mycorrhizal or not mycorrhizal, leave as **unknown**. 
 
 
 ### Assembling new taxonomic and fungal guilds information 
@@ -72,7 +72,7 @@ to this:
 3. Convert back the file, from *.txt* to *.biom* using:
 `biom convert -i taxonomy.txt -o new_taxonomy.biom --to-hdf5 --table-type="OTU table" --process-obs-metadata taxonomy`
 
-4. If you need more details into how to install the converter consult [Script 3](https://github.com/bc-anaisabel/juniperus_paper/blob/master/bin/3_Convert_txt_to_biom.md) for a full version of instructions. 
+4. If you need more details into how to install the converter, consult [Script 3](https://github.com/bc-anaisabel/juniperus_paper/blob/master/bin/3_Convert_txt_to_biom.md) for a full version of instructions. 
 
 5. After this you can work with it in R as follows in [Script 4](https://github.com/bc-anaisabel/juniperus_paper/blob/master/bin/4_Filter_otu_table.R) 
 
