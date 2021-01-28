@@ -28,24 +28,24 @@ The steps to follow are listed in order by letters and within step: **C) R scrip
 
 *Preprocessing and taxonomy and trophic mode assignment within AMPtk*
 
-[amptk_for_illumina.sh](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/amptk_for_illumina.sh): This is a **bash** script to **denoise** Illumina MiSeq pair-end data, **create an OTU table**, and **assign taxonomy** and fungal **trophic guilds** within **AMPtk**. [AMPtk_pipeline.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/AMPtk_pipeline.md): this is a text file that describes what the *amptk_for_illumina.sh* script does. 
+[1_amptk_for_illumina.sh](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_amptk_for_illumina.sh): This is a **bash** script to **denoise** Illumina MiSeq pair-end data, **create an OTU table**, and **assign taxonomy** and fungal **trophic guilds** within **AMPtk**. [AMPtk_pipeline.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/AMPtk_pipeline.md): this is a text file that describes what the *amptk_for_illumina.sh* script does. 
 
 
 **B) Manually completing taxonomy, trophic mode and converting your file after running AMPtk pipeline**
 
-[Assign_trophic_mode.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/Assign_trophic_mode.md): instructions for manually assigning taxonomy and trophic mode to OTUs that could not be identified beyond Order (or higher up in taxonomy rank) in AMPtk using UNITE database.
+[2_Assign_trophic_mode.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/2_Assign_trophic_mode.md): instructions for manually assigning taxonomy and trophic mode to OTUs that could not be identified beyond Order (or higher up in taxonomy rank) in AMPtk using UNITE database.
   
-If you need to edit your file to add the new taxonomic and trophic assigments, you will need to go from a .txt file to a .biom file:
+If you need to edit your file to add the new taxonomic and trophic assigments, you will need to go from a *.txt* file to a *.biom* file and you can do it using:
   
-[Convert_txt_to_biom.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/Convert_txt_to_biom.md): instructions for manually converting the edited **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax_biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**, the file that you will be able to use in R with *phyloseq* package. 
+[3_Convert_txt_to_biom.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Convert_txt_to_biom.md): instructions for manually converting the edited **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax_biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**, the file that you will be able to use in R with *phyloseq* package. 
 
 **C) R scripts** 
 
 Use in number order to run alpha- and beta- diversity analyses as follows:
-  * [1_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_Filter_otu_table.R) : filtering otu table
-  * [2_Juniperus_Alpha_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/2_Juniperus_Alpha_Diversity.R): performing alpha diversity analysis
-  * [3_Juniperus_Beta_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Juniperus_Beta_Diversity.R): performing beta diversity analysis
-  * [4_Models.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/4_Models.R): modelling diversity data 
+  * [4_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/4_Filter_otu_table.R) : filtering otu table
+  * [5_Juniperus_Alpha_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/5_Juniperus_Alpha_Diversity.R): performing alpha diversity analysis
+  * [6_Juniperus_Beta_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/6_Juniperus_Beta_Diversity.R): performing beta diversity analysis
+  * [7_Models.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/7_Models.R): modelling diversity data 
   
   
 ### Raw data ### 
@@ -56,7 +56,7 @@ All the sequence data associated with this project are deposited in [OSF](https:
 
 ### `/data`
 
-The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the metadata file containing samples information and the output data from the AMPtk pipeline that acts as input data for R scripts. These data files were created and used by the numbered order. 
+The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the [metadata](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv) file containing samples information and the [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/1_taxonomy.biom) data from the AMPtk pipeline that acts as [input](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax_biom) data for R scripts. These data files were created and used by the numbered order. 
 
 
 #### Data files
@@ -66,7 +66,7 @@ The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) dir
 
 [2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.tx) : otu and taxonomy table in .txt format obtained from AMPtk pipeline that can be edited to add categories of taxonomy and trophic guild for all OTUs 
 
-3_new_tax_biom : this is a residual file, this is not to be used and should be disregarded. I will delete this file once I update the numbers in my scripts. 
+3_new_tax_biom : this is a residual file, this is not to be used and should be ignored. I will delete this file soon. 
 
 [4_new_tax_biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax_biom) : otu and taxonomy tables that have been edited to contain new taxonomy and fungal trophic information and that are now converted back to **.biom**. This is the file to call initially in the first R script: [1_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_Filter_otu_table.R)
    
