@@ -1,12 +1,14 @@
-# Fungal communities in *Juniperus* spp and *Quercus* spp
+# Fungal communities associated with the mycorrhizal plants *Juniperus deppeana* & *Quercus rugosa* and their implications for forest restoration
+
+
 
 ## Background and sample information ### 
 
-I am working with Illumina MiSeq paired-end data with the ITS2 rDNA region using metabarcoding to identify fungal communities present in the soil and in the seedling roots of isolated and mixed oak (*Quercus rugosa*) and juniper (*Juniperus deppeana*) populations. To do so, I used the fungal specific primers ITS4ngsUNI and gITS7ngs, which were designed to act on a broad spectrum of fungi (Leho Tedersoo & Lindahl, 2016). The goal is to study plant-soil feedbacks along a disturbance gradient in central Mexico. 
+I am working with Illumina MiSeq paired-end data with the ITS2 rDNA region using metabarcoding to identify fungal communities present in the soil and in the seedling roots of isolated and mixed oak (*Quercus rugosa*) and juniper (*Juniperus deppeana*) populations. To do so, I used the fungal specific primers ITS4ngsUNI and gITS7ngs, which were designed to act on a broad spectrum of fungi (Leho Tedersoo & Lindahl, 2016). The goal is to study belowground interactions between Juniperus and Quercus along a disturbance gradient in Central Mexico. 
 
-Because oak and juniper are plants with different mycorrhizal types, oak being known as an ectomycorrhizal plant and juniperus as an arbuscular-mycorrhizal plant, I expect the presence of one influences the other through these plant-soil feedbacks causing changes, which could be positive, neutral, or negative, to the plant growth and overall health and of course, to the fungal communities abundance and diversity. 
+Because oak and juniper are plants with different mycorrhizal types, oak being known as an ectomycorrhizal plant and juniperus as an arbuscular-mycorrhizal plant, I expect the presence of one influences the other through these fungal interactions causing changes to the plant growth and overall health and to the fungal communities abundance and diversity (Teste, 2019; Dean et al. 2015). 
 
-The general and bigger outlook is in the context of reforestation where these two plants grow together, I want to know if the fungal communities are affected through plant-soil feedbacks and if this causes any changes that might be relevant to consider when improving reforestation practices and management strategies. Forest management might be improved through studying the biology of these interactions, therefore I consider that in the context of reforestation the study of fungal communities could be a key element for success. 
+The general and bigger outlook is in the context of reforestation where these two plants grow together. I want to know if the fungal communities are affected, and if this causes any changes that might be relevant to consider when improving reforestation practices and management strategies. Forest management might be improved through studying the biology of these interactions, therefore I consider that in the context of reforestation the study of fungal communities could be a key element for success (Bennett et al., 2017; Suz et al. 2017)
 
 The samples I used for sequencing were root and soil samples. Samples were taken from 3 different sites: i) disturbed site with a population of *J. deppeana*, ii) mixed site where *J. deppeana* and *Q. rugosa* grow side by side (regeneration zone), and iii) a native site in forest dominated by *Q. rugosa*. Root samples come from collecting the root system of 6 seedlings in each site of *J. deppeana* (sites i and ii) and *Q. rugosa* (sites ii and iii), for a total of 24 root samples. For soil samples, we collected 3 soil cores for each plant species in each site, for a total of 12 soil samples. 
 
@@ -108,10 +110,29 @@ excel_concatenate.png files: used to show manual steps in [Script2](https://gith
 
 
 ### References 
+
+Bennett, J. A., Maherali, H., Reinhart, K. O., Lekberg, Y., Hart, M. M., & Klironomos, J. (2017). 
+        Plant-soil feedbacks and mycorrhizal type influence temperate forest population dynamics. 
+        Science, 355, 181–184. https://doi.org/10.1007/978-1-4020-2625-6_7
+
+Dean, S. L., Warnock, D. D., Litvak, M. E., Porras-Alfaro, A., & Sinsabaugh, R. (2015). 
+        Root-associated fungal community response to drought-associated changes in vegetation community. 
+        Mycologia, 107(6), 1089–1104.
+
+
 Palmer JM, Jusino MA, Banik MT, Lindner DL. 2018. Non-biological synthetic spike-in controls
         and the AMPtk software pipeline improve mycobiome data. PeerJ 6:e4925;
         DOI 10.7717/peerj.4925. https://peerj.com/articles/4925/
         
+Suz, L. M., Kallow, S., Reed, K., Bidartondo, M. I., & Barsoum, N. (2017). Pine mycorrhizal 
+        communities in pure and mixed pine-oak forests: Abiotic environment trumps neighboring oak host 
+        effects. Forest Ecology and Management, 406(September), 370–380. 
+        
 Tedersoo, Leho, & Lindahl, B. (2016). Fungal identification biases in microbiome projects. 
         Environmental Microbiology Reports, 8(5), 774–779. 
         https://doi.org/10.1111/1758-2229.12438
+        
+Teste, F. P., Jones, M. D., & Dickie, I. A. (2019). Dual‐mycorrhizal plants: their ecology 
+        and relevance. New Phytologist. https://doi.org/10.1111/nph.16190
+
+
