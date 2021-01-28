@@ -10,9 +10,18 @@ The general and bigger outlook is in the context of reforestation where these tw
 
 The samples I used for sequencing were root and soil samples. Samples were taken from 3 different sites: i) disturbed site with a population of *J. deppeana*, ii) mixed site where *J. deppeana* and *Q. rugosa* grow side by side (regeneration zone), and iii) a native site in forest dominated by *Q. rugosa*. Root samples come from collecting the root system of 6 seedlings in each site of *J. deppeana* (sites i and ii) and *Q. rugosa* (sites ii and iii), for a total of 24 root samples. For soil samples, we collected 3 soil cores for each plant species in each site, for a total of 12 soil samples. 
 
+## Software versions used in this repository ##
+
+Bash version: 3.2.57(1)-release
+
+AMPtk requires a few other installations so as it will be indicated in [1_amptk_for_illumina.sh](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_amptk_for_illumina.sh), make sure to check their [website](https://amptk.readthedocs.io/en/latest/)
+
+R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night"
+
 ## Repository guide ### 
 
 In this repository you can find scripts, data, metadata and results to identify fungal communities using Illumina MiSeq paired-end data and to analyse fungal diversity and fungal community composition. 
+
 
 ### `/bin`
 
