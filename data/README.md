@@ -10,7 +10,7 @@ These data files were created and used by the numbered order.
 
 3_new_tax_biom : this is a residual file, this is not to be used and should be disregarded. I will delete this file once I update the numbers in my scripts. 
 
-[4_new_tax.biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom) : otu and taxonomy tables that have been edited to contain new taxonomy and fungal trophic information and that are now converted back to **.biom**. This is the file to call initially in the first R script: [1_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_Filter_otu_table.R)
+[4_new_tax.biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom) : otu and taxonomy tables that have been edited to contain new taxonomy and fungal trophic information and that are now converted back to **.biom**. This is the file to call initially in the first R script: [4_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/4_Filter_otu_table.R)
    
    
 
