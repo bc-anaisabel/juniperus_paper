@@ -37,7 +37,7 @@ The steps to follow are listed in order by letters and within step: **C) R scrip
   
 If you need to edit your file to add the new taxonomic and trophic assigments, you will need to go from a *.txt* file to a *.biom* file and you can do it using:
   
-[3_Convert_txt_to_biom.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Convert_txt_to_biom.md): instructions for manually converting the edited **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax_biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**, the file that you will be able to use in R with *phyloseq* package. 
+[3_Convert_txt_to_biom.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Convert_txt_to_biom.md): instructions for manually converting the edited **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax.biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**, the file that you will be able to use in R with *phyloseq* package. 
 
 **C) R scripts** 
 
@@ -56,7 +56,7 @@ All the sequence data associated with this project are deposited in [OSF](https:
 
 ### `/data`
 
-The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the [metadata](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv) file containing samples information and the [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/1_taxonomy.biom) data from the AMPtk pipeline that acts as [input](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax_biom) data for R scripts. These data files were created and used by the numbered order. 
+The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the [metadata](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv) file containing samples information and the [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/1_taxonomy.biom) data from the AMPtk pipeline that acts as [input](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom) data for R scripts. These data files were created and used by the numbered order. 
 
 
 #### Data files
@@ -68,7 +68,7 @@ The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) dir
 
 3_new_tax_biom : this is a residual file, this is not to be used and should be ignored. I will delete this file soon. 
 
-[4_new_tax.biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom) : otu and taxonomy tables that have been edited to contain new taxonomy and fungal trophic information and that are now converted back to **.biom**. This is the file to call initially in the first R script: [1_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_Filter_otu_table.R)
+[4_new_tax.biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom) : otu and taxonomy tables that have been edited to contain new taxonomy and fungal trophic information and that are now converted back to **.biom**. This is the file to call initially in the first R script: [4_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/4_Filter_otu_table.R)
    
    
 
