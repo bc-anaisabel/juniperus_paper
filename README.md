@@ -92,7 +92,19 @@ The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) dir
 
 ### `/output`
 
-The [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/output) directory contains all figures obtained from R scripts to be used for the publication. 
+The [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/output) directory contains the obtained results at this point and output images of how some manual steps look like. In the future this directory is expected to show the figures that will be used for the final publication. 
+
+[Bermudez_Graphical_Abstract_MSA_2020.pdf](https://github.com/bc-anaisabel/juniperus_paper/blob/master/output/Bermudez_Graphical_Abstract_MSA_2020.pdf): graphical abstract presented at the 2020 conference of the Mycological Society of America
+
+[Reporte_TallerBioinf.Rmd](https://github.com/bc-anaisabel/juniperus_paper/blob/master/output/Reporte_TallerBioinf.Rmd): R markdown file for the most important results obtained as of January/2021. 
+
+[Reporte_TallerBioinf.html](https://github.com/bc-anaisabel/juniperus_paper/blob/master/output/Reporte_TallerBioinf.html): (not working at the moment) html file for the most important results obtained as of January/2021. 
+
+[Reporte_TallerBioinf.pdf](https://github.com/bc-anaisabel/juniperus_paper/blob/master/output/Reporte_TallerBioinf.pdf): R-generated (knit package) PDF file for the most important results obtained as of January/2021. This is the most readable presentation of the research results so far. 
+
+excel_concatenate.png files: used to show manual steps in [Script2](https://github.com/bc-anaisabel/juniperus_paper/blob/master/bin/2_Assign_trophic_mode.md)
+
+
 
 
 ### References 
