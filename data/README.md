@@ -20,16 +20,16 @@ These data files were created and used by the numbered order.
 
 The first 13 columns of this file are all different identifiers of each sample. The following 12 columns contain all the information obtained from **soil measurements**: 
 - pH; 
-- Available phosphorus: Pdis; 
-- Calcium: Ca;
-- Magnesium: Mg;
-- Potassium: K;
-- Sodium: Na; 
-- Hydrogen: H; 
-- Aluminium: Al; 
-- Soil moisture (SoilM); 
-- Carbon: C; 
-- Nitrogen: Nit; 
+- Available phosphorus (mg/kg): Pdis; 
+- Calcium (interchangeable cation cmol/kg): Ca;
+- Magnesium (interchangeable cation cmol/kg): Mg;
+- Potassium (interchangeable cation cmol/kg): K;
+- Sodium (interchangeable cation cmol/kg): Na; 
+- Hydrogen (interchangeable cation cmol/kg): H; 
+- Aluminium (interchangeable cation cmol/kg): Al; 
+- Soil moisture (%): SoilM; 
+- Carbon (%): C; 
+- Nitrogen (%): Nit; 
 - Carbon to Nitrogen ratio: CN
 
 
