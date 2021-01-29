@@ -2,15 +2,15 @@
 
 Here you can find the scripts for pre-processing Illumina MiSeq data with AMPtk, the manual steps for assigning OTU taxonomy and trophic mode, and converting metadata from *.txt* to *.biom* to import into R, as well as the numbered (in order of use) R scripts for filtering the OTU table and performing alpha- and beta- diversity analyses. 
 
-The steps to follow are listed in order by letters and within step: **C) R scripts** you can find the R scripts named by numbers in order of use.  
+The steps to follow are listed in order:  
 
-## A) Preprocessing, assigning taxonomy and trophic mode:
+- ## Step 1: Preprocessing, assigning taxonomy and trophic mode:
 
 **Preprocessing and taxonomy and trophic mode assignment within AMPtk**
 
 [1_amptk_for_illumina.sh](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_amptk_for_illumina.sh): This is a **bash** script to **denoise** Illumina MiSeq pair-end data, **create an OTU table**, and **assign taxonomy** and fungal **trophic guilds** within **AMPtk**. [AMPtk_pipeline.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/AMPtk_pipeline.md): this is a text file that describes what the *1_amptk_for_illumina.sh* script does. 
 
-## B) Manually completing taxonomy, trophic mode and converting your file after running AMPtk pipeline 
+- ## Step 2: Manually completing taxonomy, trophic mode and converting your file after running AMPtk pipeline 
 
 [2_Assign_trophic_mode.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/2_Assign_trophic_mode.md): instructions for manually assigning taxonomy and trophic mode to OTUs that could not be identified beyond Order (or higher up in taxonomy rank) by AMPtk with the UNITE database.
   
