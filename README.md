@@ -50,7 +50,7 @@ You might not need to, but if you need to edit the file you obtained from AMPtk 
 
 [2_Assign_trophic_mode.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/2_Assign_trophic_mode.md): instructions for manually assigning taxonomy and trophic mode with [UNITE database](https://unite.ut.ee/) to OTUs that could not be identified beyond Order (or higher up in taxonomy rank) in previous step with AMPtk.
   
-**Step 3: Then you will need to go from a *.txt* file to a *.biom* to use it in next steps in R for community analysis:
+**Step 3: Then you will need to go from a *.txt* file to a *.biom* to use it in next steps in R for community analysis**:
   
 [3_Convert_txt_to_biom.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Convert_txt_to_biom.md): instructions for manually converting the edited **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax.biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**, the file that you will be able to use in R with *phyloseq* package. 
 
