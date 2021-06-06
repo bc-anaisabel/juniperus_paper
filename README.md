@@ -4,21 +4,23 @@
 
 ## Background and sample information ### 
 
-I am working with Illumina MiSeq paired-end data with the ITS2 rDNA region using metabarcoding to identify fungal communities present in the soil and in the seedling roots of isolated and mixed oak (*Quercus rugosa*) and juniper (*Juniperus deppeana*) populations. To do so, I used the fungal specific primers ITS4ngsUNI and gITS7ngs, which were designed to act on a broad spectrum of fungi (Leho Tedersoo & Lindahl, 2016). The goal is to study belowground interactions between Juniperus and Quercus along a disturbance gradient in Central Mexico. 
+I am working with **Illumina MiSeq paired-end** data with the **ITS2** rDNA region using metabarcoding to identify **fungal communities** present in the soil and in the seedling roots of isolated and mixed oak (*Quercus rugosa*) and juniper (*Juniperus deppeana*) populations. To do so, I used the **fungal specific primers ITS4ngsUNI** and **gITS7ngs**, which were designed to act on a broad spectrum of fungi (*Leho Tedersoo & Lindahl, 2016*). The goal is to study belowground interactions between *Juniperus* and *Quercus* along a disturbance gradient in Central Mexico. 
 
-Because oak and juniper are plants with different mycorrhizal types, oak being known as an ectomycorrhizal plant and juniperus as an arbuscular-mycorrhizal plant, I expect the presence of one influences the other through these fungal interactions causing changes to the plant growth and overall health and to the fungal communities abundance and diversity (Teste, 2019; Dean et al. 2015). 
+Because oak and juniper are plants with different mycorrhizal types, oak being known as an ectomycorrhizal plant and juniperus as an arbuscular-mycorrhizal plant, I expect the presence of one influences the other through belowground fungal interactions causing changes to plant growth and health and to the fungal communities abundance and diversity (*Teste, 2019; Dean et al., 2015*). 
 
-The general and bigger outlook is in the context of reforestation where these two plants grow together. I want to know if the fungal communities are affected, and if this causes any changes that might be relevant to consider when improving reforestation practices and management strategies. Forest management might be improved through studying the biology of these interactions, therefore I consider that in the context of reforestation the study of fungal communities could be a key element for success (Bennett et al., 2017; Suz et al. 2017)
+The general and bigger outlook is in the context of **reforestation** where these two plants grow together. I want to know if the fungal communities are affected by the vecinity of the other plant, and if this causes any changes that might be relevant to consider when improving reforestation practices and management strategies. **Forest management** might be improved through studying the biology of these interactions, therefore I consider that **in the context of reforestation the study of fungal communities could be a key element for success** (*Bennett et al., 2017; Suz et al., 2017*)
 
-The samples I used for sequencing were root and soil samples. Samples were taken from 3 different sites: i) disturbed site with a population of *J. deppeana*, ii) mixed site where *J. deppeana* and *Q. rugosa* grow side by side (regeneration zone), and iii) a native site in forest dominated by *Q. rugosa*. Root samples come from collecting the root system of 6 seedlings in each site of *J. deppeana* (sites i and ii) and *Q. rugosa* (sites ii and iii), for a total of 24 root samples. For soil samples, we collected 3 soil cores for each plant species in each site, for a total of 12 soil samples. 
+The samples I used for sequencing were **root** and **soil** samples. Samples were taken from 3 different sites: **i)** disturbed site with a population of *J. deppeana*, **ii)** mixed site where *J. deppeana* and *Q. rugosa* grow side by side (regeneration zone), and **iii)** a native site in forest dominated by *Q. rugosa*. Root samples come from collecting the root system of 6 seedlings in each site of *J. deppeana* (sites i and ii) and *Q. rugosa* (sites ii and iii), for a total of 24 root samples. For soil samples, we collected 3 soil cores for each plant species in each site, for a total of 12 soil samples. 
 
-## Software versions used in this repository ##
+## Software versions used throughout this repository ##
 
-Bash version: 3.2.57(1)-release
+- MacOS Mojave version 10.14.4 
 
-AMPtk requires a few other installations so as it will be indicated in [1_amptk_for_illumina.sh](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_amptk_for_illumina.sh), make sure to check their [website](https://amptk.readthedocs.io/en/latest/)
+- Bash version: 3.2.57(1)-release
 
-R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night"
+- R version 3.6.2 (2019-12-12) -- "Dark and Stormy Night"
+
+- AMPtk requires a few other installations (indicated in [1_amptk_for_illumina.sh](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_amptk_for_illumina.sh)),make sure to carefully check their recommendations for installation of required dependencies on their [website](https://amptk.readthedocs.io/en/latest/)
 
 ## Repository guide ### 
 
@@ -31,28 +33,31 @@ The [bin](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin) direc
 
 #### Scripts and manual steps   
 
-Here you can find the scripts for pre-processing Illumina MiSeq data with AMPtk (Palmer, J. et al. 2018), the manual steps for assigning OTU taxonomy and trophic mode, and converting metadata from *.txt* to *.biom* to import into R, as well as the numbered (in order of use) R scripts for filtering the OTU table and performing alpha- and beta- diversity analyses. 
+Here you can find the scripts for pre-processing Illumina MiSeq data with AMPtk (*Palmer, J. et al. 2018*), the manual steps for assigning OTU taxonomy and trophic mode, and converting metadata from *.txt* to *.biom* to import into R, as well as the numbered (in order of use) R scripts for filtering the OTU table and performing alpha- and beta- diversity analyses. 
 
-The steps to follow are listed in order by letters and within step: **C) R scripts** you can find the R scripts named by numbers in order of use.  
+The steps to follow are listed in order:
 
-**A) Preprocessing, assigning taxonomy and trophic mode:**
+- **Step 1: Preprocessing, assigning taxonomy and trophic mode:**
 
 *Preprocessing and taxonomy and trophic mode assignment within AMPtk*
 
 [1_amptk_for_illumina.sh](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/1_amptk_for_illumina.sh): This is a **bash** script to **denoise** Illumina MiSeq pair-end data, **create an OTU table**, and **assign taxonomy** and fungal **trophic guilds** within **AMPtk**. [AMPtk_pipeline.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/AMPtk_pipeline.md): this is a text file that describes what the *amptk_for_illumina.sh* script does. 
 
 
-**B) Manually completing taxonomy, trophic mode and converting your file after running AMPtk pipeline**
+- **Step 2: Manually completing taxonomy, trophic mode and converting your file after running AMPtk pipeline**
 
-[2_Assign_trophic_mode.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/2_Assign_trophic_mode.md): instructions for manually assigning taxonomy and trophic mode to OTUs that could not be identified beyond Order (or higher up in taxonomy rank) in AMPtk using UNITE database.
+You might not need to, but if you need to edit the file you obtained from AMPtk [(biom table)](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/1_taxonomy.biom) to add new taxonomic and trophic assigments:
+
+[2_Assign_trophic_mode.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/2_Assign_trophic_mode.md): instructions for manually assigning taxonomy and trophic mode with [UNITE database](https://unite.ut.ee/) to OTUs that could not be identified beyond Order (or higher up in taxonomy rank) in previous step with AMPtk.
   
-If you need to edit your file to add the new taxonomic and trophic assigments, you will need to go from a *.txt* file to a *.biom* file and you can do it using:
+- **Step 3: Then you will need to go from a *.txt* file to a *.biom* to use it in next steps in R for community analysis**:
   
 [3_Convert_txt_to_biom.md](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/3_Convert_txt_to_biom.md): instructions for manually converting the edited **[2_taxonomy.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/2_taxonomy.txt)** into **[4_new_tax.biom](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom)**, the file that you will be able to use in R with *phyloseq* package. 
 
-**C) R scripts** 
+- **Step 4: R scripts** 
 
 Use in number order to run alpha- and beta- diversity analyses as follows:
+
   * [4_Filter_otu_table.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/4_Filter_otu_table.R) : filtering otu table
   * [5_Juniperus_Alpha_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/5_Juniperus_Alpha_Diversity.R): performing alpha diversity analysis
   * [6_Juniperus_Beta_Diversity.R](https://github.com/bc-anaisabel/juniperus_paper/tree/master/bin/6_Juniperus_Beta_Diversity.R): performing beta diversity analysis
@@ -67,7 +72,7 @@ All the sequence data associated with this project are deposited in [OSF](https:
 
 ### `/data`
 
-The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the [metadata](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv) file containing samples information and the [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/1_taxonomy.biom) data from the AMPtk pipeline that acts as [input](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom) data for R scripts. These data files were created and used by the numbered order. 
+The [data](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data) directory contains the [metadata](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv) with samples information and the data with the [output](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/1_taxonomy.biom) file from the AMPtk pipeline that later acts as [input](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/4_new_tax.biom) file for R scripts. The data files were created and used in the numbered order. 
 
 
 #### Data files

@@ -16,7 +16,21 @@ These data files were created and used by the numbered order.
 
 # Metadata 
 
-[amptk.mapping_file.csv](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv): contains all sample data to be used as input for initial R script. The first 13 columns are all different identifiers of each sample. The following 12 columns contain all the information obtained from soil measurements: pH; Available phosphorus: Pdis (Using Olsen method); exchangeable cations were Calcium: Ca (Ca++), Magnesium: Mg and Potassium (K) measured by absortion in 0.5 M NH4Cl solution; Sodium (Na); Hydrogen: H; Aluminium: All; Soil moisture (SoilM); Carbon: C; Nitrogen: Nit; and the Carbon to Nitrogen ratio: CN, these last were measured using an elemental analyzer CNHS/O Perkin Elmer 2400 series II. 
+[amptk.mapping_file.csv](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.csv): contains all sample data to be used as input for initial R script. 
+
+The first 13 columns of this file are all different identifiers of each sample. The following 12 columns contain all the information obtained from **soil measurements**: 
+- pH; 
+- Available phosphorus (mg/kg): Pdis; 
+- Calcium (interchangeable cation cmol/kg): Ca;
+- Magnesium (interchangeable cation cmol/kg): Mg;
+- Potassium (interchangeable cation cmol/kg): K;
+- Sodium (interchangeable cation cmol/kg): Na; 
+- Hydrogen (interchangeable cation cmol/kg): H; 
+- Aluminium (interchangeable cation cmol/kg): Al; 
+- Soil moisture (%): SoilM; 
+- Carbon (%): C; 
+- Nitrogen (%): Nit; 
+- Carbon to Nitrogen ratio: CN
 
 
 [ampt.mapping_file.txt](https://github.com/bc-anaisabel/juniperus_paper/tree/master/data/amptk.mapping_file.txt): contains all sample data to be edited as input for initial R script. This is the same as the amptk.mappin_file.csv file but in .txt format for editing 
