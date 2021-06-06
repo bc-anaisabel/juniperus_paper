@@ -133,7 +133,7 @@ par(mfrow=c(1,2), xpd=T)
 palette(polychrome(n=27))
 gplot(network_host, gmode="graph", jitter=FALSE,
       displaylabels = TRUE,
-      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
+      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=1,
       vertex.col= nuevoedge$Family)
 
 par(mfrow=c(1,2), xpd=T)
@@ -148,7 +148,7 @@ par(mfrow=c(1,2), xpd=T)
 
 gplot(network_host, gmode="graph", jitter=FALSE,
       label = nuevoedge$Family,
-      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=2,
+      boxed.labels=FALSE, label.pos=1, label.cex=1, vertex.cex=1,
       vertex.col= nuevoedge$Family)
 
 # Another option is to use ggnet, plot looks nicer but not sure how to add color  
